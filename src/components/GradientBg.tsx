@@ -14,6 +14,8 @@ declare global {
         dom: string
         colors: string[]
         loop: boolean
+        noiseScale?: number
+        [key: string]: unknown
       }) => void
     }
   }
@@ -34,6 +36,7 @@ export default function GradientBg() {
         dom: "bg-root",
         colors: COLORS,
         loop: true,
+        noiseScale: 0,
       })
     } catch (err) {
       console.warn("Color4Bg init failed:", err)
