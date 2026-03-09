@@ -69,7 +69,7 @@ export default function StatCounter({
       <div className="text-4xl md:text-5xl font-bold text-white">
         {prefix}{display}{suffix}
       </div>
-      <div className="text-sm text-white/50 mt-1">{label}</div>
+      <div className="text-sm text-white/70 mt-1">{label}</div>
     </div>
   )
 }

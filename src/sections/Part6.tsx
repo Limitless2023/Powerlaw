@@ -68,7 +68,7 @@ export default function Part6() {
             </h4>
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/10 text-white/40 text-xs uppercase tracking-wider">
+                <tr className="border-b border-white/10 text-white/50 text-xs uppercase tracking-wider">
                   <th className="text-left py-2 pr-4">情况</th>
                   <th className="text-left py-2">应对</th>
                 </tr>

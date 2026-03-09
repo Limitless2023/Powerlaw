@@ -25,7 +25,7 @@ export default function ThankYou() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="text-lg text-white/60 text-center max-w-lg leading-relaxed"
+        className="text-lg text-white/80 text-center max-w-lg leading-relaxed"
       >
         希望能给大家一些启发
         <br />

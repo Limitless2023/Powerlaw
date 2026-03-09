@@ -18,7 +18,7 @@ export default function PreviewEmbed({
 }: PreviewEmbedProps) {
   return (
     <div className="rounded-2xl overflow-hidden border border-white/10">
-      <div className="bg-black/50 backdrop-blur-xl px-4 py-2 flex justify-between items-center text-xs text-white/40">
+      <div className="bg-black/50 backdrop-blur-xl px-4 py-2 flex justify-between items-center text-xs text-white/50">
         <span>{title}</span>
         <a
           href={src}

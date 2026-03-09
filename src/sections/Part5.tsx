@@ -33,7 +33,7 @@ function DesignTab() {
           <motion.div key={a.label} {...fade(i)}>
             <GlassCard className="text-center py-4">
               <h4 className="text-white font-semibold text-sm mb-1">{a.label}</h4>
-              <p className="text-white/40 text-xs">{a.desc}</p>
+              <p className="text-white/50 text-xs">{a.desc}</p>
             </GlassCard>
           </motion.div>
         ))}
@@ -111,7 +111,7 @@ function IntegHubTab() {
           <motion.div key={s.label} {...fade(i)}>
             <GlassCard className="text-center">
               <div className="text-3xl font-bold text-accent font-mono mb-1">{s.value}</div>
-              <div className="text-xs text-white/40 uppercase tracking-wider">{s.label}</div>
+              <div className="text-xs text-white/50 uppercase tracking-wider">{s.label}</div>
             </GlassCard>
           </motion.div>
         ))}
@@ -124,7 +124,7 @@ function IntegHubTab() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/10 text-white/40 text-xs uppercase tracking-wider">
+                <tr className="border-b border-white/10 text-white/50 text-xs uppercase tracking-wider">
                   <th className="text-left py-2 pr-4">平台</th>
                   <th className="text-right py-2">App 数量</th>
                 </tr>

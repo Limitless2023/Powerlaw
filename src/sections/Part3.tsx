@@ -68,7 +68,7 @@ export default function Part3() {
         <GlassCard className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10 text-white/40 text-xs">
+              <tr className="border-b border-white/10 text-white/50 text-xs">
                 <th className="text-left py-3 pr-4">等级</th>
                 <th className="text-left py-3 pr-4">类型</th>
                 <th className="text-left py-3 pr-4">占比</th>
@@ -98,7 +98,7 @@ export default function Part3() {
                     {r.autonomy}
                   </td>
                   <td className="py-3 pr-4 text-white/60">{r.myRole}</td>
-                  <td className="py-3 text-white/40 text-xs">{r.example}</td>
+                  <td className="py-3 text-white/50 text-xs">{r.example}</td>
                 </tr>
               ))}
             </tbody>
@@ -130,7 +130,7 @@ export default function Part3() {
               <p className="text-white/60 text-sm">
                 当一个 Agent 卡住时，换一个模型或上下文重新开始。
                 <br />
-                <span className="text-white/40 font-mono text-xs">
+                <span className="text-white/50 font-mono text-xs">
                   Claude Opus &rarr; Codex 5.4 — 不同的训练数据 = 不同的视角
                 </span>
               </p>

@@ -43,7 +43,7 @@ export default function Navigation({
               "px-3 h-12 text-xs tracking-wide transition-colors duration-200 border-b-2 flex items-center",
               index === currentSection
                 ? "text-white border-white"
-                : "text-white/40 border-transparent hover:text-white/70"
+                : "text-white/50 border-transparent hover:text-white/80"
             )}
           >
             {item}

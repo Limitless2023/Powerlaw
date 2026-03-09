@@ -15,7 +15,7 @@ export default function Cover() {
       {/* 顶部标签 */}
       <motion.div
         {...fade(1)}
-        className="text-xs tracking-[0.3em] text-white/50 uppercase mb-8"
+        className="text-xs tracking-[0.3em] text-white/70 uppercase mb-8"
       >
         MeAgent & MeFlow Agent · 2026.03
       </motion.div>
@@ -33,7 +33,7 @@ export default function Cover() {
       {/* 副标题 */}
       <motion.p
         {...fade(3)}
-        className="text-lg text-white/50 text-center mb-16 font-mono"
+        className="text-lg text-white/70 text-center mb-16 font-mono"
       >
         4 个仓库 · ~60 个文件 · 3 种语言
       </motion.p>
@@ -70,7 +70,7 @@ export default function Cover() {
       </motion.div>
 
       {/* 作者 */}
-      <motion.div {...fade(5.5)} className="text-sm text-white/50">
+      <motion.div {...fade(5.5)} className="text-sm text-white/70">
         Limitless
       </motion.div>
     </div>

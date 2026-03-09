@@ -72,7 +72,7 @@ export default function Part7() {
           <motion.div key={c.title} {...fade(i + 4)}>
             <GlassCard className="h-full">
               <h4 className="text-white font-semibold text-sm mb-1">{c.title}</h4>
-              <p className="text-white/40 text-xs">{c.desc}</p>
+              <p className="text-white/50 text-xs">{c.desc}</p>
             </GlassCard>
           </motion.div>
         ))}

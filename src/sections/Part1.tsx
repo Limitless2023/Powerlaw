@@ -83,7 +83,7 @@ function UITab({ onImageClick }: { onImageClick?: (src: string) => void }) {
       {/* Before */}
       <motion.div {...fade(0)}>
         <GlassCard>
-          <h4 className="text-white/40 text-xs uppercase tracking-wider mb-4">Before</h4>
+          <h4 className="text-white/50 text-xs uppercase tracking-wider mb-4">Before</h4>
           <div className="space-y-4">
             {beforeImages.map((img) => (
               <div key={img.src}>
@@ -93,7 +93,7 @@ function UITab({ onImageClick }: { onImageClick?: (src: string) => void }) {
                   onClick={() => onImageClick?.(img.src)}
                   className="w-full rounded-lg cursor-pointer hover:scale-[1.02] transition-transform"
                 />
-                <p className="text-xs text-white/40 mt-1">{img.label}</p>
+                <p className="text-xs text-white/50 mt-1">{img.label}</p>
               </div>
             ))}
           </div>
@@ -103,7 +103,7 @@ function UITab({ onImageClick }: { onImageClick?: (src: string) => void }) {
       {/* After */}
       <motion.div {...fade(1)}>
         <GlassCard>
-          <h4 className="text-white/40 text-xs uppercase tracking-wider mb-4">After</h4>
+          <h4 className="text-white/50 text-xs uppercase tracking-wider mb-4">After</h4>
           <ul className="space-y-3">
             {improvements.map((item, i) => (
               <li key={i} className="flex items-start gap-2 text-sm text-white/80">
@@ -128,27 +128,27 @@ function PurposeTab({ onImageClick }: { onImageClick?: (src: string) => void }) 
       <div className="grid md:grid-cols-2 gap-6">
         <motion.div {...fade(0)}>
           <GlassCard>
-            <h4 className="text-white/40 text-xs uppercase tracking-wider mb-3">Before</h4>
+            <h4 className="text-white/50 text-xs uppercase tracking-wider mb-3">Before</h4>
             <img
               src={before}
               alt="Purpose before"
               onClick={() => onImageClick?.(before)}
               className="w-full rounded-lg cursor-pointer hover:scale-[1.02] transition-transform"
             />
-            <p className="text-xs text-white/40 mt-2">工具调用没有上下文，用户不知道 AI 在做什么</p>
+            <p className="text-xs text-white/50 mt-2">工具调用没有上下文，用户不知道 AI 在做什么</p>
           </GlassCard>
         </motion.div>
 
         <motion.div {...fade(1)}>
           <GlassCard>
-            <h4 className="text-white/40 text-xs uppercase tracking-wider mb-3">After</h4>
+            <h4 className="text-white/50 text-xs uppercase tracking-wider mb-3">After</h4>
             <img
               src={after}
               alt="Purpose after"
               onClick={() => onImageClick?.(after)}
               className="w-full rounded-lg cursor-pointer hover:scale-[1.02] transition-transform"
             />
-            <p className="text-xs text-white/40 mt-2">每次工具调用都带 purpose，用户一目了然</p>
+            <p className="text-xs text-white/50 mt-2">每次工具调用都带 purpose，用户一目了然</p>
           </GlassCard>
         </motion.div>
       </div>
@@ -193,7 +193,7 @@ function ArtifactTab() {
             AI 生成的 HTML/代码片段可以直接在对话中预览，支持交互和全屏查看。
           </p>
           <div className="aspect-video rounded-lg bg-black/30 border border-white/5 flex items-center justify-center">
-            <span className="text-white/40 text-sm">Artifact Preview Screenshot</span>
+            <span className="text-white/50 text-sm">Artifact Preview Screenshot</span>
           </div>
         </GlassCard>
       </motion.div>
@@ -218,9 +218,9 @@ function SubAgentTab() {
     <div className="grid md:grid-cols-2 gap-6">
       <motion.div {...fade(0)}>
         <GlassCard>
-          <h4 className="text-white/40 text-xs uppercase tracking-wider mb-3">Before</h4>
+          <h4 className="text-white/50 text-xs uppercase tracking-wider mb-3">Before</h4>
           <div className="aspect-video rounded-lg bg-black/30 border border-white/5 flex items-center justify-center mb-3">
-            <span className="text-white/40 text-sm">Sub-Agent Black Box</span>
+            <span className="text-white/50 text-sm">Sub-Agent Black Box</span>
           </div>
           <p className="text-sm text-white/60">
             子 Agent 运行时完全黑箱，只有最终结果。用户不知道在做什么、进展如何。
@@ -230,9 +230,9 @@ function SubAgentTab() {
 
       <motion.div {...fade(1)}>
         <GlassCard>
-          <h4 className="text-white/40 text-xs uppercase tracking-wider mb-3">After</h4>
+          <h4 className="text-white/50 text-xs uppercase tracking-wider mb-3">After</h4>
           <div className="aspect-video rounded-lg bg-black/30 border border-white/5 flex items-center justify-center mb-3">
-            <span className="text-white/40 text-sm">Real-time Visualization</span>
+            <span className="text-white/50 text-sm">Real-time Visualization</span>
           </div>
           <p className="text-sm text-white/60">
             实时展示子 Agent 的思考、工具调用和文本输出。默认收起，竖线串联，可展开查看。

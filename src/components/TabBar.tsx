@@ -21,7 +21,7 @@ export default function TabBar({ tabs, active, onChange }: TabBarProps) {
           className={`px-4 py-2 rounded-xl text-sm transition-all ${
             active === i
               ? "glass-strong text-white"
-              : "text-white/40 hover:text-white/70"
+              : "text-white/50 hover:text-white/80"
           }`}
         >
           {label}

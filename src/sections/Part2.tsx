@@ -95,7 +95,7 @@ function RequirementsTab() {
               <h4 className="text-white font-semibold text-sm">{s.title}</h4>
             </div>
             <p className="text-white/60 text-sm mb-3">{s.desc}</p>
-            <p className="text-xs text-white/40 font-mono bg-white/5 rounded-lg px-3 py-2">
+            <p className="text-xs text-white/50 font-mono bg-white/5 rounded-lg px-3 py-2">
               {s.example}
             </p>
           </GlassCard>
@@ -146,7 +146,7 @@ function CollaborationTab() {
               <h4 className="text-white font-semibold text-sm">{s.title}</h4>
             </div>
             <p className="text-white/60 text-sm mb-2">{s.desc}</p>
-            <p className="text-xs text-white/40">{s.detail}</p>
+            <p className="text-xs text-white/50">{s.detail}</p>
           </GlassCard>
         </motion.div>
       ))}
@@ -189,7 +189,7 @@ function DevTab() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/10 text-white/40 text-xs">
+                <tr className="border-b border-white/10 text-white/50 text-xs">
                   <th className="text-left py-2 pr-4">仓库</th>
                   <th className="text-left py-2 pr-4">语言</th>
                   <th className="text-right py-2">文件数</th>
