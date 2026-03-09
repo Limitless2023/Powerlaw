@@ -18,11 +18,11 @@ const fade = (i: number) => ({
 /* ── Tab: 设计探索 ── */
 function DesignTab() {
   const areas = [
-    { icon: "🎨", label: "ICON", desc: "图标选型和风格统一" },
-    { icon: "🌈", label: "配色", desc: "色板探索和对比" },
-    { icon: "📐", label: "排版", desc: "间距、字体、层级" },
-    { icon: "📱", label: "布局", desc: "响应式和组件布局" },
-    { icon: "📝", label: "格式", desc: "Markdown 渲染样式" },
+    { label: "ICON", desc: "图标选型和风格统一" },
+    { label: "配色", desc: "色板探索和对比" },
+    { label: "排版", desc: "间距、字体、层级" },
+    { label: "布局", desc: "响应式和组件布局" },
+    { label: "格式", desc: "Markdown 渲染样式" },
   ];
 
   return (
@@ -31,7 +31,6 @@ function DesignTab() {
         {areas.map((a, i) => (
           <motion.div key={a.label} {...fade(i)}>
             <GlassCard className="text-center py-4">
-              <div className="text-2xl mb-2">{a.icon}</div>
               <h4 className="text-white font-semibold text-sm mb-1">{a.label}</h4>
               <p className="text-zinc-500 text-xs">{a.desc}</p>
             </GlassCard>
@@ -187,7 +186,7 @@ export default function Part5({ onImageClick: _onImageClick }: Part5Props) {
   void _onImageClick;
 
   return (
-    <div className="min-h-screen flex flex-col justify-center px-8 md:px-16 py-24">
+    <div>
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

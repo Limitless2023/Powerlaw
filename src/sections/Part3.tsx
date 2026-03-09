@@ -63,7 +63,7 @@ export default function Part3({ onImageClick: _onImageClick }: Part3Props) {
   void _onImageClick;
 
   return (
-    <div className="min-h-screen flex flex-col justify-center px-8 md:px-16 py-24">
+    <div>
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

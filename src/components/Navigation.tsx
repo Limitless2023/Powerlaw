@@ -9,7 +9,7 @@ const NAV_ITEMS = [
   "不止写代码",
   "为什么能work",
   "收尾",
-  "Q&A",
+  "Thanks",
 ];
 
 interface NavigationProps {

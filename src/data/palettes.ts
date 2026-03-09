@@ -1,14 +1,14 @@
 /** Color4Bg gradient palettes — one per section */
 export const palettes: Record<string, string[]> = {
-  cover:    ["#0a2540", "#134e5e", "#13ACBA", "#0d3b4f"],
-  part1:    ["#1a1a3e", "#2d2b55", "#13ACBA", "#0e4d5c"],
-  part2:    ["#2d1b4e", "#1a1a3e", "#6e3cbf", "#3b1f7a"],
-  part3:    ["#1b3a2f", "#0d4f3c", "#22c55e", "#134e3e"],
-  part4:    ["#3b2f1b", "#4d3a1a", "#f59e0b", "#5c4a2e"],
-  part5:    ["#3e1a2e", "#4d1b3a", "#ec4899", "#6b2150"],
-  part6:    ["#1a2d4e", "#0e3b6b", "#3b82f6", "#1e40af"],
-  part7:    ["#2d1b4e", "#0a2540", "#13ACBA", "#6e3cbf"],
-  thanks:   ["#0a2540", "#134e5e", "#13ACBA", "#0d3b4f"],
+  cover:    ["#86DFE9", "#A4EFF4", "#FDFFF0", "#D6F2C7"],
+  part1:    ["#0D98BA", "#0CA0B1", "#0BA9A8", "#0AB19F"],
+  part2:    ["#A7DDBC", "#8FC5AA", "#78AE99", "#609687"],
+  part3:    ["#3155A0", "#2984C3", "#5ABAD5", "#ABEDE6"],
+  part4:    ["#0E7FB0", "#88C5F9", "#FFF8F1", "#EEDAD3"],
+  part5:    ["#A0BCF6", "#AFC0F1", "#BEC3EB", "#CCC7E6"],
+  part6:    ["#D2E2FA", "#EBFAFF", "#D4F5FF", "#BEE1FA"],
+  part7:    ["#F6C9B9", "#FDD2BF", "#FFD9CA", "#FFE5DB"],
+  thanks:   ["#86DFE9", "#A4EFF4", "#FDFFF0", "#D6F2C7"],
 }
 
 export type SectionKey = keyof typeof palettes

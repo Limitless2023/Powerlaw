@@ -39,11 +39,11 @@ const Section = forwardRef<HTMLElement, SectionProps>(
         ref={setRef}
         id={id}
         className={cn(
-          "min-h-screen flex flex-col justify-center relative z-10",
+          "min-h-screen relative z-10",
           className
         )}
       >
-        <div className="max-w-6xl mx-auto w-full px-6 md:px-12 py-16">
+        <div className="w-full mx-auto max-w-[1400px] px-8 md:px-16 pt-20 pb-12">
           {children}
         </div>
       </section>

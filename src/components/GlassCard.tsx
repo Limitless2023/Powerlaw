@@ -27,11 +27,6 @@ export default function GlassCard({
         onClick && "cursor-pointer",
         className
       )}
-      style={
-        accent
-          ? { borderLeft: `2px solid ${ACCENT_COLORS[accent]}` }
-          : undefined
-      }
       onClick={onClick}
     >
       {children}
