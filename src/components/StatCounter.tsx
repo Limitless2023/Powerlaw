@@ -70,7 +70,7 @@ export default function StatCounter({
         {display}
         {suffix}
       </div>
-      <div className="text-sm text-zinc-500 mt-1">{label}</div>
+      <div className="text-sm text-zinc-600 mt-1">{label}</div>
     </div>
   );
 }

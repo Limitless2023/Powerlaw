@@ -8,7 +8,7 @@ export default function ThankYou() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="text-5xl md:text-7xl font-bold text-white mb-6"
+        className="text-5xl md:text-7xl font-bold text-zinc-800 mb-6"
       >
         Thank You
       </motion.h1>
@@ -18,7 +18,7 @@ export default function ThankYou() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="text-lg text-zinc-400 text-center max-w-lg leading-relaxed"
+        className="text-lg text-zinc-600 text-center max-w-lg leading-relaxed"
       >
         希望能给大家一些启发
         <br />

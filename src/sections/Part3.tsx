@@ -67,7 +67,7 @@ export default function Part3({ onImageClick: _onImageClick }: Part3Props) {
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-3xl md:text-4xl font-bold text-white mb-2"
+        className="text-3xl md:text-4xl font-bold text-zinc-800 mb-2"
       >
         复杂度地图
       </motion.h2>
@@ -75,7 +75,7 @@ export default function Part3({ onImageClick: _onImageClick }: Part3Props) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="text-zinc-500 mb-8"
+        className="text-zinc-600 mb-8"
       >
         Complexity map
       </motion.p>

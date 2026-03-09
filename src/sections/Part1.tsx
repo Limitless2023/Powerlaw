@@ -248,7 +248,7 @@ export default function Part1({ onImageClick }: Part1Props) {
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-3xl md:text-4xl font-bold text-white mb-2"
+        className="text-3xl md:text-4xl font-bold text-zinc-800 mb-2"
       >
         先看东西
       </motion.h2>
@@ -256,7 +256,7 @@ export default function Part1({ onImageClick }: Part1Props) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="text-zinc-500 mb-8"
+        className="text-zinc-600 mb-8"
       >
         What was built
       </motion.p>
@@ -270,7 +270,7 @@ export default function Part1({ onImageClick }: Part1Props) {
             className={`px-4 py-2 rounded-xl text-sm transition-all ${
               tab === i
                 ? "glass-strong text-white"
-                : "text-zinc-500 hover:text-zinc-300"
+                : "text-zinc-600 hover:text-zinc-800"
             }`}
           >
             {t}

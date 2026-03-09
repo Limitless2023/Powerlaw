@@ -9,7 +9,7 @@ export default function Cover() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="text-xs tracking-[0.3em] text-zinc-500 uppercase mb-8"
+        className="text-xs tracking-[0.3em] text-zinc-600 uppercase mb-8"
       >
         MeAgent & MeFlow Agent · 2026.03
       </motion.div>
@@ -21,7 +21,7 @@ export default function Cover() {
         transition={{ delay: 0.2 }}
         className="text-5xl md:text-7xl font-bold text-center leading-tight mb-6"
       >
-        <span className="text-white">一个 Half 产品的</span>
+        <span className="text-zinc-800">一个 Half 产品的</span>
         <br />
         <span className="text-accent">沉浸式 Vibe Coding</span>
       </motion.h1>
@@ -31,7 +31,7 @@ export default function Cover() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="text-lg text-zinc-400 text-center mb-16 font-mono"
+        className="text-lg text-zinc-600 text-center mb-16 font-mono"
       >
         4 个仓库 · ~60 个文件 · 3 种语言
       </motion.p>
@@ -69,7 +69,7 @@ export default function Cover() {
         {["frontend", "copilot", "meagent", "server"].map((repo) => (
           <span
             key={repo}
-            className="px-3 py-1.5 rounded-lg text-xs font-mono text-zinc-300 bg-white/5 border border-white/10"
+            className="px-3 py-1.5 rounded-lg text-xs font-mono text-zinc-700 bg-black/10 border border-black/10"
           >
             {repo}
           </span>
@@ -81,7 +81,7 @@ export default function Cover() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.55 }}
-        className="text-sm text-zinc-500"
+        className="text-sm text-zinc-600"
       >
         Limitless
       </motion.div>

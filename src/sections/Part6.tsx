@@ -49,7 +49,7 @@ export default function Part6({ onImageClick: _onImageClick }: Part6Props) {
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-3xl md:text-4xl font-bold text-white mb-2"
+        className="text-3xl md:text-4xl font-bold text-zinc-800 mb-2"
       >
         为什么能 work
       </motion.h2>
@@ -57,7 +57,7 @@ export default function Part6({ onImageClick: _onImageClick }: Part6Props) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="text-zinc-500 mb-8"
+        className="text-zinc-600 mb-8"
       >
         Why it works
       </motion.p>
