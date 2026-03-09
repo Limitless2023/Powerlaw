@@ -1,46 +1,46 @@
+/**
+ * [INPUT]: 依赖 framer-motion 的 motion，依赖 @/components/StatCounter，依赖 @/lib/motion 的 fade
+ * [OUTPUT]: Cover 组件
+ * [POS]: sections 的封面页，被 App 消费
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
+
 import { motion } from "framer-motion";
 import StatCounter from "@/components/StatCounter";
+import { fade } from "@/lib/motion";
 
 export default function Cover() {
   return (
     <div className="min-h-[calc(100vh-5rem)] flex flex-col items-center justify-center relative">
-      {/* Top label */}
+      {/* 顶部标签 */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="text-xs tracking-[0.3em] text-zinc-600 uppercase mb-8"
+        {...fade(1)}
+        className="text-xs tracking-[0.3em] text-white/50 uppercase mb-8"
       >
         MeAgent & MeFlow Agent · 2026.03
       </motion.div>
 
-      {/* Main title */}
+      {/* 主标题 */}
       <motion.h1
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
+        {...fade(2)}
         className="text-5xl md:text-7xl font-bold text-center leading-tight mb-6"
       >
-        <span className="text-zinc-800">一个 Half 产品的</span>
+        <span className="text-white">一个 Half 产品的</span>
         <br />
         <span className="text-accent">沉浸式 Vibe Coding</span>
       </motion.h1>
 
-      {/* Subtitle */}
+      {/* 副标题 */}
       <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="text-lg text-zinc-600 text-center mb-16 font-mono"
+        {...fade(3)}
+        className="text-lg text-white/50 text-center mb-16 font-mono"
       >
         4 个仓库 · ~60 个文件 · 3 种语言
       </motion.p>
 
-      {/* Stat counters */}
+      {/* 数据计数器 */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
+        {...fade(4)}
         className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-16 mb-8"
       >
         <StatCounter value={4} label="仓库" />
@@ -49,40 +49,28 @@ export default function Cover() {
         <StatCounter value="60%" label="Codex $20/月" />
       </motion.div>
 
-      {/* Zero code highlight */}
+      {/* 零代码高亮 */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.45 }}
+        {...fade(4.5)}
         className="text-lg text-accent font-mono font-semibold mb-8"
       >
         我写的代码：0 行
       </motion.div>
 
-      {/* Repos */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="flex gap-3 mb-8"
-      >
+      {/* 仓库标签 */}
+      <motion.div {...fade(5)} className="flex gap-3 mb-8">
         {["frontend", "copilot", "meagent", "server"].map((repo) => (
           <span
             key={repo}
-            className="px-3 py-1.5 rounded-lg text-xs font-mono text-zinc-700 bg-black/10 border border-black/10"
+            className="px-3 py-1.5 rounded-lg text-xs font-mono text-white/70 bg-white/10 border border-white/10"
           >
             {repo}
           </span>
         ))}
       </motion.div>
 
-      {/* Author */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.55 }}
-        className="text-sm text-zinc-600"
-      >
+      {/* 作者 */}
+      <motion.div {...fade(5.5)} className="text-sm text-white/50">
         Limitless
       </motion.div>
     </div>

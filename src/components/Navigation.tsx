@@ -1,3 +1,10 @@
+/**
+ * [INPUT]: 依赖 @/lib/utils 的 cn
+ * [OUTPUT]: Navigation 组件（固定顶部导航栏）
+ * [POS]: components 的全局导航，被 App 消费，接收 currentSection + onNavigate
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
+
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
@@ -22,8 +29,8 @@ export default function Navigation({
   onNavigate,
 }: NavigationProps) {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 h-12 px-6 flex items-center bg-black/50 border-b border-white/10">
-      <span className="text-xs font-medium tracking-widest text-zinc-300 uppercase shrink-0">
+    <nav className="fixed top-0 left-0 right-0 z-50 h-12 px-6 flex items-center bg-black/30 backdrop-blur-xl border-b border-white/10">
+      <span className="text-xs font-medium tracking-widest text-white/70 uppercase shrink-0">
         VIBE CODING
       </span>
 
@@ -36,7 +43,7 @@ export default function Navigation({
               "px-3 h-12 text-xs tracking-wide transition-colors duration-200 border-b-2 flex items-center",
               index === currentSection
                 ? "text-white border-white"
-                : "text-zinc-400 border-transparent hover:text-zinc-200"
+                : "text-white/40 border-transparent hover:text-white/70"
             )}
           >
             {item}

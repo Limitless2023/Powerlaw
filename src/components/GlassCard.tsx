@@ -1,28 +1,23 @@
-import { cn } from "@/lib/utils";
+/**
+ * [INPUT]: 依赖 @/lib/utils 的 cn
+ * [OUTPUT]: GlassCard 组件
+ * [POS]: components 的卡片容器，被所有 section 消费
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 
-const ACCENT_COLORS = {
-  teal: "#13ACBA",
-  red: "#ef4444",
-  green: "#22c55e",
-  amber: "#f59e0b",
-} as const;
+import { cn } from "@/lib/utils"
 
 interface GlassCardProps {
-  children: React.ReactNode;
-  accent?: keyof typeof ACCENT_COLORS;
-  className?: string;
-  onClick?: () => void;
+  children: React.ReactNode
+  className?: string
+  onClick?: () => void
 }
 
-export default function GlassCard({
-  children,
-  className,
-  onClick,
-}: GlassCardProps) {
+export default function GlassCard({ children, className, onClick }: GlassCardProps) {
   return (
     <div
       className={cn(
-        "glass rounded-2xl p-5 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08]",
+        "glass rounded-2xl p-5 transition-all duration-300 hover:bg-white/[0.08]",
         onClick && "cursor-pointer",
         className
       )}
@@ -30,5 +25,5 @@ export default function GlassCard({
     >
       {children}
     </div>
-  );
+  )
 }

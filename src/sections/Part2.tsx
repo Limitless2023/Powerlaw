@@ -1,18 +1,18 @@
+/**
+ * [INPUT]: 依赖 react 的 useState，依赖 framer-motion 的 motion，依赖 @/components/GlassCard、SectionHeader、TabBar，依赖 @/lib/motion 的 fade
+ * [OUTPUT]: Part2 组件
+ * [POS]: sections 的「怎么做到的」工作流展示页，被 App 消费
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
+
 import { useState } from "react";
 import { motion } from "framer-motion";
 import GlassCard from "@/components/GlassCard";
-
-interface Part2Props {
-  onImageClick?: (src: string) => void;
-}
+import SectionHeader from "@/components/SectionHeader";
+import TabBar from "@/components/TabBar";
+import { fade } from "@/lib/motion";
 
 const tabs = ["总览", "提需求", "协作方案", "开发验证", "归档"];
-
-const fade = (i: number) => ({
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  transition: { delay: 0.1 * i },
-});
 
 /* ── Tab: 总览 ── */
 function OverviewTab() {
@@ -20,7 +20,7 @@ function OverviewTab() {
 
   return (
     <div className="space-y-8">
-      {/* Flow diagram */}
+      {/* 流程图 */}
       <motion.div {...fade(0)}>
         <GlassCard>
           <div className="flex items-center justify-center gap-3 py-4 flex-wrap">
@@ -38,14 +38,14 @@ function OverviewTab() {
         </GlassCard>
       </motion.div>
 
-      {/* Key point */}
+      {/* 核心观点 */}
       <motion.div {...fade(1)}>
-        <GlassCard accent="teal" className="text-center">
+        <GlassCard className="text-center">
           <p className="text-lg text-white font-semibold">
             我全程做的事情：
             <span className="text-accent"> 描述、选择、判断、验收</span>
           </p>
-          <p className="text-sm text-zinc-400 mt-2">
+          <p className="text-sm text-white/60 mt-2">
             没有写一行代码，但每一步都在做产品决策
           </p>
         </GlassCard>
@@ -94,8 +94,8 @@ function RequirementsTab() {
               </span>
               <h4 className="text-white font-semibold text-sm">{s.title}</h4>
             </div>
-            <p className="text-zinc-400 text-sm mb-3">{s.desc}</p>
-            <p className="text-xs text-zinc-500 font-mono bg-white/5 rounded-lg px-3 py-2">
+            <p className="text-white/60 text-sm mb-3">{s.desc}</p>
+            <p className="text-xs text-white/40 font-mono bg-white/5 rounded-lg px-3 py-2">
               {s.example}
             </p>
           </GlassCard>
@@ -145,8 +145,8 @@ function CollaborationTab() {
               </span>
               <h4 className="text-white font-semibold text-sm">{s.title}</h4>
             </div>
-            <p className="text-zinc-400 text-sm mb-2">{s.desc}</p>
-            <p className="text-xs text-zinc-500">{s.detail}</p>
+            <p className="text-white/60 text-sm mb-2">{s.desc}</p>
+            <p className="text-xs text-white/40">{s.detail}</p>
           </GlassCard>
         </motion.div>
       ))}
@@ -175,9 +175,9 @@ function DevTab() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {cards.map((c, i) => (
           <motion.div key={c.title} {...fade(i)}>
-            <GlassCard accent="teal">
+            <GlassCard>
               <h4 className="text-white font-semibold text-sm mb-1">{c.title}</h4>
-              <p className="text-zinc-400 text-xs">{c.desc}</p>
+              <p className="text-white/60 text-xs">{c.desc}</p>
             </GlassCard>
           </motion.div>
         ))}
@@ -189,7 +189,7 @@ function DevTab() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/10 text-zinc-500 text-xs">
+                <tr className="border-b border-white/10 text-white/40 text-xs">
                   <th className="text-left py-2 pr-4">仓库</th>
                   <th className="text-left py-2 pr-4">语言</th>
                   <th className="text-right py-2">文件数</th>
@@ -199,8 +199,8 @@ function DevTab() {
                 {repos.map((r) => (
                   <tr key={r.name} className="border-b border-white/5">
                     <td className="py-2 pr-4 font-mono text-accent">{r.name}</td>
-                    <td className="py-2 pr-4 text-zinc-300">{r.lang}</td>
-                    <td className="py-2 text-right text-zinc-400">{r.files}</td>
+                    <td className="py-2 pr-4 text-white/80">{r.lang}</td>
+                    <td className="py-2 text-right text-white/60">{r.files}</td>
                   </tr>
                 ))}
               </tbody>
@@ -233,9 +233,9 @@ function ArchiveTab() {
     <div className="grid md:grid-cols-3 gap-4">
       {cards.map((c, i) => (
         <motion.div key={c.title} {...fade(i)}>
-          <GlassCard accent="teal">
+          <GlassCard>
             <h4 className="text-white font-semibold text-sm mb-2">{c.title}</h4>
-            <p className="text-zinc-400 text-sm">{c.desc}</p>
+            <p className="text-white/60 text-sm">{c.desc}</p>
           </GlassCard>
         </motion.div>
       ))}
@@ -243,49 +243,17 @@ function ArchiveTab() {
   );
 }
 
-/* ── Main Component ── */
-export default function Part2({ onImageClick: _onImageClick }: Part2Props) {
+/* ── 主组件 ── */
+export default function Part2() {
   const [tab, setTab] = useState(0);
-
-  // onImageClick is accepted for interface consistency but not used in this section
-  void _onImageClick;
 
   return (
     <div>
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-3xl md:text-4xl font-bold text-zinc-800 mb-2"
-      >
-        怎么做到的
-      </motion.h2>
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="text-zinc-600 mb-8"
-      >
-        Real workflow
-      </motion.p>
+      <SectionHeader title="怎么做到的" subtitle="Real workflow" />
 
-      {/* Tab bar */}
-      <div className="flex gap-1 mb-6">
-        {tabs.map((t, i) => (
-          <button
-            key={t}
-            onClick={() => setTab(i)}
-            className={`px-4 py-2 rounded-xl text-sm transition-all ${
-              tab === i
-                ? "glass-strong text-white"
-                : "text-zinc-600 hover:text-zinc-800"
-            }`}
-          >
-            {t}
-          </button>
-        ))}
-      </div>
+      <TabBar tabs={tabs} active={tab} onChange={setTab} />
 
-      {/* Tab content */}
+      {/* Tab 内容 */}
       <div key={tab}>
         {tab === 0 && <OverviewTab />}
         {tab === 1 && <RequirementsTab />}

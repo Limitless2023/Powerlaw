@@ -1,15 +1,15 @@
-import { motion } from "framer-motion";
-import GlassCard from "@/components/GlassCard";
+/**
+ * [INPUT]: 依赖 framer-motion 的 motion，
+ *          依赖 @/lib/motion 的 fade，依赖 @/components 的 GlassCard/SectionHeader
+ * [OUTPUT]: Part7 组件（收尾：核心 Takeaway 卡片 + 补充卡片）
+ * [POS]: sections 的第七章节，被 App 消费
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 
-interface Part7Props {
-  onImageClick?: (src: string) => void;
-}
-
-const fade = (i: number) => ({
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  transition: { delay: 0.1 * i },
-});
+import { motion } from "framer-motion"
+import GlassCard from "@/components/GlassCard"
+import SectionHeader from "@/components/SectionHeader"
+import { fade } from "@/lib/motion"
 
 const mainCards = [
   {
@@ -28,7 +28,7 @@ const mainCards = [
     title: "多多记录分享",
     desc: "记录过程、踩坑、心得 — 分享就是最好的复盘",
   },
-];
+]
 
 const smallCards = [
   {
@@ -47,52 +47,36 @@ const smallCards = [
     title: "分享 = 复盘",
     desc: "准备分享的过程就是梳理和内化的过程",
   },
-];
+]
 
-export default function Part7({ onImageClick: _onImageClick }: Part7Props) {
-  void _onImageClick;
-
+export default function Part7() {
   return (
     <div>
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-3xl md:text-4xl font-bold text-zinc-800 mb-2"
-      >
-        收尾
-      </motion.h2>
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="text-zinc-600 mb-8"
-      >
-        Takeaways
-      </motion.p>
+      <SectionHeader title="收尾" subtitle="Takeaways" />
 
-      {/* Main 2x2 grid */}
+      {/* 核心 2×2 卡片 */}
       <div className="grid md:grid-cols-2 gap-5 mb-8">
         {mainCards.map((c, i) => (
           <motion.div key={c.title} {...fade(i)}>
-            <GlassCard accent="teal" className="h-full">
+            <GlassCard className="h-full">
               <h4 className="text-white font-semibold text-lg mb-2">{c.title}</h4>
-              <p className="text-zinc-400 text-sm">{c.desc}</p>
+              <p className="text-white/60 text-sm">{c.desc}</p>
             </GlassCard>
           </motion.div>
         ))}
       </div>
 
-      {/* Smaller cards row */}
+      {/* 补充小卡片 */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {smallCards.map((c, i) => (
           <motion.div key={c.title} {...fade(i + 4)}>
             <GlassCard className="h-full">
               <h4 className="text-white font-semibold text-sm mb-1">{c.title}</h4>
-              <p className="text-zinc-500 text-xs">{c.desc}</p>
+              <p className="text-white/40 text-xs">{c.desc}</p>
             </GlassCard>
           </motion.div>
         ))}
       </div>
     </div>
-  );
+  )
 }

@@ -1,18 +1,19 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import GlassCard from "@/components/GlassCard";
+/**
+ * [INPUT]: 依赖 react 的 useState，依赖 framer-motion 的 motion，
+ *          依赖 @/lib/motion 的 fade，依赖 @/components 的 GlassCard/SectionHeader/TabBar
+ * [OUTPUT]: Part4 组件（最佳实践：有效做法 / AI做得好的 / 踩过的坑）
+ * [POS]: sections 的第四章节，被 App 消费
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
 
-interface Part4Props {
-  onImageClick?: (src: string) => void;
-}
+import { useState } from "react"
+import { motion } from "framer-motion"
+import GlassCard from "@/components/GlassCard"
+import SectionHeader from "@/components/SectionHeader"
+import TabBar from "@/components/TabBar"
+import { fade } from "@/lib/motion"
 
-const tabs = ["有效做法", "AI做得好的", "踩过的坑"];
-
-const fade = (i: number) => ({
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  transition: { delay: 0.1 * i },
-});
+const tabs = ["有效做法", "AI做得好的", "踩过的坑"]
 
 /* ── Tab: 有效做法 ── */
 function EffectiveTab() {
@@ -45,7 +46,7 @@ function EffectiveTab() {
       title: "多 Agent 并行",
       desc: "不同任务开不同 Agent，互不干扰，效率翻倍",
     },
-  ];
+  ]
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -53,12 +54,12 @@ function EffectiveTab() {
         <motion.div key={p.title} {...fade(i)}>
           <GlassCard className="h-full">
             <h4 className="text-white font-semibold text-sm mb-2">{p.title}</h4>
-            <p className="text-zinc-400 text-xs">{p.desc}</p>
+            <p className="text-white/60 text-xs">{p.desc}</p>
           </GlassCard>
         </motion.div>
       ))}
     </div>
-  );
+  )
 }
 
 /* ── Tab: AI做得好的 ── */
@@ -80,20 +81,20 @@ function AIGoodTab() {
       title: "先预览后动手",
       desc: "AI 先生成 HTML 预览确认效果，满意后再改代码",
     },
-  ];
+  ]
 
   return (
     <div className="grid md:grid-cols-2 gap-4">
       {items.map((item, i) => (
         <motion.div key={item.title} {...fade(i)}>
-          <GlassCard accent="green">
+          <GlassCard>
             <h4 className="text-white font-semibold text-sm mb-2">{item.title}</h4>
-            <p className="text-zinc-400 text-sm">{item.desc}</p>
+            <p className="text-white/60 text-sm">{item.desc}</p>
           </GlassCard>
         </motion.div>
       ))}
     </div>
-  );
+  )
 }
 
 /* ── Tab: 踩过的坑 ── */
@@ -119,69 +120,37 @@ function PitfallsTab() {
       title: "审美无限循环",
       desc: "「再好看一点」→ AI 改 → 「还是之前好」→ 死循环。要有明确标准",
     },
-  ];
+  ]
 
   return (
     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
       {items.map((item, i) => (
         <motion.div key={item.title} {...fade(i)}>
-          <GlassCard accent="red">
+          <GlassCard>
             <h4 className="text-white font-semibold text-sm mb-2">{item.title}</h4>
-            <p className="text-zinc-400 text-sm">{item.desc}</p>
+            <p className="text-white/60 text-sm">{item.desc}</p>
           </GlassCard>
         </motion.div>
       ))}
     </div>
-  );
+  )
 }
 
 /* ── Main Component ── */
-export default function Part4({ onImageClick: _onImageClick }: Part4Props) {
-  const [tab, setTab] = useState(0);
-
-  void _onImageClick;
+export default function Part4() {
+  const [tab, setTab] = useState(0)
 
   return (
     <div>
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-3xl md:text-4xl font-bold text-zinc-800 mb-2"
-      >
-        最佳实践
-      </motion.h2>
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="text-zinc-600 mb-8"
-      >
-        Best practices
-      </motion.p>
+      <SectionHeader title="最佳实践" subtitle="Best practices" />
+      <TabBar tabs={tabs} active={tab} onChange={setTab} />
 
-      {/* Tab bar */}
-      <div className="flex gap-1 mb-6">
-        {tabs.map((t, i) => (
-          <button
-            key={t}
-            onClick={() => setTab(i)}
-            className={`px-4 py-2 rounded-xl text-sm transition-all ${
-              tab === i
-                ? "glass-strong text-white"
-                : "text-zinc-600 hover:text-zinc-800"
-            }`}
-          >
-            {t}
-          </button>
-        ))}
-      </div>
-
-      {/* Tab content */}
+      {/* Tab 内容 */}
       <div key={tab}>
         {tab === 0 && <EffectiveTab />}
         {tab === 1 && <AIGoodTab />}
         {tab === 2 && <PitfallsTab />}
       </div>
     </div>
-  );
+  )
 }

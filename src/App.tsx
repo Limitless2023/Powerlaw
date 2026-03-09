@@ -1,8 +1,17 @@
+/**
+ * [INPUT]: 依赖 @/components 的 GradientBg/Navigation/ImageLightbox/Section，
+ *          依赖 @/sections 的全部 9 个 section，依赖 @/hooks/useKeyboardNav
+ * [OUTPUT]: App 根组件 — 全屏分段式演示文稿
+ * [POS]: 应用入口，组合 section 渲染 + 导航 + 键盘控制 + 灯箱
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
+
 import { useState, useCallback, useRef } from "react"
 import GradientBg from "@/components/GradientBg"
 import Navigation from "@/components/Navigation"
 import ImageLightbox from "@/components/ImageLightbox"
 import Section from "@/components/Section"
+import useKeyboardNav from "@/hooks/useKeyboardNav"
 
 import Cover from "@/sections/Cover"
 import Part1 from "@/sections/Part1"
@@ -14,30 +23,15 @@ import Part6 from "@/sections/Part6"
 import Part7 from "@/sections/Part7"
 import ThankYou from "@/sections/ThankYou"
 
-import { palettes } from "@/data/palettes"
-
-const SECTIONS = [
-  { id: "cover", key: "cover" as const },
-  { id: "part1", key: "part1" as const },
-  { id: "part2", key: "part2" as const },
-  { id: "part3", key: "part3" as const },
-  { id: "part4", key: "part4" as const },
-  { id: "part5", key: "part5" as const },
-  { id: "part6", key: "part6" as const },
-  { id: "part7", key: "part7" as const },
-  { id: "thanks", key: "thanks" as const },
-]
+const SECTIONS = ["cover", "part1", "part2", "part3", "part4", "part5", "part6", "part7", "thanks"]
 
 export default function App() {
   const [currentSection, setCurrentSection] = useState(0)
-  const [bgColors, setBgColors] = useState(palettes.cover)
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null)
   const sectionRefs = useRef<(HTMLElement | null)[]>([])
 
   const handleSectionVisible = useCallback((index: number) => {
     setCurrentSection(index)
-    const key = SECTIONS[index].key
-    setBgColors(palettes[key])
   }, [])
 
   const handleNavigate = useCallback((index: number) => {
@@ -51,31 +45,39 @@ export default function App() {
     setLightboxSrc(src)
   }, [])
 
+  /* ── 键盘导航：方向键 / 空格翻页 ── */
+  const handleKeyNav = useCallback((dir: 1 | -1) => {
+    const next = Math.max(0, Math.min(SECTIONS.length - 1, currentSection + dir))
+    handleNavigate(next)
+  }, [currentSection, handleNavigate])
+
+  useKeyboardNav(handleKeyNav)
+
   const sectionComponents = [
     <Cover key="cover" />,
     <Part1 key="part1" onImageClick={handleImageClick} />,
-    <Part2 key="part2" onImageClick={handleImageClick} />,
-    <Part3 key="part3" onImageClick={handleImageClick} />,
-    <Part4 key="part4" onImageClick={handleImageClick} />,
-    <Part5 key="part5" onImageClick={handleImageClick} />,
-    <Part6 key="part6" onImageClick={handleImageClick} />,
-    <Part7 key="part7" onImageClick={handleImageClick} />,
+    <Part2 key="part2" />,
+    <Part3 key="part3" />,
+    <Part4 key="part4" />,
+    <Part5 key="part5" />,
+    <Part6 key="part6" />,
+    <Part7 key="part7" />,
     <ThankYou key="thanks" />,
   ]
 
   return (
     <>
-      <GradientBg colors={bgColors} />
+      <GradientBg />
       <Navigation
         currentSection={currentSection}
         onNavigate={handleNavigate}
       />
 
       <main className="relative z-10">
-        {SECTIONS.map((section, index) => (
+        {SECTIONS.map((id, index) => (
           <Section
-            key={section.id}
-            id={section.id}
+            key={id}
+            id={id}
             ref={(el: HTMLElement | null) => {
               sectionRefs.current[index] = el
             }}

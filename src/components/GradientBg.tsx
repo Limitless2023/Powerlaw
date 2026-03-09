@@ -1,49 +1,44 @@
-import { useEffect, useRef } from "react";
+/**
+ * [INPUT]: 依赖全局 window.Color4Bg（CDN 加载）
+ * [OUTPUT]: GradientBg 组件（无 props，单一暖色配色）
+ * [POS]: components 的全局背景渲染器，被 App 消费
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
+
+import { useEffect, useRef } from "react"
 
 declare global {
   interface Window {
     Color4Bg: {
       BlurGradientBg: new (options: {
-        dom: string;
-        colors: string[];
-        loop: boolean;
-      }) => void;
-    };
+        dom: string
+        colors: string[]
+        loop: boolean
+      }) => void
+    }
   }
 }
 
-interface GradientBgProps {
-  colors: string[];
-}
+/* ── 暖色渐变 — 唯一配色 ── */
+const COLORS = ["#F6C9B9", "#FDD2BF", "#FFD9CA", "#FFE5DB"]
 
-export default function GradientBg({ colors }: GradientBgProps) {
-  const prevColorsRef = useRef<string[]>([]);
+export default function GradientBg() {
+  const initialized = useRef(false)
 
   useEffect(() => {
-    // Skip if colors haven't changed
-    const colorsKey = colors.join(",");
-    if (colorsKey === prevColorsRef.current.join(",")) return;
-    prevColorsRef.current = colors;
+    if (initialized.current) return
+    initialized.current = true
 
-    // Destroy old canvas children in bg-root
-    const bgRoot = document.getElementById("bg-root");
-    if (bgRoot) {
-      while (bgRoot.firstChild) {
-        bgRoot.removeChild(bgRoot.firstChild);
-      }
-    }
-
-    // Initialize new background
     try {
       new window.Color4Bg.BlurGradientBg({
         dom: "bg-root",
-        colors,
+        colors: COLORS,
         loop: true,
-      });
+      })
     } catch (err) {
-      console.warn("Color4Bg initialization failed:", err);
+      console.warn("Color4Bg init failed:", err)
     }
-  }, [colors]);
+  }, [])
 
-  return null;
+  return null
 }

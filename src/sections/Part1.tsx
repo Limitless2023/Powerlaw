@@ -1,18 +1,22 @@
+/**
+ * [INPUT]: 依赖 react 的 useState，依赖 framer-motion 的 motion，依赖 @/components/GlassCard、SectionHeader、TabBar，依赖 @/lib/motion 的 fade
+ * [OUTPUT]: Part1 组件
+ * [POS]: sections 的「先看东西」展示页，被 App 消费
+ * [PROTOCOL]: 变更时更新此头部，然后检查 CLAUDE.md
+ */
+
 import { useState } from "react";
 import { motion } from "framer-motion";
 import GlassCard from "@/components/GlassCard";
+import SectionHeader from "@/components/SectionHeader";
+import TabBar from "@/components/TabBar";
+import { fade } from "@/lib/motion";
 
 interface Part1Props {
   onImageClick?: (src: string) => void;
 }
 
 const tabs = ["概览", "UI优化", "Purpose", "Artifact", "子Agent"];
-
-const fade = (i: number) => ({
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  transition: { delay: 0.1 * i },
-});
 
 /* ── Tab: 概览 ── */
 function OverviewTab() {
@@ -32,7 +36,7 @@ function OverviewTab() {
 
   return (
     <div className="space-y-8">
-      {/* Timeline */}
+      {/* 时间线 */}
       <div className="flex flex-col gap-3">
         {timeline.map((t, i) => (
           <motion.div key={t.day} {...fade(i)} className="flex items-start gap-4">
@@ -40,18 +44,18 @@ function OverviewTab() {
               {t.day}
             </div>
             <div className="w-px bg-white/10 self-stretch" />
-            <div className="text-zinc-300 text-sm">{t.desc}</div>
+            <div className="text-white/80 text-sm">{t.desc}</div>
           </motion.div>
         ))}
       </div>
 
-      {/* Feature cards */}
+      {/* 功能卡片 */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {features.map((f, i) => (
           <motion.div key={f.title} {...fade(i + 4)}>
-            <GlassCard accent="teal">
+            <GlassCard>
               <h4 className="text-white font-semibold text-sm mb-1">{f.title}</h4>
-              <p className="text-zinc-400 text-xs">{f.desc}</p>
+              <p className="text-white/60 text-xs">{f.desc}</p>
             </GlassCard>
           </motion.div>
         ))}
@@ -79,7 +83,7 @@ function UITab({ onImageClick }: { onImageClick?: (src: string) => void }) {
       {/* Before */}
       <motion.div {...fade(0)}>
         <GlassCard>
-          <h4 className="text-zinc-400 text-xs uppercase tracking-wider mb-4">Before</h4>
+          <h4 className="text-white/40 text-xs uppercase tracking-wider mb-4">Before</h4>
           <div className="space-y-4">
             {beforeImages.map((img) => (
               <div key={img.src}>
@@ -89,7 +93,7 @@ function UITab({ onImageClick }: { onImageClick?: (src: string) => void }) {
                   onClick={() => onImageClick?.(img.src)}
                   className="w-full rounded-lg cursor-pointer hover:scale-[1.02] transition-transform"
                 />
-                <p className="text-xs text-zinc-500 mt-1">{img.label}</p>
+                <p className="text-xs text-white/40 mt-1">{img.label}</p>
               </div>
             ))}
           </div>
@@ -98,11 +102,11 @@ function UITab({ onImageClick }: { onImageClick?: (src: string) => void }) {
 
       {/* After */}
       <motion.div {...fade(1)}>
-        <GlassCard accent="teal">
-          <h4 className="text-zinc-400 text-xs uppercase tracking-wider mb-4">After</h4>
+        <GlassCard>
+          <h4 className="text-white/40 text-xs uppercase tracking-wider mb-4">After</h4>
           <ul className="space-y-3">
             {improvements.map((item, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-zinc-300">
+              <li key={i} className="flex items-start gap-2 text-sm text-white/80">
                 <span className="text-accent mt-0.5 shrink-0">+</span>
                 {item}
               </li>
@@ -124,27 +128,27 @@ function PurposeTab({ onImageClick }: { onImageClick?: (src: string) => void }) 
       <div className="grid md:grid-cols-2 gap-6">
         <motion.div {...fade(0)}>
           <GlassCard>
-            <h4 className="text-zinc-400 text-xs uppercase tracking-wider mb-3">Before</h4>
+            <h4 className="text-white/40 text-xs uppercase tracking-wider mb-3">Before</h4>
             <img
               src={before}
               alt="Purpose before"
               onClick={() => onImageClick?.(before)}
               className="w-full rounded-lg cursor-pointer hover:scale-[1.02] transition-transform"
             />
-            <p className="text-xs text-zinc-500 mt-2">工具调用没有上下文，用户不知道 AI 在做什么</p>
+            <p className="text-xs text-white/40 mt-2">工具调用没有上下文，用户不知道 AI 在做什么</p>
           </GlassCard>
         </motion.div>
 
         <motion.div {...fade(1)}>
-          <GlassCard accent="teal">
-            <h4 className="text-zinc-400 text-xs uppercase tracking-wider mb-3">After</h4>
+          <GlassCard>
+            <h4 className="text-white/40 text-xs uppercase tracking-wider mb-3">After</h4>
             <img
               src={after}
               alt="Purpose after"
               onClick={() => onImageClick?.(after)}
               className="w-full rounded-lg cursor-pointer hover:scale-[1.02] transition-transform"
             />
-            <p className="text-xs text-zinc-500 mt-2">每次工具调用都带 purpose，用户一目了然</p>
+            <p className="text-xs text-white/40 mt-2">每次工具调用都带 purpose，用户一目了然</p>
           </GlassCard>
         </motion.div>
       </div>
@@ -155,15 +159,15 @@ function PurposeTab({ onImageClick }: { onImageClick?: (src: string) => void }) 
           <div className="grid grid-cols-3 gap-4 text-xs">
             <div>
               <span className="text-accent font-mono">meagent</span>
-              <p className="text-zinc-400 mt-1">框架层 purpose 参数注入（use_skill / SpawnSubagent / IntegHub）</p>
+              <p className="text-white/60 mt-1">框架层 purpose 参数注入（use_skill / SpawnSubagent / IntegHub）</p>
             </div>
             <div>
               <span className="text-accent font-mono">copilot</span>
-              <p className="text-zinc-400 mt-1">13 个工具添加 purpose 字段 + SYSTEM_INSTRUCTIONS 引导</p>
+              <p className="text-white/60 mt-1">13 个工具添加 purpose 字段 + SYSTEM_INSTRUCTIONS 引导</p>
             </div>
             <div>
               <span className="text-accent font-mono">frontend</span>
-              <p className="text-zinc-400 mt-1">工具卡片展示 purpose，用户可见调用意图</p>
+              <p className="text-white/60 mt-1">工具卡片展示 purpose，用户可见调用意图</p>
             </div>
           </div>
         </GlassCard>
@@ -185,11 +189,11 @@ function ArtifactTab() {
       <motion.div {...fade(0)}>
         <GlassCard>
           <h4 className="text-white font-semibold mb-3">Artifact 预览功能</h4>
-          <p className="text-zinc-400 text-sm mb-4">
+          <p className="text-white/60 text-sm mb-4">
             AI 生成的 HTML/代码片段可以直接在对话中预览，支持交互和全屏查看。
           </p>
-          <div className="aspect-video rounded-lg bg-zinc-800/50 border border-white/5 flex items-center justify-center">
-            <span className="text-zinc-600 text-sm">Artifact Preview Screenshot</span>
+          <div className="aspect-video rounded-lg bg-black/30 border border-white/5 flex items-center justify-center">
+            <span className="text-white/40 text-sm">Artifact Preview Screenshot</span>
           </div>
         </GlassCard>
       </motion.div>
@@ -197,9 +201,9 @@ function ArtifactTab() {
       <div className="grid md:grid-cols-3 gap-4">
         {features.map((f, i) => (
           <motion.div key={f.title} {...fade(i + 1)}>
-            <GlassCard accent="teal">
+            <GlassCard>
               <h4 className="text-white font-semibold text-sm mb-1">{f.title}</h4>
-              <p className="text-zinc-400 text-xs">{f.desc}</p>
+              <p className="text-white/60 text-xs">{f.desc}</p>
             </GlassCard>
           </motion.div>
         ))}
@@ -213,24 +217,24 @@ function SubAgentTab() {
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <motion.div {...fade(0)}>
-        <GlassCard accent="red">
-          <h4 className="text-zinc-400 text-xs uppercase tracking-wider mb-3">Before</h4>
-          <div className="aspect-video rounded-lg bg-zinc-800/50 border border-white/5 flex items-center justify-center mb-3">
-            <span className="text-zinc-600 text-sm">Sub-Agent Black Box</span>
+        <GlassCard>
+          <h4 className="text-white/40 text-xs uppercase tracking-wider mb-3">Before</h4>
+          <div className="aspect-video rounded-lg bg-black/30 border border-white/5 flex items-center justify-center mb-3">
+            <span className="text-white/40 text-sm">Sub-Agent Black Box</span>
           </div>
-          <p className="text-sm text-zinc-400">
+          <p className="text-sm text-white/60">
             子 Agent 运行时完全黑箱，只有最终结果。用户不知道在做什么、进展如何。
           </p>
         </GlassCard>
       </motion.div>
 
       <motion.div {...fade(1)}>
-        <GlassCard accent="teal">
-          <h4 className="text-zinc-400 text-xs uppercase tracking-wider mb-3">After</h4>
-          <div className="aspect-video rounded-lg bg-zinc-800/50 border border-white/5 flex items-center justify-center mb-3">
-            <span className="text-zinc-600 text-sm">Real-time Visualization</span>
+        <GlassCard>
+          <h4 className="text-white/40 text-xs uppercase tracking-wider mb-3">After</h4>
+          <div className="aspect-video rounded-lg bg-black/30 border border-white/5 flex items-center justify-center mb-3">
+            <span className="text-white/40 text-sm">Real-time Visualization</span>
           </div>
-          <p className="text-sm text-zinc-400">
+          <p className="text-sm text-white/60">
             实时展示子 Agent 的思考、工具调用和文本输出。默认收起，竖线串联，可展开查看。
           </p>
         </GlassCard>
@@ -239,46 +243,17 @@ function SubAgentTab() {
   );
 }
 
-/* ── Main Component ── */
+/* ── 主组件 ── */
 export default function Part1({ onImageClick }: Part1Props) {
   const [tab, setTab] = useState(0);
 
   return (
     <div>
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-3xl md:text-4xl font-bold text-zinc-800 mb-2"
-      >
-        先看东西
-      </motion.h2>
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="text-zinc-600 mb-8"
-      >
-        What was built
-      </motion.p>
+      <SectionHeader title="先看东西" subtitle="What was built" />
 
-      {/* Tab bar */}
-      <div className="flex gap-1 mb-6">
-        {tabs.map((t, i) => (
-          <button
-            key={t}
-            onClick={() => setTab(i)}
-            className={`px-4 py-2 rounded-xl text-sm transition-all ${
-              tab === i
-                ? "glass-strong text-white"
-                : "text-zinc-600 hover:text-zinc-800"
-            }`}
-          >
-            {t}
-          </button>
-        ))}
-      </div>
+      <TabBar tabs={tabs} active={tab} onChange={setTab} />
 
-      {/* Tab content */}
+      {/* Tab 内容 */}
       <div key={tab}>
         {tab === 0 && <OverviewTab />}
         {tab === 1 && <UITab onImageClick={onImageClick} />}
