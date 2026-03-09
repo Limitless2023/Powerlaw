@@ -16,7 +16,6 @@ interface GlassCardProps {
 
 export default function GlassCard({
   children,
-  accent,
   className,
   onClick,
 }: GlassCardProps) {
