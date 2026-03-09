@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MeFlow Copilot — Markdown 排版方案对比</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', sans-serif; background: #f8f9fa; color: #1a1a1a; }
+  .header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 24px 32px; position: sticky; top: 0; z-index: 10; }
+  .header h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  .header p { font-size: 13px; color: #6b7280; }
+  .data-section { max-width: 1200px; margin: 24px auto; padding: 0 24px; }
+  .data-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+  .data-card h2 { font-size: 15px; font-weight: 600; margin-bottom: 16px; color: #111; }
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .data-table th { text-align: left; padding: 8px 12px; background: #f9fafb; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #374151; white-space: nowrap; }
+  .data-table td { padding: 8px 12px; border-bottom: 1px solid #f3f4f6; color: #4b5563; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
+  .tag-current { background: #fef2f2; color: #dc2626; }
+  .tag-rec { background: #f0fdf4; color: #16a34a; }
+  .tag-ref { background: #eff6ff; color: #2563eb; }
+  .tag-source { background: #faf5ff; color: #7c3aed; }
+  .comparison { max-width: 1200px; margin: 0 auto 40px; padding: 0 24px; }
+  .comparison > h2 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .comparison > p { font-size: 13px; color: #6b7280; margin-bottom: 16px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; position: relative; }
+  .card.recommended { border-color: #22c55e; box-shadow: 0 0 0 1px #22c55e; }
+  .card-header { padding: 16px 20px; border-bottom: 1px solid #f3f4f6; }
+  .card-header h3 { font-size: 14px; font-weight: 600; }
+  .card-header .meta { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+  .rec-badge { position: absolute; top: 12px; right: 12px; background: #22c55e; color: #fff; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px; }
+  .chat-preview { padding: 20px; background: #fafafa; }
+  .spec-bar { padding: 12px 20px; border-top: 1px solid #f3f4f6; background: #f9fafb; display: flex; gap: 16px; flex-wrap: wrap; }
+  .spec-item { font-size: 11px; color: #6b7280; }
+  .spec-item strong { color: #374151; font-weight: 600; }
+
+  /* Current */
+  .md-current p { font-size: 14px; line-height: 2.0; margin-bottom: 12px; }
+  .md-current p:last-child { margin-bottom: 0; }
+  .md-current h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 8px; margin-top: 20px; }
+  .md-current ul, .md-current ol { font-size: 14px; line-height: 2.0; margin-bottom: 12px; margin-left: 24px; }
+  .md-current ul { list-style: disc; }
+  .md-current ol { list-style: decimal; }
+  .md-current ul > li, .md-current ol > li { margin-top: 4px; }
+  .md-current blockquote { margin: 12px 0; border-left: 2px solid #d1d5db; padding-left: 24px; font-size: 14px; font-style: italic; line-height: 2.0; }
+  .md-current code { background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 4px; padding: 1px 6px; font-size: 0.875rem; font-weight: 600; }
+
+  /* A: Vercel Compact */
+  .md-vercel p { font-size: 14px; line-height: 1.43; margin-bottom: 12px; }
+  .md-vercel p:last-child { margin-bottom: 0; }
+  .md-vercel h3 { font-size: 1.25rem; font-weight: 600; line-height: 1.4; margin-top: 18px; margin-bottom: 6px; }
+  .md-vercel ul, .md-vercel ol { font-size: 14px; line-height: 1.43; margin-bottom: 12px; margin-left: 24px; }
+  .md-vercel ul { list-style: disc; }
+  .md-vercel ol { list-style: decimal; }
+  .md-vercel ul > li, .md-vercel ol > li { margin-top: 2px; }
+  .md-vercel blockquote { margin: 10px 0; border-left: 2px solid #d1d5db; padding-left: 16px; font-size: 14px; font-style: italic; line-height: 1.43; }
+  .md-vercel code { background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 4px; padding: 1px 6px; font-size: 0.875rem; font-weight: 600; }
+
+  /* B: Chat-Optimized */
+  .md-chat p { font-size: 14px; line-height: 1.5; margin-bottom: 8px; }
+  .md-chat p:last-child { margin-bottom: 0; }
+  .md-chat h3 { font-size: 1.25rem; font-weight: 600; line-height: 1.4; margin-top: 16px; margin-bottom: 6px; }
+  .md-chat ul, .md-chat ol { font-size: 14px; line-height: 1.5; margin-bottom: 8px; margin-left: 24px; }
+  .md-chat ul { list-style: disc; }
+  .md-chat ol { list-style: decimal; }
+  .md-chat ul > li, .md-chat ol > li { margin-top: 2px; }
+  .md-chat blockquote { margin: 8px 0; border-left: 2px solid #d1d5db; padding-left: 16px; font-size: 14px; font-style: italic; line-height: 1.5; }
+  .md-chat code { background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 4px; padding: 1px 6px; font-size: 0.875rem; font-weight: 600; }
+
+  /* C: Craft Agent Standard (推荐) */
+  .md-relaxed p { font-size: 14px; line-height: 1.625; margin-bottom: 8px; }
+  .md-relaxed p:last-child { margin-bottom: 0; }
+  .md-relaxed h3 { font-size: 1.25rem; font-weight: 600; line-height: 1.3; margin-top: 16px; margin-bottom: 8px; }
+  .md-relaxed ul, .md-relaxed ol { font-size: 14px; line-height: 1.625; margin-bottom: 8px; margin-left: 24px; }
+  .md-relaxed ul { list-style: disc; }
+  .md-relaxed ol { list-style: decimal; }
+  .md-relaxed ul > li, .md-relaxed ol > li { margin-top: 2px; }
+  .md-relaxed blockquote { margin: 8px 0; border-left: 2px solid #d1d5db; padding-left: 12px; font-size: 14px; font-style: italic; line-height: 1.625; }
+  .md-relaxed code { background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 4px; padding: 1px 6px; font-size: 0.875rem; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>P3 Markdown 排版优化 — 竞品调研 &amp; 方案对比</h1>
+  <p>数据来源：Vercel AI Elements (浏览器实测)、prompt-kit (浏览器实测)、Tailwind Typography (源码)、Craft Agent (源码 tiptap-editor.css)、ChatGPT / Claude.ai (社区报告)</p>
+</div>
+
+<div class="data-section">
+  <div class="data-card">
+    <h2>竞品排版参数对比 <span class="tag tag-ref">实测数据</span></h2>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>产品 / 框架</th>
+          <th>font-size</th>
+          <th>line-height</th>
+          <th>行高比例</th>
+          <th>p margin</th>
+          <th>li margin</th>
+          <th>总体密度</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>MeFlow（改前）</strong> <span class="tag tag-current">改前</span></td>
+          <td>14px</td>
+          <td>28px</td>
+          <td><strong>2.0</strong></td>
+          <td>mb: 12px</td>
+          <td>mt: 4px</td>
+          <td style="color:#dc2626;">很松</td>
+        </tr>
+        <tr style="background:#f0fdf4;">
+          <td><strong>Craft Agent</strong> <span class="tag tag-source">源码实测</span> <span class="tag tag-rec">采用</span></td>
+          <td>14px</td>
+          <td>22.75px</td>
+          <td><strong>1.625</strong></td>
+          <td>8px (0.5rem) 上下</td>
+          <td>—</td>
+          <td style="color:#16a34a;font-weight:600;">舒适适中</td>
+        </tr>
+        <tr>
+          <td><strong>Vercel AI Elements</strong> <span class="tag tag-ref">实测</span></td>
+          <td>14px</td>
+          <td>20px</td>
+          <td><strong>1.43</strong></td>
+          <td>mb: 16px</td>
+          <td>0</td>
+          <td style="color:#2563eb;">很紧凑</td>
+        </tr>
+        <tr>
+          <td><strong>prompt-kit (shadcn)</strong> <span class="tag tag-ref">实测</span></td>
+          <td>16px</td>
+          <td>28px</td>
+          <td><strong>1.75</strong></td>
+          <td>20px 上下</td>
+          <td>8px 上下</td>
+          <td>标准偏松</td>
+        </tr>
+        <tr>
+          <td><strong>Tailwind prose</strong> (Base 16px)</td>
+          <td>16px</td>
+          <td>28px</td>
+          <td><strong>1.75</strong></td>
+          <td>1.25em (20px)</td>
+          <td>0.5em (8px)</td>
+          <td>标准</td>
+        </tr>
+        <tr>
+          <td><strong>Tailwind prose-sm</strong> (14px)</td>
+          <td>14px</td>
+          <td>24px</td>
+          <td><strong>1.71</strong></td>
+          <td>1em (14px)</td>
+          <td>0.29em (4px)</td>
+          <td style="color:#6b7280;">适中</td>
+        </tr>
+        <tr>
+          <td><strong>ChatGPT</strong> (社区报告)</td>
+          <td>16px</td>
+          <td>~28px</td>
+          <td><strong>~1.75</strong></td>
+          <td>~20px</td>
+          <td>—</td>
+          <td style="color:#f59e0b;">偏松（用户吐槽）</td>
+        </tr>
+        <tr>
+          <td><strong>Claude.ai</strong> (社区报告)</td>
+          <td>16px (serif)</td>
+          <td>~26px</td>
+          <td><strong>~1.625</strong></td>
+          <td>~16px</td>
+          <td>—</td>
+          <td style="color:#6b7280;">适中</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="data-card" style="border-color:#7c3aed;">
+    <h2>Craft Agent 源码数据 <span class="tag tag-source">tiptap-editor.css</span></h2>
+    <p style="font-size:12px;color:#6b7280;margin-bottom:12px;">来源：Craft Agent OSS 源码 <code style="background:#f3f4f6;padding:1px 6px;border-radius:3px;font-size:11px;">packages/ui/src/components/markdown/tiptap-editor.css</code></p>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>元素</th>
+          <th>line-height</th>
+          <th>margin</th>
+          <th>其他</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code style="background:#f3f4f6;padding:1px 6px;border-radius:3px;">p</code></td>
+          <td><strong>1.625</strong> (leading-relaxed)</td>
+          <td>0.5rem (8px) 上下</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><code style="background:#f3f4f6;padding:1px 6px;border-radius:3px;">li</code></td>
+          <td><strong>1.625</strong></td>
+          <td>—</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><code style="background:#f3f4f6;padding:1px 6px;border-radius:3px;">ul</code></td>
+          <td>—</td>
+          <td>0.5rem 上下</td>
+          <td>padding-inline-start: 16px; list-style: disc</td>
+        </tr>
+        <tr>
+          <td><code style="background:#f3f4f6;padding:1px 6px;border-radius:3px;">ol</code></td>
+          <td>—</td>
+          <td>0.5rem 上下</td>
+          <td>padding-left: 1.5rem; list-style: decimal</td>
+        </tr>
+        <tr>
+          <td><code style="background:#f3f4f6;padding:1px 6px;border-radius:3px;">blockquote</code></td>
+          <td>—</td>
+          <td>0.5rem 上下</td>
+          <td>border-left: 2px; padding-left: 0.75rem; italic</td>
+        </tr>
+        <tr>
+          <td><code style="background:#f3f4f6;padding:1px 6px;border-radius:3px;">h1</code></td>
+          <td><strong>1.3</strong></td>
+          <td>mt: 1.25rem / mb: 0.5rem</td>
+          <td>font-size: 1.25rem</td>
+        </tr>
+        <tr>
+          <td><code style="background:#f3f4f6;padding:1px 6px;border-radius:3px;">h2</code></td>
+          <td><strong>1.3</strong></td>
+          <td>mt: 1rem / mb: 0.5rem</td>
+          <td>font-size: 1.125rem</td>
+        </tr>
+        <tr>
+          <td><code style="background:#f3f4f6;padding:1px 6px;border-radius:3px;">h3</code></td>
+          <td><strong>1.3</strong></td>
+          <td>mt: 1rem / mb: 0.5rem</td>
+          <td>font-size: 1rem</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="data-card">
+    <h2>行高比例可视化对比</h2>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:300px;">
+        <p style="font-size:12px;color:#6b7280;margin-bottom:12px;">line-height 比例（越低越紧凑）</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:11px;color:#6b7280;width:120px;text-align:right;">MeFlow 改前</span>
+            <div style="height:20px;background:#fca5a5;border-radius:4px;width:300px;"></div>
+            <span style="font-size:11px;font-weight:600;color:#dc2626;">2.0</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:11px;color:#6b7280;width:120px;text-align:right;">Tailwind prose</span>
+            <div style="height:20px;background:#d1d5db;border-radius:4px;width:262px;"></div>
+            <span style="font-size:11px;font-weight:600;color:#6b7280;">1.75</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:11px;color:#6b7280;width:120px;text-align:right;font-weight:600;">Craft Agent</span>
+            <div style="height:20px;background:#c4b5fd;border-radius:4px;width:244px;"></div>
+            <span style="font-size:11px;font-weight:600;color:#7c3aed;">1.625</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:11px;color:#6b7280;width:120px;text-align:right;">Claude.ai</span>
+            <div style="height:20px;background:#bfdbfe;border-radius:4px;width:244px;"></div>
+            <span style="font-size:11px;font-weight:600;color:#2563eb;">~1.625</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:11px;color:#6b7280;width:120px;text-align:right;font-weight:600;color:#16a34a;">MeFlow 采用 ★</span>
+            <div style="height:20px;background:#86efac;border-radius:4px;width:244px;border:2px solid #22c55e;"></div>
+            <span style="font-size:11px;font-weight:600;color:#16a34a;">1.625</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:11px;color:#6b7280;width:120px;text-align:right;">方案 B</span>
+            <div style="height:20px;background:#e5e7eb;border-radius:4px;width:225px;"></div>
+            <span style="font-size:11px;font-weight:600;color:#9ca3af;">1.5 (弃用)</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:11px;color:#6b7280;width:120px;text-align:right;">Vercel AI Elem.</span>
+            <div style="height:20px;background:#93c5fd;border-radius:4px;width:214px;"></div>
+            <span style="font-size:11px;font-weight:600;color:#2563eb;">1.43</span>
+          </div>
+        </div>
+      </div>
+      <div style="flex:1;min-width:250px;background:#faf5ff;border:1px solid #ddd6fe;border-radius:8px;padding:16px;">
+        <p style="font-size:13px;font-weight:600;color:#5b21b6;margin-bottom:8px;">核心发现</p>
+        <ul style="font-size:12px;color:#5b21b6;line-height:1.6;margin-left:16px;list-style:disc;">
+          <li>MeFlow 改前 <strong>line-height: 2.0</strong> 是所有竞品中最高的</li>
+          <li style="margin-top:4px;">行业主流范围在 <strong>1.43 ~ 1.75</strong> 之间</li>
+          <li style="margin-top:4px;">WCAG 无障碍要求最低 <strong>1.5</strong></li>
+          <li style="margin-top:4px;"><strong>Craft Agent</strong> 使用 <strong>1.625</strong>，与 Claude.ai 一致</li>
+          <li style="margin-top:4px;">1.5 实测对中文偏紧凑（用户反馈拥挤）</li>
+          <li style="margin-top:4px;">最终采用 <strong>1.625</strong>：对齐 Craft Agent 标准，中文舒适</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="comparison">
+  <h2>四种方案效果实时对比</h2>
+  <p>以下使用完全相同的 Markdown 内容，展示不同排版参数的视觉效果</p>
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-header">
+        <h3>改前方案 <span class="tag tag-current">改前</span></h3>
+        <div class="meta">leading-loose (2.0) + mb-3 (12px)</div>
+      </div>
+      <div class="chat-preview">
+        <div class="msg-agent md-current">
+          <p>MeFlow 是一款企业级工作流管理平台，帮助团队高效地管理审批、合同签署和数据处理等业务流程。平台采用插件化架构，支持灵活扩展。</p>
+          <h3>核心功能</h3>
+          <p>平台提供了丰富的核心功能模块，覆盖了企业工作流的各个环节：</p>
+          <ul>
+            <li><strong>智能审批</strong>：支持多级审批流程，自动路由到下一审批人</li>
+            <li><strong>合同管理</strong>：电子签章、版本追踪、到期自动提醒</li>
+            <li><strong>数据看板</strong>：实时数据可视化，支持自定义维度和指标</li>
+          </ul>
+          <p>系统还集成了 AI Copilot 功能，可通过自然语言指令完成复杂操作。例如使用 <code>search_data_item</code> 工具搜索数据。</p>
+          <blockquote>提示：在使用 Copilot 时，可以直接描述你的需求，系统会自动选择合适的工具执行。</blockquote>
+          <ol>
+            <li>创建工作流模板</li>
+            <li>配置审批节点和条件</li>
+            <li>设置通知规则和超时处理</li>
+          </ol>
+        </div>
+      </div>
+      <div class="spec-bar">
+        <div class="spec-item"><strong>line-height</strong> 2.0 (28px)</div>
+        <div class="spec-item"><strong>p margin</strong> 12px</div>
+        <div class="spec-item"><strong>li margin</strong> 4px</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>方案 A：Vercel AI 紧凑型 <span class="tag tag-ref">参考</span></h3>
+        <div class="meta">line-height 1.43 + p mb 12px</div>
+      </div>
+      <div class="chat-preview">
+        <div class="msg-agent md-vercel">
+          <p>MeFlow 是一款企业级工作流管理平台，帮助团队高效地管理审批、合同签署和数据处理等业务流程。平台采用插件化架构，支持灵活扩展。</p>
+          <h3>核心功能</h3>
+          <p>平台提供了丰富的核心功能模块，覆盖了企业工作流的各个环节：</p>
+          <ul>
+            <li><strong>智能审批</strong>：支持多级审批流程，自动路由到下一审批人</li>
+            <li><strong>合同管理</strong>：电子签章、版本追踪、到期自动提醒</li>
+            <li><strong>数据看板</strong>：实时数据可视化，支持自定义维度和指标</li>
+          </ul>
+          <p>系统还集成了 AI Copilot 功能，可通过自然语言指令完成复杂操作。例如使用 <code>search_data_item</code> 工具搜索数据。</p>
+          <blockquote>提示：在使用 Copilot 时，可以直接描述你的需求，系统会自动选择合适的工具执行。</blockquote>
+          <ol>
+            <li>创建工作流模板</li>
+            <li>配置审批节点和条件</li>
+            <li>设置通知规则和超时处理</li>
+          </ol>
+        </div>
+      </div>
+      <div class="spec-bar">
+        <div class="spec-item"><strong>line-height</strong> 1.43 (20px)</div>
+        <div class="spec-item"><strong>p margin</strong> 12px</div>
+        <div class="spec-item"><strong>li margin</strong> 2px</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>方案 B：Chat 优化型 <span style="font-size:11px;color:#9ca3af;font-weight:400;">已弃用</span></h3>
+        <div class="meta">line-height 1.5 (leading-normal) + p mb 8px — 用户反馈中文偏紧凑</div>
+      </div>
+      <div class="chat-preview">
+        <div class="msg-agent md-chat">
+          <p>MeFlow 是一款企业级工作流管理平台，帮助团队高效地管理审批、合同签署和数据处理等业务流程。平台采用插件化架构，支持灵活扩展。</p>
+          <h3>核心功能</h3>
+          <p>平台提供了丰富的核心功能模块，覆盖了企业工作流的各个环节：</p>
+          <ul>
+            <li><strong>智能审批</strong>：支持多级审批流程，自动路由到下一审批人</li>
+            <li><strong>合同管理</strong>：电子签章、版本追踪、到期自动提醒</li>
+            <li><strong>数据看板</strong>：实时数据可视化，支持自定义维度和指标</li>
+          </ul>
+          <p>系统还集成了 AI Copilot 功能，可通过自然语言指令完成复杂操作。例如使用 <code>search_data_item</code> 工具搜索数据。</p>
+          <blockquote>提示：在使用 Copilot 时，可以直接描述你的需求，系统会自动选择合适的工具执行。</blockquote>
+          <ol>
+            <li>创建工作流模板</li>
+            <li>配置审批节点和条件</li>
+            <li>设置通知规则和超时处理</li>
+          </ol>
+        </div>
+      </div>
+      <div class="spec-bar">
+        <div class="spec-item"><strong>line-height</strong> 1.5 (21px)</div>
+        <div class="spec-item"><strong>p margin</strong> 8px</div>
+        <div class="spec-item"><strong>li margin</strong> 2px</div>
+      </div>
+    </div>
+
+    <div class="card recommended">
+      <span class="rec-badge">采用</span>
+      <div class="card-header">
+        <h3>方案 C：Craft Agent 标准 <span class="tag tag-source">源码对齐</span></h3>
+        <div class="meta">line-height 1.625 (leading-relaxed) + p mb 8px — 对齐 Craft Agent tiptap-editor.css</div>
+      </div>
+      <div class="chat-preview">
+        <div class="msg-agent md-relaxed">
+          <p>MeFlow 是一款企业级工作流管理平台，帮助团队高效地管理审批、合同签署和数据处理等业务流程。平台采用插件化架构，支持灵活扩展。</p>
+          <h3>核心功能</h3>
+          <p>平台提供了丰富的核心功能模块，覆盖了企业工作流的各个环节：</p>
+          <ul>
+            <li><strong>智能审批</strong>：支持多级审批流程，自动路由到下一审批人</li>
+            <li><strong>合同管理</strong>：电子签章、版本追踪、到期自动提醒</li>
+            <li><strong>数据看板</strong>：实时数据可视化，支持自定义维度和指标</li>
+          </ul>
+          <p>系统还集成了 AI Copilot 功能，可通过自然语言指令完成复杂操作。例如使用 <code>search_data_item</code> 工具搜索数据。</p>
+          <blockquote>提示：在使用 Copilot 时，可以直接描述你的需求，系统会自动选择合适的工具执行。</blockquote>
+          <ol>
+            <li>创建工作流模板</li>
+            <li>配置审批节点和条件</li>
+            <li>设置通知规则和超时处理</li>
+          </ol>
+        </div>
+      </div>
+      <div class="spec-bar">
+        <div class="spec-item"><strong>line-height</strong> 1.625 (22.75px)</div>
+        <div class="spec-item"><strong>p margin</strong> 8px (0.5rem)</div>
+        <div class="spec-item"><strong>li margin</strong> 2px</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="data-section">
+  <div class="data-card" style="border-color:#22c55e;">
+    <h2>最终方案 C 的理由 <span class="tag tag-rec">采用</span></h2>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>维度</th>
+          <th>改前 (2.0)</th>
+          <th>A: Vercel (1.43)</th>
+          <th>B: Chat (1.5)</th>
+          <th style="background:#f0fdf4;color:#166534;">C: Craft Agent (1.625) ★</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>中文可读性</strong></td>
+          <td>过度留白，阅读断裂感</td>
+          <td style="color:#dc2626;">太紧，中文笔画密集时压迫</td>
+          <td style="color:#f59e0b;">满足标准但中文偏紧</td>
+          <td style="color:#16a34a;font-weight:500;">舒适，中文汉字有充足呼吸空间</td>
+        </tr>
+        <tr>
+          <td><strong>信息密度</strong></td>
+          <td style="color:#dc2626;">低（大量滚动）</td>
+          <td style="color:#16a34a;">很高</td>
+          <td style="color:#16a34a;">高（减少约 35%）</td>
+          <td style="color:#16a34a;font-weight:500;">较高（减少约 25%）</td>
+        </tr>
+        <tr>
+          <td><strong>WCAG 无障碍</strong></td>
+          <td>超标</td>
+          <td style="color:#dc2626;">不达标（低于 1.5）</td>
+          <td>正好达标 (1.5)</td>
+          <td style="color:#16a34a;font-weight:500;">达标且有余量</td>
+        </tr>
+        <tr>
+          <td><strong>用户实测反馈</strong></td>
+          <td style="color:#dc2626;">太松</td>
+          <td>—</td>
+          <td style="color:#f59e0b;">中文偏紧凑（"感觉拥挤"）</td>
+          <td style="color:#16a34a;font-weight:500;">与 Craft Agent 对话一致</td>
+        </tr>
+        <tr>
+          <td><strong>行业对标</strong></td>
+          <td>无对标</td>
+          <td>Vercel AI Elements</td>
+          <td>—</td>
+          <td style="color:#16a34a;font-weight:500;">Craft Agent + Claude.ai</td>
+        </tr>
+        <tr>
+          <td><strong>Tailwind 映射</strong></td>
+          <td>leading-loose</td>
+          <td>需自定义值</td>
+          <td>leading-normal</td>
+          <td style="color:#16a34a;font-weight:500;">leading-relaxed（原生类名）</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top:16px;padding:16px;background:#f0fdf4;border-radius:8px;">
+      <p style="font-size:13px;color:#166534;line-height:1.6;">
+        <strong>总结：</strong>最终采用方案 C（line-height: 1.625，p margin-bottom: 8px），对应 Tailwind 的 <code style="background:#dcfce7;padding:2px 6px;border-radius:3px;">leading-relaxed</code>。
+        该值与 Craft Agent 源码（tiptap-editor.css）和 Claude.ai 完全一致，超过 WCAG 1.5 无障碍要求，减少约 25% 的垂直空间浪费，同时保留了中文字符需要的呼吸感。
+        方案 B (1.5) 虽满足 WCAG 但中文实测偏紧凑（用户反馈"拥挤"），方案 A (Vercel 1.43) 对中文太紧。
+      </p>
+    </div>
+  </div>
+
+  <div class="data-card">
+    <h2>迭代过程</h2>
+    <div style="font-size:13px;color:#4b5563;line-height:1.7;">
+      <div style="display:flex;gap:12px;margin-bottom:12px;">
+        <div style="width:24px;height:24px;background:#e5e7eb;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#6b7280;flex-shrink:0;">1</div>
+        <div><strong>初版选用方案 B (1.5)</strong> — 满足 WCAG 最低线，减少 35% 空间，理论最优</div>
+      </div>
+      <div style="display:flex;gap:12px;margin-bottom:12px;">
+        <div style="width:24px;height:24px;background:#fef2f2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#dc2626;flex-shrink:0;">2</div>
+        <div><strong>用户反馈 1.5 拥挤</strong> — 实际对比 Craft Agent 对话窗口，感觉行距不够</div>
+      </div>
+      <div style="display:flex;gap:12px;margin-bottom:12px;">
+        <div style="width:24px;height:24px;background:#faf5ff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#7c3aed;flex-shrink:0;">3</div>
+        <div><strong>调研 Craft Agent 源码</strong> — 发现 <code style="background:#f3f4f6;padding:1px 6px;border-radius:3px;">tiptap-editor.css</code> 使用 <code style="background:#f3f4f6;padding:1px 6px;border-radius:3px;">line-height: 1.625</code></div>
+      </div>
+      <div style="display:flex;gap:12px;">
+        <div style="width:24px;height:24px;background:#f0fdf4;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#16a34a;flex-shrink:0;">4</div>
+        <div><strong>调整为 1.625 (leading-relaxed)</strong> — 兼顾信息密度和中文阅读舒适度，对齐 Craft Agent 标准</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="data-card">
+    <h2>实施方案</h2>
+    <div style="font-size:13px;color:#4b5563;line-height:1.6;">
+      <p style="margin-bottom:12px;"><strong>策略：</strong>仅在 <code style="background:#f3f4f6;padding:1px 6px;border-radius:3px;">MarkdownText.tsx</code> 中覆盖 copilot 聊天的 markdown 样式，不修改共享的 <code style="background:#f3f4f6;padding:1px 6px;border-radius:3px;">sharedMarkdownComponents</code>（避免影响 toast、提醒等其他消费者）。</p>
+      <p style="margin-bottom:8px;"><strong>改动范围：</strong></p>
+      <ol style="margin-left:20px;margin-bottom:12px;">
+        <li style="margin-bottom:4px;">1. <code style="background:#f3f4f6;padding:1px 6px;border-radius:3px;">MarkdownText.tsx</code> — 在 defaultComponents 中覆盖 p / ul / ol / blockquote 组件，leading-relaxed (1.625)</li>
+        <li style="margin-bottom:4px;">2. <code style="background:#f3f4f6;padding:1px 6px;border-radius:3px;">Thread.tsx</code> — 容器 leading-7 (28px) → leading-relaxed (1.625)</li>
+      </ol>
+      <p><strong>回退方案：</strong>所有改动集中在 copilot 组件，不影响其他 UI。如需回退只需还原 2 个文件。</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

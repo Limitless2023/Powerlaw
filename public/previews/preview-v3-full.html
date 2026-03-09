@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V3 · Vercel AI Style</title>
+<style>
+  /* === shadcn-inspired Design Tokens === */
+  :root {
+    --background: #ffffff;
+    --foreground: #0a0a0a;
+    --muted: #f5f5f5;
+    --muted-foreground: #737373;
+    --secondary: #f5f5f5;
+    --secondary-foreground: #171717;
+    --border: #e5e5e5;
+    --ring: #0a0a0a;
+    --radius: 0.625rem;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', sans-serif;
+    --font-mono: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--muted);
+    color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* === Layout === */
+  .chat-window {
+    max-width: 768px;
+    margin: 0 auto;
+    background: var(--background);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .messages {
+    flex: 1;
+    padding: 0;
+  }
+
+  /* === Message Row === */
+  .message-row {
+    padding: 24px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .message-row:last-child { border-bottom: none; }
+
+  /* === User Message === */
+  .user-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; flex-shrink: 0;
+    border: 1px solid var(--border);
+    background: var(--background);
+    color: var(--foreground);
+  }
+  .avatar-ai {
+    background: var(--foreground);
+    color: var(--background);
+    border-color: transparent;
+  }
+  .user-content {
+    flex: 1;
+    padding-top: 3px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--foreground);
+  }
+
+  /* === Assistant Message === */
+  .assistant-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .assistant-content {
+    flex: 1;
+    padding-top: 3px;
+    min-width: 0;
+  }
+  .prose {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--foreground);
+  }
+  .prose p { margin-bottom: 12px; }
+  .prose p:last-child { margin-bottom: 0; }
+  .prose strong { font-weight: 600; }
+  .prose ol, .prose ul { padding-left: 20px; margin: 8px 0; }
+  .prose li { margin: 4px 0; }
+  .prose li::marker { color: var(--muted-foreground); }
+
+  /* === Reasoning / Thinking === */
+  .reasoning {
+    margin: 8px 0 12px;
+  }
+  .reasoning-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted-foreground);
+    transition: color 0.15s;
+  }
+  .reasoning-trigger:hover { color: var(--foreground); }
+  .reasoning-trigger svg {
+    width: 14px; height: 14px;
+    transition: transform 0.2s ease;
+  }
+  .reasoning-trigger.open svg { transform: rotate(180deg); }
+
+  .reasoning-body {
+    margin-top: 8px;
+    margin-left: 2px;
+    padding-left: 14px;
+    border-left: 2px solid var(--border);
+    max-height: 160px;
+    overflow: hidden;
+    position: relative;
+    transition: max-height 0.3s ease;
+  }
+  .reasoning-body.open {
+    max-height: 2000px;
+  }
+  .reasoning-text {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--muted-foreground);
+  }
+  .reasoning-text p { margin-bottom: 6px; }
+  .reasoning-text p:last-child { margin-bottom: 0; }
+
+  .reasoning-fade {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 48px;
+    background: linear-gradient(to top, var(--background) 20%, transparent 100%);
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .reasoning-fade.hidden { opacity: 0; }
+
+  .reasoning-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: none;
+    background: none;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted-foreground);
+    cursor: pointer;
+    padding: 4px 0;
+    margin-top: 2px;
+    transition: color 0.15s;
+  }
+  .reasoning-more:hover { color: var(--foreground); }
+  .reasoning-more svg {
+    width: 12px; height: 12px;
+    transition: transform 0.2s;
+  }
+  .reasoning-more.open svg { transform: rotate(180deg); }
+
+  /* === Tool / Steps === */
+  .steps {
+    margin: 10px 0;
+  }
+  .steps-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 4px 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted-foreground);
+    transition: color 0.15s;
+  }
+  .steps-trigger:hover { color: var(--foreground); }
+  .steps-trigger svg {
+    width: 14px; height: 14px;
+    transition: transform 0.2s;
+  }
+  .steps-trigger.open svg { transform: rotate(180deg); }
+
+  .steps-content {
+    margin-top: 4px;
+    display: grid;
+    grid-template-columns: min-content minmax(0, 1fr);
+    gap: 0;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.25s ease;
+  }
+  .steps-content.open { max-height: 600px; }
+
+  .steps-bar {
+    width: 2px;
+    background: var(--border);
+    margin: 0 11px;
+    min-height: 100%;
+  }
+  .steps-list { padding: 4px 0; }
+
+  .step-item {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 3px 0;
+    font-size: 13px;
+    color: var(--muted-foreground);
+    cursor: default;
+  }
+  .step-item .check {
+    width: 14px; height: 14px;
+    color: var(--muted-foreground);
+    flex-shrink: 0;
+    position: relative;
+    top: 2px;
+  }
+  .step-item .step-text { flex: 1; }
+  .step-item .step-meta {
+    font-size: 12px;
+    color: var(--muted-foreground);
+    opacity: 0.6;
+  }
+
+  /* Single tool call (non-grouped) */
+  .tool-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 0;
+    font-size: 13px;
+    color: var(--muted-foreground);
+    margin: 4px 0;
+  }
+  .tool-inline svg {
+    width: 14px; height: 14px;
+    flex-shrink: 0;
+  }
+  .tool-inline .tool-name { font-weight: 500; }
+
+  /* Tool detail expandable */
+  .tool-detail-toggle {
+    border: none; background: none; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 12px; color: var(--muted-foreground);
+    padding: 0; margin-left: 4px;
+    transition: color 0.15s;
+  }
+  .tool-detail-toggle:hover { color: var(--foreground); }
+  .tool-detail-panel {
+    margin: 6px 0 6px 20px;
+    padding: 10px 12px;
+    background: var(--muted);
+    border-radius: var(--radius);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--muted-foreground);
+    max-height: 180px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+    display: none;
+  }
+  .tool-detail-panel.show { display: block; }
+
+  /* Loading step */
+  .step-loading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 0;
+    font-size: 13px;
+    color: var(--muted-foreground);
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner {
+    width: 14px; height: 14px;
+    animation: spin 1s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
+  .pulsing { animation: pulse 1.5s ease-in-out infinite; }
+
+  /* === Code Block === */
+  .code-block {
+    margin: 12px 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    background: var(--muted);
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted-foreground);
+  }
+  .code-header .lang { font-weight: 500; }
+  .copy-btn {
+    border: none; background: none;
+    color: var(--muted-foreground);
+    font-size: 12px; cursor: pointer;
+    display: flex; align-items: center; gap: 4px;
+    padding: 2px 6px; border-radius: 4px;
+    transition: all 0.15s;
+  }
+  .copy-btn:hover { background: var(--border); color: var(--foreground); }
+
+  .code-content {
+    background: var(--foreground);
+    color: #e5e5e5;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.65;
+    padding: 14px 16px;
+    overflow-x: auto;
+    white-space: pre;
+    position: relative;
+  }
+  .code-content.limited { max-height: 260px; overflow: hidden; }
+  .code-fade {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 56px;
+    background: linear-gradient(to top, var(--foreground) 20%, transparent 100%);
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .code-fade.hidden { opacity: 0; }
+  .code-more {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 6px; background: var(--muted);
+    border: none; border-top: 1px solid var(--border);
+    color: var(--muted-foreground);
+    font-size: 12px; cursor: pointer; width: 100%;
+    transition: color 0.15s;
+  }
+  .code-more:hover { color: var(--foreground); }
+  .code-lines-badge {
+    font-size: 11px; font-weight: 500;
+    padding: 0 5px; border-radius: 3px;
+    background: var(--border);
+  }
+
+  /* syntax */
+  .kw { color: #c084fc; } .fn { color: #67e8f9; } .str { color: #86efac; }
+  .cm { color: #525252; } .num { color: #fbbf24; } .op { color: #f9a8d4; }
+  .type { color: #fcd34d; }
+
+  /* === Message Actions === */
+  .msg-actions {
+    display: flex; align-items: center; gap: 1px;
+    margin-top: 8px;
+  }
+  .msg-action {
+    border: none; background: none;
+    color: var(--muted-foreground);
+    cursor: pointer; padding: 6px;
+    border-radius: 6px;
+    display: flex; align-items: center;
+    transition: all 0.15s;
+    opacity: 0.5;
+  }
+  .message-row:hover .msg-action { opacity: 1; }
+  .msg-action:hover { background: var(--muted); color: var(--foreground); }
+  .msg-action svg { width: 15px; height: 15px; }
+
+  /* === Composer === */
+  .composer {
+    padding: 16px 24px 24px;
+    border-top: 1px solid var(--border);
+    position: sticky; bottom: 0;
+    background: var(--background);
+  }
+  .composer-box {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .composer-box:focus-within {
+    border-color: var(--foreground);
+    box-shadow: 0 0 0 1px var(--foreground);
+  }
+  .composer-input {
+    width: 100%; border: none; outline: none; resize: none;
+    font-size: 14px; line-height: 1.5; font-family: var(--font-sans);
+    color: var(--foreground);
+    min-height: 24px;
+    background: transparent;
+  }
+  .composer-input::placeholder { color: var(--muted-foreground); }
+  .composer-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 8px;
+  }
+  .composer-left { display: flex; gap: 2px; }
+  .comp-btn {
+    border: none; background: none; color: var(--muted-foreground);
+    cursor: pointer; padding: 4px; border-radius: 6px;
+    display: flex; transition: all 0.15s;
+  }
+  .comp-btn:hover { background: var(--muted); color: var(--foreground); }
+  .comp-btn svg { width: 18px; height: 18px; }
+  .send-btn {
+    width: 32px; height: 32px; border: none;
+    border-radius: 8px; background: var(--foreground);
+    color: var(--background); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.15s;
+  }
+  .send-btn:hover { opacity: 0.8; }
+  .send-btn svg { width: 16px; height: 16px; }
+
+  .disclaimer {
+    text-align: center; font-size: 11px; color: var(--muted-foreground);
+    margin-top: 8px; opacity: 0.7;
+  }
+
+  /* banner */
+  .banner {
+    text-align: center; font-size: 11px; font-weight: 500;
+    color: var(--muted-foreground); padding: 6px;
+    background: var(--muted); border-bottom: 1px solid var(--border);
+    letter-spacing: 0.02em;
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">V3 · Vercel AI / shadcn Design Language</div>
+
+<div class="chat-window">
+  <div class="messages">
+
+    <!-- ===== User Message ===== -->
+    <div class="message-row">
+      <div class="user-row">
+        <div class="avatar">L</div>
+        <div class="user-content">帮我查一下本月有哪些合同需要付款，顺便看下有没有逾期的</div>
+      </div>
+    </div>
+
+    <!-- ===== Assistant Response 1 ===== -->
+    <div class="message-row">
+      <div class="assistant-row">
+        <div class="avatar avatar-ai">M</div>
+        <div class="assistant-content">
+
+          <!-- Reasoning -->
+          <div class="reasoning">
+            <button class="reasoning-trigger" id="rt1" onclick="toggleReasoning(1)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              Thought for 3s
+            </button>
+            <div class="reasoning-body" id="rb1">
+              <div class="reasoning-text">
+                <p>用户想查询两类数据：本月需要付款的合同，以及逾期未付款的合同。</p>
+                <p>我需要分两次搜索：第一次按本月日期范围筛选，第二次按逾期状态筛选。</p>
+                <p>当前是 2026 年 3 月，起始日期 2026-03-01，截止 2026-03-31。</p>
+                <p>同时筛选"生效中"状态的合同，排除草稿和已终止记录。</p>
+                <p>对于逾期合同，查找付款日期早于今天但状态仍为"待付款"的记录。</p>
+              </div>
+              <div class="reasoning-fade" id="rf1"></div>
+            </div>
+            <button class="reasoning-more" id="rm1" onclick="toggleReasoning(1)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              Show more
+            </button>
+          </div>
+
+          <div class="prose">
+            <p>好的，我来帮你查询。先看一下本月需要付款的合同。</p>
+          </div>
+
+          <!-- Single tool call -->
+          <div class="tool-inline">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+            <span class="tool-name">搜索合同数据</span>
+            <span>· 本月待付款 · 3 条结果</span>
+            <button class="tool-detail-toggle" onclick="this.nextElementSibling.classList.toggle('show')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+          </div>
+          <div class="tool-detail-panel">{"total": 3, "data": [{"id": "c001", "title": "XX技术服务合同", "payment_date": "2026-03-10", "amount": 150000}, {"id": "c002", "title": "办公用品采购合同", "payment_date": "2026-03-15", "amount": 28000}, {"id": "c003", "title": "软件许可合同", "payment_date": "2026-03-25", "amount": 450000}]}</div>
+
+          <div class="prose">
+            <p>找到了 <strong>3 份合同</strong> 需要本月付款。接下来查看逾期情况。</p>
+          </div>
+
+          <!-- Grouped steps -->
+          <div class="steps">
+            <button class="steps-trigger open" id="st1" onclick="toggleSteps(1)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              2 steps
+            </button>
+            <div class="steps-content open" id="sc1">
+              <div class="steps-bar"></div>
+              <div class="steps-list">
+                <div class="step-item">
+                  <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+                  <span class="step-text">搜索逾期合同 <span class="step-meta">— 1 条逾期记录</span></span>
+                </div>
+                <div class="step-item">
+                  <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+                  <span class="step-text">查询审批流程 <span class="step-meta">— 逾期合同审批进度</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Final text -->
+          <div class="prose">
+            <p>查询完毕，汇总如下：</p>
+            <p><strong>本月待付款合同（3 份）：</strong></p>
+            <ol>
+              <li><strong>XX技术服务合同</strong> — ¥150,000 — 付款日 3月10日</li>
+              <li><strong>办公用品采购合同</strong> — ¥28,000 — 付款日 3月15日</li>
+              <li><strong>软件许可合同</strong> — ¥450,000 — 付款日 3月25日</li>
+            </ol>
+            <p><strong>逾期合同（1 份）：</strong></p>
+            <ol>
+              <li><strong>云服务器租赁合同</strong> — ¥36,000 — 原定 2月28日付款，已逾期 7 天。当前审批状态：财务审核中。</li>
+            </ol>
+            <p>建议优先处理逾期的云服务器租赁合同，需要我帮你催一下审批吗？</p>
+          </div>
+
+          <div class="msg-actions">
+            <button class="msg-action" title="复制">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            </button>
+            <button class="msg-action" title="赞">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            </button>
+            <button class="msg-action" title="踩">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>
+            </button>
+            <button class="msg-action" title="重新生成">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/></svg>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== User Message 2 ===== -->
+    <div class="message-row">
+      <div class="user-row">
+        <div class="avatar">L</div>
+        <div class="user-content">帮我催一下，另外把本月的付款计划导出成 Word 文档</div>
+      </div>
+    </div>
+
+    <!-- ===== Assistant Response 2 ===== -->
+    <div class="message-row">
+      <div class="assistant-row">
+        <div class="avatar avatar-ai">M</div>
+        <div class="assistant-content">
+
+          <div class="prose"><p>好的，我来处理这两件事。</p></div>
+
+          <div class="steps">
+            <button class="steps-trigger open" id="st2" onclick="toggleSteps(2)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              3 steps
+            </button>
+            <div class="steps-content open" id="sc2">
+              <div class="steps-bar"></div>
+              <div class="steps-list">
+                <div class="step-item">
+                  <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+                  <span class="step-text">发送催办提醒 <span class="step-meta">— 通知财务审核人</span></span>
+                </div>
+                <div class="step-item">
+                  <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+                  <span class="step-text">搜索合同数据 <span class="step-meta">— 获取完整付款信息</span></span>
+                </div>
+                <div class="step-item">
+                  <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+                  <span class="step-text">生成 Word 文档 <span class="step-meta">— 3月付款计划.docx</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="prose">
+            <p>全部处理完毕：</p>
+            <ol>
+              <li>已将逾期合同的催办提醒发送给财务审核人</li>
+              <li>付款计划已导出 — <strong>3月付款计划.docx</strong></li>
+            </ol>
+            <p>还有其他需要帮助的吗？</p>
+          </div>
+
+          <div class="msg-actions">
+            <button class="msg-action" title="复制">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            </button>
+            <button class="msg-action" title="赞">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            </button>
+            <button class="msg-action" title="踩">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>
+            </button>
+            <button class="msg-action" title="重新生成">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/></svg>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== User Message 3 · 含代码块 ===== -->
+    <div class="message-row">
+      <div class="user-row">
+        <div class="avatar">L</div>
+        <div class="user-content">给我看看合同查询的代码实现</div>
+      </div>
+    </div>
+
+    <!-- ===== Assistant Response 3 ===== -->
+    <div class="message-row">
+      <div class="assistant-row">
+        <div class="avatar avatar-ai">M</div>
+        <div class="assistant-content">
+
+          <div class="prose"><p>以下是合同查询服务的实现：</p></div>
+
+          <div class="code-block">
+            <div class="code-header">
+              <span class="lang">python</span>
+              <button class="copy-btn">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copy
+              </button>
+            </div>
+            <div class="code-content limited" id="code1"><span class="kw">from</span> datetime <span class="kw">import</span> datetime, timedelta
+<span class="kw">from</span> typing <span class="kw">import</span> Dict, Any
+
+<span class="kw">from</span> copilot.services.http <span class="kw">import</span> get_meflow_client
+<span class="kw">from</span> copilot.auth <span class="kw">import</span> get_current_token
+
+
+<span class="kw">class</span> <span class="type">ContractQueryService</span>:
+    <span class="str">"""合同查询服务"""</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="op">self</span>, data_item_id: <span class="type">str</span> = <span class="str">"contract"</span>):
+        <span class="op">self</span>.data_item_id = data_item_id
+
+    <span class="kw">async</span> <span class="kw">def</span> <span class="fn">query_by_payment_date</span>(
+        <span class="op">self</span>,
+        start_date: <span class="type">str</span>,
+        end_date: <span class="type">str</span>,
+        status: <span class="type">str</span> = <span class="str">"active"</span>,
+        page_size: <span class="type">int</span> = <span class="num">20</span>,
+    ) -> Dict[<span class="type">str</span>, Any]:
+        <span class="str">"""查询指定日期范围内需要付款的合同"""</span>
+        token = get_current_token()
+        filters = [
+            {<span class="str">"field"</span>: <span class="str">"payment_date"</span>, <span class="str">"op"</span>: <span class="str">"between"</span>,
+             <span class="str">"value"</span>: [start_date, end_date]},
+            {<span class="str">"field"</span>: <span class="str">"status"</span>, <span class="str">"value"</span>: status},
+        ]
+        <span class="kw">async</span> <span class="kw">with</span> get_meflow_client(token) <span class="kw">as</span> client:
+            resp = <span class="kw">await</span> client.post(
+                <span class="str">f"/api/v1/data/items/<span class="op">{</span>self.data_item_id<span class="op">}</span>/search"</span>,
+                json={<span class="str">"pageNo"</span>: <span class="num">1</span>, <span class="str">"pageSize"</span>: page_size,
+                      <span class="str">"filters"</span>: filters},
+            )
+            <span class="kw">return</span> resp.json().get(<span class="str">"data"</span>, {})
+
+    <span class="kw">async</span> <span class="kw">def</span> <span class="fn">get_this_month</span>(<span class="op">self</span>) -> Dict[<span class="type">str</span>, Any]:
+        <span class="str">"""获取本月需要付款的合同"""</span>
+        now = datetime.now()
+        start = now.replace(day=<span class="num">1</span>).strftime(<span class="str">"%Y-%m-%d"</span>)
+        <span class="kw">if</span> now.month == <span class="num">12</span>:
+            nxt = now.replace(year=now.year+<span class="num">1</span>, month=<span class="num">1</span>, day=<span class="num">1</span>)
+        <span class="kw">else</span>:
+            nxt = now.replace(month=now.month+<span class="num">1</span>, day=<span class="num">1</span>)
+        end = (nxt - timedelta(days=<span class="num">1</span>)).strftime(<span class="str">"%Y-%m-%d"</span>)
+        <span class="kw">return</span> <span class="kw">await</span> <span class="op">self</span>.query_by_payment_date(start, end)
+
+    <span class="kw">async</span> <span class="kw">def</span> <span class="fn">get_overdue</span>(<span class="op">self</span>) -> Dict[<span class="type">str</span>, Any]:
+        <span class="str">"""获取逾期未付款的合同"""</span>
+        now = datetime.now().strftime(<span class="str">"%Y-%m-%d"</span>)
+        <span class="kw">return</span> <span class="kw">await</span> <span class="op">self</span>.query_by_payment_date(<span class="str">"2020-01-01"</span>, now)</div>
+            <div class="code-fade" id="cf1"></div>
+            <button class="code-more" id="cm1" onclick="toggleCode(1)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              Expand <span class="code-lines-badge">48 lines</span>
+            </button>
+          </div>
+
+          <div class="prose"><p>这个服务封装了合同付款查询的核心逻辑，支持按日期范围筛选和逾期查询。</p></div>
+
+          <div class="msg-actions">
+            <button class="msg-action" title="复制">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            </button>
+            <button class="msg-action" title="赞">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            </button>
+            <button class="msg-action" title="踩">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== User Message 4 · Loading state ===== -->
+    <div class="message-row">
+      <div class="user-row">
+        <div class="avatar">L</div>
+        <div class="user-content">再帮我对比一下这 3 份合同的价格变化趋势</div>
+      </div>
+    </div>
+
+    <!-- ===== Assistant Response 4 · Streaming ===== -->
+    <div class="message-row" style="border-bottom:none;">
+      <div class="assistant-row">
+        <div class="avatar avatar-ai">M</div>
+        <div class="assistant-content">
+
+          <!-- Reasoning streaming -->
+          <div class="reasoning">
+            <button class="reasoning-trigger" style="color:var(--foreground);">
+              <svg class="pulsing" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              <span class="pulsing">Thinking...</span>
+            </button>
+            <div class="reasoning-body" style="max-height:120px; overflow-y:auto;">
+              <div class="reasoning-text">
+                <p>用户想对比 3 份合同的价格变化趋势，我需要查询历史版本数据...</p>
+                <p>先获取每份合同的修订历史，提取金额字段的变化记录...</p>
+                <p style="opacity:0.5;">▌</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="prose"><p>好的，我来查询历史数据进行对比分析。</p></div>
+
+          <div class="steps">
+            <button class="steps-trigger open" style="color:var(--foreground);">
+              <svg class="pulsing" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              Running...
+            </button>
+            <div class="steps-content open">
+              <div class="steps-bar"></div>
+              <div class="steps-list">
+                <div class="step-item">
+                  <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+                  <span class="step-text">搜索历史合同数据 <span class="step-meta">— 47 条记录</span></span>
+                </div>
+                <div class="step-loading">
+                  <svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg>
+                  <span>正在分析价格趋势...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Composer -->
+  <div class="composer">
+    <div class="composer-box">
+      <textarea class="composer-input" placeholder="Message MeFlow Agent..." rows="1"></textarea>
+      <div class="composer-bar">
+        <div class="composer-left">
+          <button class="comp-btn" title="附件">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+          </button>
+        </div>
+        <button class="send-btn" title="发送">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="disclaimer">MeFlow Agent 可能会犯错，请仔细甄别回答内容</div>
+  </div>
+</div>
+
+<script>
+function toggleReasoning(id) {
+  const trigger = document.getElementById('rt' + id);
+  const body = document.getElementById('rb' + id);
+  const fade = document.getElementById('rf' + id);
+  const more = document.getElementById('rm' + id);
+  const isOpen = body.classList.toggle('open');
+  trigger.classList.toggle('open', isOpen);
+  more.classList.toggle('open', isOpen);
+  fade.classList.toggle('hidden', isOpen);
+  more.innerHTML = isOpen
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg> Show less'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg> Show more';
+}
+
+function toggleSteps(id) {
+  const trigger = document.getElementById('st' + id);
+  const content = document.getElementById('sc' + id);
+  const isOpen = content.classList.toggle('open');
+  trigger.classList.toggle('open', isOpen);
+}
+
+function toggleCode(id) {
+  const content = document.getElementById('code' + id);
+  const fade = document.getElementById('cf' + id);
+  const btn = document.getElementById('cm' + id);
+  const isLimited = content.classList.toggle('limited');
+  fade.classList.toggle('hidden', !isLimited);
+  btn.innerHTML = isLimited
+    ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg> Expand <span class="code-lines-badge">48 lines</span>'
+    : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg> Collapse';
+}
+</script>
+
+</body>
+</html>
