@@ -18,14 +18,14 @@
   height: 100% !important;
 }
 
-/* ── 卡片 — 暖色深褐，无模糊 ── */
+/* ── 卡片 — 暖褐实底，无模糊无透出 ── */
 .glass {
-  background: rgba(30, 10, 5, 0.35);
+  background: rgba(30, 10, 5, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .glass-strong {
-  background: rgba(30, 10, 5, 0.50);
+  background: rgba(30, 10, 5, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
