@@ -309,68 +309,49 @@
 
 <!-- 3. Stability -->
 <section id="stability">
-  <h2>三、稳定性保障机制（6 大维度）</h2>
-  <p>MeAgent 从 <strong>指令约束、错误熔断、流式容错、子Agent隔离、集成重试、状态管理</strong> 6 个维度保障输出稳定性。</p>
+  <h2>三、执行效果稳定性保障（4 大维度）</h2>
+  <p>MeAgent 从 <strong>任务规划、上下文隔离、多阶段执行、环境反馈</strong> 4 个维度保障 Agent 在复杂任务中的执行效果和结果稳定性。</p>
 
   <div class="mech-grid">
     <div class="mech" style="border-left-color: var(--accent-blue);">
-      <h4>1. Purpose 指令约束</h4>
-      <p><span class="mech-tag">预防</span> 从源头减少模型「跑偏」</p>
-      <p>每个工具调用<strong>必须声明 purpose（意图）</strong>，由 SYSTEM_INSTRUCTIONS 中的正反示例引导模型写出高质量的工具调用意图。</p>
+      <h4>1. ScheduleTodo + Prompt 机制 <small style="color:var(--accent-blue)">[规划]</small></h4>
+      <p><span class="mech-tag">规划</span> Agent 主动规划、拆解、追踪任务进度</p>
+      <p>对于复杂任务，Agent 通过 ScheduleTodo 工具将任务拆解为可追踪的子步骤（pending → in_progress → completed），<strong>每次操作后返回完整任务状态</strong>，让 Agent 始终清楚「做了什么、还剩什么」。配合 SYSTEM_INSTRUCTIONS 中的 Prompt 引导（Purpose 正反示例 + ScheduleTodo 使用规范），从源头约束 Agent 的行为模式。</p>
       <ul>
-        <li>13 个工具全部强制 <code>purpose: str</code> 参数</li>
-        <li>正例："查询当前用户有权限的审批列表，用于回答用户的待办问题"</li>
-        <li>反例："调用 dataitem 查询"（太笼统）</li>
-      </ul>
-    </div>
-    <div class="mech" style="border-left-color: var(--accent-red);">
-      <h4>2. 错误熔断 & 自愈</h4>
-      <p><span class="mech-tag" style="background:rgba(239,68,68,0.1);color:var(--accent-red);">容错</span> 连续失败自动刹车</p>
-      <p>工具执行设有<strong>连续错误阈值（默认 16 次）</strong>，超过后自动停止调用，避免死循环。</p>
-      <ul>
-        <li>单次失败：模型拿到错误详情，自动换一种方式重试</li>
-        <li>连续失败：触发熔断，直接给用户友好提示</li>
-        <li>所有错误分为 5 类，每类有对应的处理策略</li>
-      </ul>
-    </div>
-    <div class="mech" style="border-left-color: var(--accent-amber);">
-      <h4>3. 流式 Prefetch 容错</h4>
-      <p><span class="mech-tag" style="background:rgba(245,158,11,0.1);color:var(--accent-amber);">网络</span> 三阶段错误保护</p>
-      <p>AG-UI 流式输出分<strong>预取 → 编码 → 流式</strong>三个阶段：</p>
-      <ul>
-        <li><strong>预取阶段</strong>：先验证第一个事件，错误直接返回 HTTP 错误码</li>
-        <li><strong>编码阶段</strong>：防御性 fallback 到硬编码错误体</li>
-        <li><strong>流式阶段</strong>：中途出错追加 RUN_ERROR 事件</li>
+        <li>每个工具调用强制声明 <code>purpose</code>（意图），防止无目的调用</li>
+        <li>复杂任务自动创建待办清单，逐步推进</li>
+        <li>每步完成后返回全量状态，支持中途重新规划</li>
       </ul>
     </div>
     <div class="mech" style="border-left-color: var(--accent-purple);">
-      <h4>4. 子 Agent 运行时隔离</h4>
-      <p><span class="mech-tag" style="background:rgba(139,92,246,0.1);color:var(--accent-purple);">安全</span> 互不干扰、独立容错</p>
-      <p>子 Agent 拥有<strong>独立的工具集、状态、和错误预算</strong>。</p>
+      <h4>2. SubAgent 上下文隔离 <small style="color:var(--accent-purple)">[隔离]</small></h4>
+      <p><span class="mech-tag" style="background:rgba(139,92,246,0.1);color:var(--accent-purple);">隔离</span> 子任务独立执行，互不干扰</p>
+      <p>当任务足够复杂时，Agent 会拆分出子 Agent 独立处理。每个子 Agent 拥有 <strong>独立的工具实例</strong>（包括独立的 TodoState）、<strong>专属的 Skill 指令包</strong>（模板 + 示例 + 约束）、<strong>结构化结果提取</strong>（<code>&lt;result&gt;</code> 标签规范化输出）。</p>
       <ul>
-        <li>每个子 Agent 独立 TodoState，无全局状态共享</li>
-        <li>事件实时转发（思考/工具/结果），前端可追踪</li>
-        <li>结构化结果提取（<code>&lt;result&gt;</code>），规范化输出</li>
+        <li>每个子 Agent 独立工具实例，不共享父 Agent 状态</li>
+        <li>Skill 指令包确保输出格式和质量一致</li>
+        <li><code>&lt;result&gt;</code> 标签实现确定性的结果解析</li>
       </ul>
     </div>
     <div class="mech" style="border-left-color: var(--accent-green);">
-      <h4>5. IntegHub 集成重试</h4>
-      <p><span class="mech-tag" style="background:rgba(16,185,129,0.1);color:var(--accent-green);">集成</span> 指数退避 + 超时保护</p>
-      <p><strong>指数退避轮询</strong>（1s → 2s → 4s ... 最大 60s），总超时 600s + 连续失败 3 次熔断。</p>
+      <h4>3. 多阶段运行模式 <small style="color:var(--accent-green)">[流程]</small></h4>
+      <p><span class="mech-tag" style="background:rgba(16,185,129,0.1);color:var(--accent-green);">流程</span> 分阶段加载上下文，确保执行有据可依</p>
+      <p>每次 Agent 执行经历明确的阶段：<strong>历史加载</strong>（从数据库加载完整对话历史）→ <strong>初始上下文注入</strong>（仅首次：用户记忆、权限、租户配置）→ <strong>动态上下文刷新</strong>（每轮：最新技能摘要等）→ <strong>执行 + 持久化</strong>。</p>
       <ul>
-        <li>敏感数据自动脱敏（API Key/Token/密码）</li>
-        <li>异步任务支持：发起 → 轮询 → 获取结果</li>
-        <li>日志截断 240 字符，防止信息泄露</li>
+        <li>数据库历史为权威，防止信息丢失</li>
+        <li>初始上下文一次注入并持久化（记忆、权限等）</li>
+        <li>动态上下文每轮刷新，感知最新环境状态</li>
       </ul>
     </div>
-    <div class="mech" style="border-left-color: var(--accent-cyan);">
-      <h4>6. 执行状态管理 & 取消</h4>
-      <p><span class="mech-tag" style="background:rgba(6,182,212,0.1);color:var(--accent-cyan);">控制</span> 全生命周期可控</p>
-      <p><strong>全局状态追踪</strong>（pending → running → completed/failed），随时取消。</p>
+    <div class="mech" style="border-left-color: var(--accent-amber);">
+      <h4>4. 及时的结果反馈和环境交互 <small style="color:var(--accent-amber)">[反馈]</small></h4>
+      <p><span class="mech-tag" style="background:rgba(245,158,11,0.1);color:var(--accent-amber);">反馈</span> 闭环反馈，持续修正</p>
+      <p>Agent 不是「一次性生成」，而是在 <strong>执行 → 获取反馈 → 调整 → 继续</strong> 的闭环中逐步推进。每次工具调用后，完整的结果（含错误详情）立即回传给 Agent，Agent 据此决定下一步。</p>
       <ul>
-        <li>同一会话同时只允许一个活跃执行</li>
-        <li>取消原因分类：用户取消 / 超时 / 错误 / 断连</li>
-        <li>Token 用量实时统计（输入/输出/推理/缓存）</li>
+        <li>工具调用结果实时反馈，包含完整错误详情</li>
+        <li>Agent 根据反馈自适应调整策略（非简单重试）</li>
+        <li>动态上下文每轮刷新，确保环境感知</li>
+        <li>连续错误超过阈值（16 次）自动停止，避免无效循环</li>
       </ul>
     </div>
   </div>
@@ -417,14 +398,14 @@
     <tbody>
       <tr><td><strong>编排方式</strong></td><td class="good">自主推理 + Skill 约束</td><td>固定 DAG 流程图</td></tr>
       <tr><td><strong>灵活度</strong></td><td class="good">高 — 同一请求可动态调整策略</td><td class="bad">低 — 流程固定，改需求需改图</td></tr>
-      <tr><td><strong>稳定性策略</strong></td><td>多维约束（Purpose + Skill + 熔断 + 隔离）</td><td>流程固定 = 自带一致性</td></tr>
+      <tr><td><strong>稳定性策略</strong></td><td>多维保障（任务规划 + 上下文隔离 + 多阶段执行 + 闭环反馈）</td><td>流程固定 = 自带一致性</td></tr>
       <tr><td><strong>复杂任务</strong></td><td class="good">天然支持（子 Agent 递归分派）</td><td class="bad">需手动搭建复杂流程图</td></tr>
       <tr><td><strong>维护成本</strong></td><td class="good">修改 Skill 文件即可</td><td class="bad">需要专人维护流程图</td></tr>
       <tr><td><strong>模型依赖</strong></td><td>较高（需好模型才能自主推理）</td><td class="good">较低（流程固定，模型只填空）</td></tr>
       <tr><td><strong>适合场景</strong></td><td class="good">企业级复杂业务（合同、审批、数据分析）</td><td>简单固定流程（客服问答、表单填写）</td></tr>
     </tbody>
   </table>
-  <blockquote><strong>核心差异</strong>：流程化方案的稳定性来自「流程固定」，但代价是灵活度低、维护成本高。MeAgent 的稳定性来自「<strong>多维约束 + 自愈机制</strong>」，在保持灵活度的同时实现可靠输出。</blockquote>
+  <blockquote><strong>核心差异</strong>：流程化方案的稳定性来自「流程固定」，但代价是灵活度低、维护成本高。MeAgent 的稳定性来自「<strong>任务规划 + 上下文隔离 + 多阶段执行 + 闭环反馈</strong>」，在保持灵活度的同时实现可靠的执行效果。</blockquote>
 </section>
 
 <!-- 7. Q&A -->
@@ -433,14 +414,12 @@
 
   <div class="qa">
     <div class="qa-q">「你们怎么保证 Agent 输出的稳定性？」</div>
-    <div class="qa-a">我们从 6 个维度来保障：</div>
+    <div class="qa-a">我们从 4 个维度保障 Agent 的执行效果稳定性：</div>
     <ul class="qa-pts">
-      <li><strong>指令约束</strong> — 每个工具调用必须声明意图（purpose），从源头引导模型行为</li>
-      <li><strong>技能系统</strong> — 用 Skill 定义标准操作流程，确保同类任务输出一致</li>
-      <li><strong>错误熔断</strong> — 连续失败自动停止，避免无意义重试；同时把错误信息给模型让它自动调整</li>
-      <li><strong>子 Agent 隔离</strong> — 复杂任务拆成子任务，互不影响，一个子任务失败不会影响整体</li>
-      <li><strong>流式容错</strong> — 三阶段错误保护，确保用户始终能看到有意义的反馈</li>
-      <li><strong>状态管理</strong> — 全生命周期可追踪、可取消，Token 用量透明</li>
+      <li><strong>任务规划</strong> — Agent 通过 ScheduleTodo 主动拆解复杂任务、追踪进度，每步都有明确意图（Purpose），不会无目的发散</li>
+      <li><strong>上下文隔离</strong> — 复杂任务拆分为子 Agent 独立执行，每个子 Agent 有干净的上下文和专属 Skill 指令，避免相互干扰</li>
+      <li><strong>多阶段执行</strong> — 每次执行前自动加载完整对话历史 + 注入业务上下文（记忆、权限、技能摘要），确保 Agent 有据可依</li>
+      <li><strong>闭环反馈</strong> — 工具调用结果实时回传，Agent 根据反馈持续调整策略，而非一次性盲目生成</li>
     </ul>
   </div>
 
@@ -449,7 +428,7 @@
     <div class="qa-a">这是两种不同的技术路线：</div>
     <ul class="qa-pts">
       <li>流程化方案靠「<strong>流程固定</strong>」保证一致性 —— 好处是简单可预测，缺点是灵活度低</li>
-      <li>我们靠「<strong>多维约束 + 自愈</strong>」保证一致性 —— Purpose 约束 + Skill 标准化 + 熔断保护</li>
+      <li>我们靠「<strong>多维保障</strong>」保证一致性 —— 任务规划 + 上下文隔离 + 多阶段执行 + 闭环反馈</li>
       <li>在<strong>简单场景</strong>（如客服问答），两种方案稳定性相当</li>
       <li>在<strong>复杂场景</strong>（如合同审查、跨系统流程），流程化方案需要搭非常复杂的流程图；MeAgent 只需调整 Skill</li>
       <li><strong>关键点</strong>：现在的大模型能力（Kimi K2.5 / DeepSeek V3.2 / Qwen3.5 / GLM-5 等）已经足够支撑自主推理的稳定性</li>
@@ -492,8 +471,8 @@
 <section>
   <h2>八、一句话总结</h2>
   <div class="summary-box">
-    <p><strong>MeAgent 的输出稳定性 = Purpose 指令约束（预防）+ Skill 标准化（一致）+ 错误熔断（兜底）+ 子 Agent 隔离（隔离）+ 流式容错（体验）+ 状态管理（可控）。</strong></p>
-    <p style="margin-top:12px;">不是靠「固定流程」限制 Agent，而是靠「多维约束 + 自愈机制」让 Agent 在灵活应对复杂任务的同时，保持稳定、可靠、可控。</p>
+    <p><strong>MeAgent 的执行效果稳定性 = ScheduleTodo 任务规划（有序）+ SubAgent 上下文隔离（聚焦）+ 多阶段运行模式（有据）+ 闭环反馈交互（自适应）。</strong></p>
+    <p style="margin-top:12px;">不是靠「固定流程」限制 Agent，而是通过「任务规划 + 上下文隔离 + 多阶段执行 + 闭环反馈」让 Agent 在灵活应对复杂任务的同时，保持执行效果的稳定、可靠、可控。</p>
   </div>
 </section>
 
