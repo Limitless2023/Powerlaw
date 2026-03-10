@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MeAgent 架构概览 & 输出稳定性</title>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface-2: #1a1a1a;
+    --border: #262626;
+    --border-light: #333;
+    --ink: #f0f0f0;
+    --ink-light: #888;
+    --ink-muted: #555;
+    --accent-blue: #60a5fa;
+    --accent-green: #34d399;
+    --accent-amber: #fbbf24;
+    --accent-red: #f87171;
+    --accent-purple: #a78bfa;
+    --accent-cyan: #22d3ee;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    line-height: 1.8; color: var(--ink); background: var(--bg);
+  }
+
+  /* Navigation */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10,10,10,0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border); padding: 0 24px;
+  }
+  nav .nav-inner {
+    max-width: 1100px; margin: 0 auto; display: flex; align-items: center;
+    gap: 24px; height: 52px; overflow-x: auto;
+  }
+  nav .nav-brand { font-weight: 700; font-size: 14px; color: var(--ink); white-space: nowrap; }
+  nav a {
+    color: var(--ink-light); text-decoration: none; font-size: 13px; white-space: nowrap;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--ink); }
+  nav a.active { color: var(--ink); }
+
+  /* Main Content */
+  main { max-width: 1100px; margin: 0 auto; padding: 80px 24px 60px; }
+  section { margin-bottom: 64px; scroll-margin-top: 68px; }
+
+  h1 {
+    font-size: 36px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 16px;
+    background: linear-gradient(135deg, #fff 0%, #999 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  h2 {
+    font-size: 24px; font-weight: 700; margin-bottom: 16px; color: var(--ink);
+    padding-bottom: 8px; border-bottom: 1px solid var(--border);
+  }
+  h3 { font-size: 16px; font-weight: 600; margin: 20px 0 8px; color: var(--ink); }
+  p { margin: 8px 0; color: var(--ink-light); }
+  strong { color: var(--ink); }
+  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+  .subtitle {
+    display: inline-block; background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 6px 14px; font-size: 13px; color: var(--ink-light); margin: 4px 4px 4px 0;
+  }
+
+  /* Architecture Layers */
+  .arch { margin: 28px 0; }
+  .layer {
+    border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin: 10px 0;
+    background: var(--surface); position: relative;
+  }
+  .layer-label {
+    position: absolute; top: -10px; left: 16px; padding: 0 8px;
+    font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    background: var(--surface);
+  }
+  .layer-frontend { border-color: rgba(96,165,250,0.4); }
+  .layer-frontend .layer-label { color: var(--accent-blue); }
+  .layer-app { border-color: rgba(52,211,153,0.4); }
+  .layer-app .layer-label { color: var(--accent-green); }
+  .layer-framework { border-color: rgba(251,191,36,0.4); }
+  .layer-framework .layer-label { color: var(--accent-amber); }
+  .layer-infra { border-color: rgba(167,139,250,0.4); }
+  .layer-infra .layer-label { color: var(--accent-purple); }
+
+  .mod-grid { display: grid; gap: 8px; }
+  .mod-grid.c4 { grid-template-columns: repeat(4, 1fr); }
+  .mod-grid.c5 { grid-template-columns: repeat(5, 1fr); }
+  .mod-grid.c2 { grid-template-columns: repeat(2, 1fr); }
+  .mod {
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 12px; text-align: center;
+  }
+  .mod-name { font-weight: 600; font-size: 13px; color: var(--ink); }
+  .mod-desc { font-size: 11px; color: var(--ink-muted); margin-top: 2px; }
+  .mod-highlight { background: rgba(251,191,36,0.08); border-color: rgba(251,191,36,0.3); }
+  .arrow-d { text-align: center; color: var(--ink-muted); font-size: 18px; padding: 4px 0; }
+  .layer-note { text-align: center; font-size: 11px; color: var(--accent-blue); margin-top: 8px; }
+
+  /* Flow Steps */
+  .flow {
+    display: flex; align-items: center; justify-content: center; gap: 0;
+    margin: 20px 0; flex-wrap: wrap;
+  }
+  .step {
+    background: var(--surface); border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 12px 16px; text-align: center; min-width: 110px;
+  }
+  .step-num { font-size: 10px; color: var(--ink-muted); text-transform: uppercase; }
+  .step-name { font-weight: 600; font-size: 13px; color: var(--ink); }
+  .step-detail { font-size: 10px; color: var(--ink-muted); margin-top: 2px; }
+  .step-blue { border-color: rgba(96,165,250,0.5); background: rgba(96,165,250,0.06); }
+  .step-green { border-color: rgba(52,211,153,0.5); background: rgba(52,211,153,0.06); }
+  .step-amber { border-color: rgba(251,191,36,0.5); background: rgba(251,191,36,0.06); }
+  .flow-arr { color: var(--ink-muted); padding: 0 6px; font-size: 16px; }
+
+  /* Mechanism Cards */
+  .mech-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 20px 0; }
+  .mech {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 18px 20px; border-left: 3px solid var(--accent-blue);
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .mech:hover { background: var(--surface-2); }
+  .mech h4 { font-size: 14px; color: var(--ink); margin-bottom: 6px; }
+  .mech p { font-size: 12px; color: var(--ink-light); margin: 3px 0; }
+  .mech ul { padding-left: 18px; }
+  .mech li { font-size: 12px; color: var(--ink-light); margin: 2px 0; }
+  .mech-tag {
+    display: inline-block; padding: 1px 6px; border-radius: 3px;
+    font-size: 10px; font-weight: 600; margin-right: 4px;
+    background: rgba(96,165,250,0.15); color: var(--accent-blue);
+  }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+  th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
+  th { background: var(--surface-2); font-weight: 600; color: var(--ink); }
+  td { color: var(--ink-light); }
+  code {
+    background: var(--surface-2); color: var(--accent-amber); padding: 1px 5px;
+    border-radius: 3px; font-size: 12px; font-family: "SF Mono", Consolas, monospace;
+  }
+  .good { color: var(--accent-green); font-weight: 600; }
+  .bad { color: var(--accent-red); }
+
+  /* Q&A Cards */
+  .qa {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 20px 24px; margin: 12px 0;
+  }
+  .qa-q {
+    font-size: 14px; font-weight: 600; color: var(--accent-red); margin-bottom: 8px;
+    padding-left: 22px; position: relative;
+  }
+  .qa-q::before { content: "Q"; position: absolute; left: 0; font-weight: 700; }
+  .qa-a {
+    font-size: 13px; color: var(--ink-light); padding-left: 22px; position: relative;
+  }
+  .qa-a::before { content: "A"; position: absolute; left: 0; color: var(--accent-green); font-weight: 700; }
+  .qa-pts { padding-left: 36px; margin-top: 6px; }
+  .qa-pts li { font-size: 12px; color: var(--ink-light); margin: 3px 0; }
+
+  /* Blockquote */
+  blockquote {
+    border-left: 3px solid var(--accent-blue); padding: 8px 16px; margin: 12px 0;
+    background: rgba(96,165,250,0.05); border-radius: 0 6px 6px 0; color: var(--ink-light);
+    font-size: 14px;
+  }
+  blockquote.green { border-left-color: var(--accent-green); background: rgba(52,211,153,0.05); }
+
+  /* Summary Box */
+  .summary-box {
+    background: linear-gradient(135deg, rgba(52,211,153,0.08) 0%, rgba(96,165,250,0.08) 100%);
+    border: 1px solid rgba(52,211,153,0.3); border-radius: 12px; padding: 24px; margin: 20px 0;
+  }
+  .summary-box p { font-size: 15px; color: var(--ink); line-height: 1.9; }
+
+  /* Footer */
+  footer { text-align: center; color: var(--ink-muted); font-size: 11px; padding: 32px 0; }
+
+  @media (max-width: 768px) {
+    .mod-grid.c4, .mod-grid.c5 { grid-template-columns: repeat(2, 1fr); }
+    .mech-grid { grid-template-columns: 1fr; }
+    .flow { gap: 4px; }
+    h1 { font-size: 28px; }
+    nav .nav-inner { gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <span class="nav-brand">MeAgent</span>
+    <a href="#arch">架构</a>
+    <a href="#flow">流程</a>
+    <a href="#stability">稳定性</a>
+    <a href="#errors">错误分类</a>
+    <a href="#skill">Skill</a>
+    <a href="#compare">对比</a>
+    <a href="#qa">话术</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- Header -->
+<section>
+  <h1>MeAgent 架构概览 & 输出稳定性</h1>
+  <div>
+    <span class="subtitle">面向销售 & 售前</span>
+    <span class="subtitle">2026-03-10</span>
+    <span class="subtitle">技术团队内部材料</span>
+  </div>
+</section>
+
+<!-- 1. Architecture -->
+<section id="arch">
+  <h2>一、架构总览</h2>
+  <p>MeAgent 采用 <strong>四层分层架构</strong>，每一层职责清晰、解耦独立，保障系统的可维护性与稳定性。</p>
+
+  <div class="arch">
+    <div class="layer layer-frontend">
+      <span class="layer-label">Frontend 前端展示层</span>
+      <div class="mod-grid c4">
+        <div class="mod"><div class="mod-name">Chat UI</div><div class="mod-desc">对话界面 & 消息流</div></div>
+        <div class="mod"><div class="mod-name">Tool View</div><div class="mod-desc">工具调用可视化</div></div>
+        <div class="mod"><div class="mod-name">Sub-Agent Panel</div><div class="mod-desc">子 Agent 实时追踪</div></div>
+        <div class="mod"><div class="mod-name">Artifact Preview</div><div class="mod-desc">文件 & 代码预览</div></div>
+      </div>
+      <div class="layer-note">AG-UI 协议 (SSE 事件流) ↓</div>
+    </div>
+
+    <div class="arrow-d">↓</div>
+
+    <div class="layer layer-app">
+      <span class="layer-label">Application 应用层 — Copilot</span>
+      <div class="mod-grid c5">
+        <div class="mod"><div class="mod-name">DataItem 工具</div><div class="mod-desc">数据增删改查</div></div>
+        <div class="mod"><div class="mod-name">File 工具</div><div class="mod-desc">文件上传/下载</div></div>
+        <div class="mod"><div class="mod-name">Process 工具</div><div class="mod-desc">流程发起/审批</div></div>
+        <div class="mod"><div class="mod-name">Security 工具</div><div class="mod-desc">权限 & 角色查询</div></div>
+        <div class="mod"><div class="mod-name">Artifact 工具</div><div class="mod-desc">代码/文档生成</div></div>
+      </div>
+      <div class="mod-grid c2" style="margin-top:8px;">
+        <div class="mod mod-highlight"><div class="mod-name">SYSTEM_INSTRUCTIONS</div><div class="mod-desc">Purpose 写法引导 + 正反示例 → 约束工具调用行为</div></div>
+        <div class="mod mod-highlight"><div class="mod-name">Context Providers</div><div class="mod-desc">静态/动态上下文注入 → 让 Agent 理解业务</div></div>
+      </div>
+    </div>
+
+    <div class="arrow-d">↓</div>
+
+    <div class="layer layer-framework">
+      <span class="layer-label">Framework 框架层 — MeAgent</span>
+      <div class="mod-grid c4">
+        <div class="mod"><div class="mod-name">Agent Core</div><div class="mod-desc">Agentic Loop<br>Plan → Call → Respond</div></div>
+        <div class="mod"><div class="mod-name">Skill System</div><div class="mod-desc">技能注册 & 渐进加载<br>Skill → Resource</div></div>
+        <div class="mod"><div class="mod-name">Sub-Agent</div><div class="mod-desc">子任务分派 & 隔离<br>独立工具 & 状态</div></div>
+        <div class="mod"><div class="mod-name">Memory</div><div class="mod-desc">对话记忆持久化<br>标签化检索</div></div>
+      </div>
+      <div class="mod-grid c4" style="margin-top:8px;">
+        <div class="mod"><div class="mod-name">IntegHub</div><div class="mod-desc">三方集成编排<br>异步轮询 + 重试</div></div>
+        <div class="mod"><div class="mod-name">AG-UI Adapter</div><div class="mod-desc">SSE 事件流<br>Prefetch 容错</div></div>
+        <div class="mod"><div class="mod-name">Error Mapper</div><div class="mod-desc">5 类错误分类<br>友好提示 & 状态码</div></div>
+        <div class="mod"><div class="mod-name">Run State</div><div class="mod-desc">执行状态管理<br>取消 & 超时监控</div></div>
+      </div>
+    </div>
+
+    <div class="arrow-d">↓</div>
+
+    <div class="layer layer-infra">
+      <span class="layer-label">Infrastructure 基础设施层</span>
+      <div class="mod-grid c4">
+        <div class="mod"><div class="mod-name">LLM Gateway</div><div class="mod-desc">OpenAI / Anthropic<br>模型路由 & 切换</div></div>
+        <div class="mod"><div class="mod-name">Powerbase</div><div class="mod-desc">DataItem / Skill / Memory<br>数据持久化</div></div>
+        <div class="mod"><div class="mod-name">RabbitMQ</div><div class="mod-desc">异步任务队列<br>消息可靠投递</div></div>
+        <div class="mod"><div class="mod-name">MinIO / ES</div><div class="mod-desc">文件存储 & 全文检索</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. Flow -->
+<section id="flow">
+  <h2>二、请求处理全流程</h2>
+  <p>从用户发送消息到收到回复，经历以下 6 个阶段，每个阶段都有 <strong>独立的错误处理</strong>：</p>
+  <div class="flow">
+    <div class="step step-blue"><div class="step-num">Step 1</div><div class="step-name">接收请求</div><div class="step-detail">验证参数<br>鉴权用户</div></div>
+    <span class="flow-arr">→</span>
+    <div class="step step-blue"><div class="step-num">Step 2</div><div class="step-name">上下文加载</div><div class="step-detail">注入记忆<br>技能摘要</div></div>
+    <span class="flow-arr">→</span>
+    <div class="step step-green"><div class="step-num">Step 3</div><div class="step-name">Agent 推理</div><div class="step-detail">Plan → Call<br>→ Respond</div></div>
+    <span class="flow-arr">→</span>
+    <div class="step step-amber"><div class="step-num">Step 4</div><div class="step-name">工具执行</div><div class="step-detail">并行调用<br>错误阈值保护</div></div>
+    <span class="flow-arr">→</span>
+    <div class="step step-green"><div class="step-num">Step 5</div><div class="step-name">流式输出</div><div class="step-detail">SSE 事件流<br>Prefetch 容错</div></div>
+    <span class="flow-arr">→</span>
+    <div class="step step-blue"><div class="step-num">Step 6</div><div class="step-name">持久化</div><div class="step-detail">消息存储<br>Token 统计</div></div>
+  </div>
+</section>
+
+<!-- 3. Stability -->
+<section id="stability">
+  <h2>三、稳定性保障机制（6 大维度）</h2>
+  <p>MeAgent 从 <strong>指令约束、错误熔断、流式容错、子Agent隔离、集成重试、状态管理</strong> 6 个维度保障输出稳定性。</p>
+
+  <div class="mech-grid">
+    <div class="mech" style="border-left-color: var(--accent-blue);">
+      <h4>1. Purpose 指令约束</h4>
+      <p><span class="mech-tag">预防</span> 从源头减少模型「跑偏」</p>
+      <p>每个工具调用<strong>必须声明 purpose（意图）</strong>，由 SYSTEM_INSTRUCTIONS 中的正反示例引导模型写出高质量的工具调用意图。</p>
+      <ul>
+        <li>13 个工具全部强制 <code>purpose: str</code> 参数</li>
+        <li>正例："查询当前用户有权限的审批列表，用于回答用户的待办问题"</li>
+        <li>反例："调用 dataitem 查询"（太笼统）</li>
+      </ul>
+    </div>
+    <div class="mech" style="border-left-color: var(--accent-red);">
+      <h4>2. 错误熔断 & 自愈</h4>
+      <p><span class="mech-tag" style="background:rgba(248,113,113,0.15);color:var(--accent-red);">容错</span> 连续失败自动刹车</p>
+      <p>工具执行设有<strong>连续错误阈值（默认 16 次）</strong>，超过后自动停止调用，避免死循环。</p>
+      <ul>
+        <li>单次失败：模型拿到错误详情，自动换一种方式重试</li>
+        <li>连续失败：触发熔断，直接给用户友好提示</li>
+        <li>所有错误分为 5 类，每类有对应的处理策略</li>
+      </ul>
+    </div>
+    <div class="mech" style="border-left-color: var(--accent-amber);">
+      <h4>3. 流式 Prefetch 容错</h4>
+      <p><span class="mech-tag" style="background:rgba(251,191,36,0.15);color:var(--accent-amber);">网络</span> 三阶段错误保护</p>
+      <p>AG-UI 流式输出分<strong>预取 → 编码 → 流式</strong>三个阶段：</p>
+      <ul>
+        <li><strong>预取阶段</strong>：先验证第一个事件，错误直接返回 HTTP 错误码</li>
+        <li><strong>编码阶段</strong>：防御性 fallback 到硬编码错误体</li>
+        <li><strong>流式阶段</strong>：中途出错追加 RUN_ERROR 事件</li>
+      </ul>
+    </div>
+    <div class="mech" style="border-left-color: var(--accent-purple);">
+      <h4>4. 子 Agent 运行时隔离</h4>
+      <p><span class="mech-tag" style="background:rgba(167,139,250,0.15);color:var(--accent-purple);">安全</span> 互不干扰、独立容错</p>
+      <p>子 Agent 拥有<strong>独立的工具集、状态、和错误预算</strong>。</p>
+      <ul>
+        <li>每个子 Agent 独立 TodoState，无全局状态共享</li>
+        <li>事件实时转发（思考/工具/结果），前端可追踪</li>
+        <li>结构化结果提取（<code>&lt;result&gt;</code>），规范化输出</li>
+      </ul>
+    </div>
+    <div class="mech" style="border-left-color: var(--accent-green);">
+      <h4>5. IntegHub 集成重试</h4>
+      <p><span class="mech-tag" style="background:rgba(52,211,153,0.15);color:var(--accent-green);">集成</span> 指数退避 + 超时保护</p>
+      <p><strong>指数退避轮询</strong>（1s → 2s → 4s ... 最大 60s），总超时 600s + 连续失败 3 次熔断。</p>
+      <ul>
+        <li>敏感数据自动脱敏（API Key/Token/密码）</li>
+        <li>异步任务支持：发起 → 轮询 → 获取结果</li>
+        <li>日志截断 240 字符，防止信息泄露</li>
+      </ul>
+    </div>
+    <div class="mech" style="border-left-color: var(--accent-cyan);">
+      <h4>6. 执行状态管理 & 取消</h4>
+      <p><span class="mech-tag" style="background:rgba(34,211,238,0.15);color:var(--accent-cyan);">控制</span> 全生命周期可控</p>
+      <p><strong>全局状态追踪</strong>（pending → running → completed/failed），随时取消。</p>
+      <ul>
+        <li>同一会话同时只允许一个活跃执行</li>
+        <li>取消原因分类：用户取消 / 超时 / 错误 / 断连</li>
+        <li>Token 用量实时统计（输入/输出/推理/缓存）</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 4. Error Classification -->
+<section id="errors">
+  <h2>四、五层错误分类体系</h2>
+  <p>所有错误被统一归类为 5 种类型，每种有 <strong>对应的处理策略和用户提示</strong>：</p>
+  <table>
+    <thead><tr><th>错误类型</th><th>HTTP</th><th>触发场景</th><th>用户提示</th><th>系统处理</th></tr></thead>
+    <tbody>
+      <tr><td><strong>CONTEXT_LENGTH_EXCEEDED</strong></td><td>400</td><td>对话过长超出模型窗口</td><td>「对话内容过长，请开启新会话」</td><td>阻止请求，建议新建对话</td></tr>
+      <tr><td><strong>RATE_LIMITED</strong></td><td>429</td><td>API 调用频率受限</td><td>「系统繁忙，请稍后重试」</td><td>返回 Retry-After，前端自动重试</td></tr>
+      <tr><td><strong>UPSTREAM_TIMEOUT</strong></td><td>504</td><td>LLM 响应超时</td><td>「AI 响应超时，请重试」</td><td>记录请求 ID，支持问题追踪</td></tr>
+      <tr><td><strong>UPSTREAM_UNAVAILABLE</strong></td><td>503</td><td>LLM 服务不可用</td><td>「AI 服务暂时不可用」</td><td>触发备选模型切换（如已配置）</td></tr>
+      <tr><td><strong>INTERNAL_ERROR</strong></td><td>500</td><td>框架内部异常</td><td>「系统内部错误，已记录」</td><td>完整堆栈记录，异步告警</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 5. Skill -->
+<section id="skill">
+  <h2>五、Skill 技能系统 — 确保输出一致性</h2>
+  <p>Skill 是 MeAgent 保障 <strong>输出格式和质量一致性</strong> 的核心机制。每个 Skill 定义了完整的指令、模板、示例。</p>
+  <h3>渐进式加载（节省 Token，按需加载）</h3>
+  <div class="flow">
+    <div class="step step-blue"><div class="step-name">Skill 列表</div><div class="step-detail">Agent 知道有哪些技能<br>（仅名称 + 摘要）</div></div>
+    <span class="flow-arr">→</span>
+    <div class="step step-green"><div class="step-name">use_skill</div><div class="step-detail">按需加载完整指令<br>（模板 + 示例 + 约束）</div></div>
+    <span class="flow-arr">→</span>
+    <div class="step step-amber"><div class="step-name">read_resource</div><div class="step-detail">加载参考资料<br>（如模板文件、样例）</div></div>
+    <span class="flow-arr">→</span>
+    <div class="step step-green"><div class="step-name">执行任务</div><div class="step-detail">在完整上下文中<br>生成结构化输出</div></div>
+  </div>
+  <blockquote><strong>类比</strong>：Skill 好比 SOP 手册。员工（Agent）平时只知道手册目录，需要做某件事时才翻开具体章节，确保每次操作步骤一致。</blockquote>
+</section>
+
+<!-- 6. Compare -->
+<section id="compare">
+  <h2>六、与流程化 Agent（如 Dify / Coze）的对比</h2>
+  <table>
+    <thead><tr><th>维度</th><th>MeAgent（自主式）</th><th>流程化 Agent（Dify/Coze）</th></tr></thead>
+    <tbody>
+      <tr><td><strong>编排方式</strong></td><td class="good">自主推理 + Skill 约束</td><td>固定 DAG 流程图</td></tr>
+      <tr><td><strong>灵活度</strong></td><td class="good">高 — 同一请求可动态调整策略</td><td class="bad">低 — 流程固定，改需求需改图</td></tr>
+      <tr><td><strong>稳定性策略</strong></td><td>多维约束（Purpose + Skill + 熔断 + 隔离）</td><td>流程固定 = 自带一致性</td></tr>
+      <tr><td><strong>复杂任务</strong></td><td class="good">天然支持（子 Agent 递归分派）</td><td class="bad">需手动搭建复杂流程图</td></tr>
+      <tr><td><strong>维护成本</strong></td><td class="good">修改 Skill 文件即可</td><td class="bad">需要专人维护流程图</td></tr>
+      <tr><td><strong>模型依赖</strong></td><td>较高（需好模型才能自主推理）</td><td class="good">较低（流程固定，模型只填空）</td></tr>
+      <tr><td><strong>适合场景</strong></td><td class="good">企业级复杂业务（合同、审批、数据分析）</td><td>简单固定流程（客服问答、表单填写）</td></tr>
+    </tbody>
+  </table>
+  <blockquote><strong>核心差异</strong>：流程化方案的稳定性来自「流程固定」，但代价是灵活度低、维护成本高。MeAgent 的稳定性来自「<strong>多维约束 + 自愈机制</strong>」，在保持灵活度的同时实现可靠输出。</blockquote>
+</section>
+
+<!-- 7. Q&A -->
+<section id="qa">
+  <h2>七、客户常见问题 & 回应话术</h2>
+
+  <div class="qa">
+    <div class="qa-q">「你们怎么保证 Agent 输出的稳定性？」</div>
+    <div class="qa-a">我们从 6 个维度来保障：</div>
+    <ul class="qa-pts">
+      <li><strong>指令约束</strong> — 每个工具调用必须声明意图（purpose），从源头引导模型行为</li>
+      <li><strong>技能系统</strong> — 用 Skill 定义标准操作流程，确保同类任务输出一致</li>
+      <li><strong>错误熔断</strong> — 连续失败自动停止，避免无意义重试；同时把错误信息给模型让它自动调整</li>
+      <li><strong>子 Agent 隔离</strong> — 复杂任务拆成子任务，互不影响，一个子任务失败不会影响整体</li>
+      <li><strong>流式容错</strong> — 三阶段错误保护，确保用户始终能看到有意义的反馈</li>
+      <li><strong>状态管理</strong> — 全生命周期可追踪、可取消，Token 用量透明</li>
+    </ul>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q">「跟 Dify / Coze 这种流程化的方案比，你们的稳定性怎么样？」</div>
+    <div class="qa-a">这是两种不同的技术路线：</div>
+    <ul class="qa-pts">
+      <li>流程化方案靠「<strong>流程固定</strong>」保证一致性 —— 好处是简单可预测，缺点是灵活度低</li>
+      <li>我们靠「<strong>多维约束 + 自愈</strong>」保证一致性 —— Purpose 约束 + Skill 标准化 + 熔断保护</li>
+      <li>在<strong>简单场景</strong>（如客服问答），两种方案稳定性相当</li>
+      <li>在<strong>复杂场景</strong>（如合同审查、跨系统流程），流程化方案需要搭非常复杂的流程图；MeAgent 只需调整 Skill</li>
+      <li><strong>关键点</strong>：现在的大模型能力（Kimi K2.5 / DeepSeek V3.2 / Qwen3.5 / GLM-5 等）已经足够支撑自主推理的稳定性</li>
+    </ul>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q">「模型抽风了怎么办？比如一直调用错误的工具」</div>
+    <div class="qa-a">我们有自动熔断机制：</div>
+    <ul class="qa-pts">
+      <li>连续错误超过阈值（默认 16 次）会<strong>自动停止</strong>，不会无限循环</li>
+      <li>每次工具调用失败，详细的错误信息会<strong>反馈给模型</strong>，让它自己调整策略</li>
+      <li>错误被分为 5 类，每类有<strong>不同的处理策略</strong></li>
+      <li>用户始终看到<strong>友好的中文提示</strong>，不会看到技术报错</li>
+    </ul>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q">「Agent 的输出格式能保证一致吗？」</div>
+    <div class="qa-a">通过 Skill 技能系统保证：</div>
+    <ul class="qa-pts">
+      <li>每个业务场景定义一个 Skill，包含<strong>完整的指令、输出模板、正反例</strong></li>
+      <li>Agent 每次执行前会加载对应 Skill，相当于「带着操作手册做事」</li>
+      <li>Skill 可以随时更新，不需要改代码，运营人员直接维护</li>
+    </ul>
+  </div>
+
+  <div class="qa">
+    <div class="qa-q">「三方接口不稳定会影响 Agent 吗？」</div>
+    <div class="qa-a">不会，我们有专门的集成容错：</div>
+    <ul class="qa-pts">
+      <li>IntegHub 自带<strong>指数退避重试</strong>（1s → 2s → 4s ...最大 60s）</li>
+      <li>连续失败 3 次自动熔断，总超时 600 秒</li>
+      <li>所有敏感数据<strong>自动脱敏</strong></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 8. Summary -->
+<section>
+  <h2>八、一句话总结</h2>
+  <div class="summary-box">
+    <p><strong>MeAgent 的输出稳定性 = Purpose 指令约束（预防）+ Skill 标准化（一致）+ 错误熔断（兜底）+ 子 Agent 隔离（隔离）+ 流式容错（体验）+ 状态管理（可控）。</strong></p>
+    <p style="margin-top:12px;">不是靠「固定流程」限制 Agent，而是靠「多维约束 + 自愈机制」让 Agent 在灵活应对复杂任务的同时，保持稳定、可靠、可控。</p>
+  </div>
+</section>
+
+</main>
+
+<footer>MeAgent Architecture & Stability — Internal Sales Material — 2026-03-10</footer>
+
+<script>
+// Highlight active nav link on scroll
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('nav a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector(`nav a[href="#${entry.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
