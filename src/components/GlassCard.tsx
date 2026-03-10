@@ -17,7 +17,7 @@ export default function GlassCard({ children, className, onClick }: GlassCardPro
   return (
     <div
       className={cn(
-        "glass rounded-2xl p-5 transition-all duration-300 hover:bg-white/[0.08]",
+        "glass rounded-2xl p-5",
         onClick && "cursor-pointer",
         className
       )}

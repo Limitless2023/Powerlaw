@@ -15,7 +15,7 @@ export default function ThankYou() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="text-5xl md:text-7xl font-bold text-ink mb-6"
+        className="text-5xl md:text-7xl font-extrabold text-ink mb-6 tracking-tighter"
       >
         Thank You
       </motion.h1>

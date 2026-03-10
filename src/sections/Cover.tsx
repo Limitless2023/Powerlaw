@@ -23,7 +23,7 @@ export default function Cover() {
       {/* 主标题 */}
       <motion.h1
         {...fade(2)}
-        className="text-5xl md:text-7xl font-bold text-center leading-tight mb-6 text-ink"
+        className="text-5xl md:text-7xl font-extrabold text-center leading-tight mb-6 text-ink tracking-tighter"
       >
         一个 Half 产品的
         <br />

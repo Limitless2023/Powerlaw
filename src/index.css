@@ -1,52 +1,43 @@
 @import "tailwindcss";
 
 @theme {
-  --color-accent: #FFFFFF;
-  --color-ink: #2D1810;
-  --color-ink-light: #6B4030;
-  --font-sans: 'Outfit', system-ui, sans-serif;
+  --color-accent: #ffffff;
+  --color-ink: #f0f0f0;
+  --color-ink-light: #888888;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
-/* ── 背景 — 纯 CSS 动画渐变 ── */
+/* ── 背景 — 纯暗色 ── */
 #bg-root {
   position: fixed;
   inset: 0;
   z-index: 0;
-  background: linear-gradient(135deg, #F6C9B9, #FDD2BF, #FFD9CA, #FFE5DB, #F6C9B9);
-  background-size: 300% 300%;
-  animation: bg-drift 20s ease-in-out infinite;
+  background: #050505;
 }
 
-@keyframes bg-drift {
-  0%, 100% { background-position: 0% 50%; }
-  25% { background-position: 100% 0%; }
-  50% { background-position: 100% 100%; }
-  75% { background-position: 0% 100%; }
-}
-
-/* ── 卡片 — 暖色实底，零模糊零磨砂 ── */
+/* ── 卡片 — 边框风格，零填充零模糊 ── */
 .glass {
-  background: rgba(35, 15, 8, 0.88);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  color: #fff;
+  border: 1px solid #222;
+  transition: border-color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.glass:hover {
+  border-color: #444;
 }
 
 .glass-strong {
-  background: rgba(35, 15, 8, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  color: #fff;
+  border: 1px solid #555;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 /* ── 滚动条 ── */
-::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(45, 24, 16, 0.3); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(45, 24, 16, 0.5); }
+::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #444; }
 
 ::selection {
-  background: rgba(45, 24, 16, 0.2);
-  color: #2D1810;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
 }

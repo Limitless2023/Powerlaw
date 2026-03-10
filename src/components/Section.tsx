@@ -39,7 +39,7 @@ const Section = forwardRef<HTMLElement, SectionProps>(
         ref={setRef}
         id={id}
         className={cn(
-          "min-h-screen relative z-10",
+          "min-h-screen relative z-10 border-t border-white/5 first:border-t-0",
           className
         )}
       >

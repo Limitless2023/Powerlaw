@@ -29,7 +29,7 @@ export default function Navigation({
   onNavigate,
 }: NavigationProps) {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 h-12 px-6 flex items-center bg-ink/80 border-b border-white/10">
+    <nav className="fixed top-0 left-0 right-0 z-50 h-12 px-6 flex items-center bg-[#050505]/90 border-b border-[#111]">
       <span className="text-xs font-medium tracking-widest text-white/70 uppercase shrink-0">
         VIBE CODING
       </span>
