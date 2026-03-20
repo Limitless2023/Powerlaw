@@ -5,7 +5,7 @@ const projects = [
   {
     title: "MEAgent Architecture",
     description: "多专家智能体架构设计与思考",
-    href: "/meagent-architecture.html",
+    href: "meagent-architecture.html",
     emoji: "🤖",
     tag: "Architecture",
   },
