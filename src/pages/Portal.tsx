@@ -3,13 +3,6 @@ import GradientBg from "@/components/GradientBg"
 
 const projects = [
   {
-    title: "Vibe Coding Sharing",
-    description: "一个 Half 产品的沉浸式 Vibe Coding — 4 仓库 60 文件 0 行手写代码",
-    href: "/vibe-coding",
-    emoji: "🎨",
-    tag: "Presentation",
-  },
-  {
     title: "MEAgent Architecture",
     description: "多专家智能体架构设计与思考",
     href: "/meagent-architecture.html",
