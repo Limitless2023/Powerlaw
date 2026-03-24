@@ -9,6 +9,13 @@ const projects = [
     emoji: "🤖",
     tag: "Architecture",
   },
+  {
+    title: "PowerDoc",
+    description: "超大型合同的智能解构与审查 — 面向长文档的结构化索引引擎",
+    href: "powerdoc.html",
+    emoji: "📄",
+    tag: "Product",
+  },
 ]
 
 export default function Portal() {
