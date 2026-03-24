@@ -1,45 +1,29 @@
 @import "tailwindcss";
 
 @theme {
-  --color-accent: #ffffff;
-  --color-ink: #f0f0f0;
-  --color-ink-light: #888888;
+  --color-accent: #1e293b;
+  --color-ink: #1e293b;
+  --color-ink-light: #64748b;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
-/* ── 背景 — 暗色 + 微弱顶部辉光 ── */
+/* ── 背景 — 亮色 + 微弱顶部蓝光 ── */
 #bg-root {
   position: fixed;
   inset: 0;
   z-index: 0;
-  background: #050505;
-  background-image: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255, 255, 255, 0.035) 0%, transparent 100%);
-}
-
-/* ── 卡片 — 边框风格，零填充零模糊 ── */
-.glass {
-  border: 1px solid #222;
-  transition: border-color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.glass:hover {
-  border-color: #444;
-  box-shadow: 0 0 24px rgba(255, 255, 255, 0.02);
-}
-
-.glass-strong {
-  border: 1px solid #555;
-  background: rgba(255, 255, 255, 0.05);
+  background: #f8fafc;
+  background-image: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(59, 130, 246, 0.06) 0%, transparent 100%);
 }
 
 /* ── 滚动条 ── */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: #444; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
 ::selection {
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
+  background: rgba(59, 130, 246, 0.15);
+  color: #1e293b;
 }

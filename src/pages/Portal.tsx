@@ -30,10 +30,10 @@ export default function Portal() {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-gradient-to-r from-white via-purple-200 to-blue-300 bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-blue-800 to-blue-600 bg-clip-text text-transparent">
             Powerlaw
           </h1>
-          <p className="mt-4 text-lg text-white/50 max-w-md mx-auto">
+          <p className="mt-4 text-lg text-slate-400 max-w-md mx-auto">
             Ideas, Projects & Experiments
           </p>
         </motion.div>
@@ -49,24 +49,24 @@ export default function Portal() {
               transition={{ duration: 0.5, delay: 0.2 + i * 0.1 }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="group block rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-6 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
+              className="group block rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-xl p-6 shadow-sm transition-all hover:border-blue-300 hover:shadow-md"
             >
               <div className="flex items-start gap-4">
                 <span className="text-3xl">{project.emoji}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3">
-                    <h2 className="text-xl font-semibold text-white group-hover:text-purple-200 transition-colors">
+                    <h2 className="text-xl font-semibold text-slate-800 group-hover:text-blue-600 transition-colors">
                       {project.title}
                     </h2>
-                    <span className="shrink-0 rounded-full bg-white/10 px-2.5 py-0.5 text-xs text-white/50">
+                    <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs text-slate-500">
                       {project.tag}
                     </span>
                   </div>
-                  <p className="mt-1.5 text-sm text-white/40 leading-relaxed">
+                  <p className="mt-1.5 text-sm text-slate-500 leading-relaxed">
                     {project.description}
                   </p>
                 </div>
-                <span className="text-white/20 group-hover:text-white/50 transition-colors text-xl mt-1">
+                <span className="text-slate-300 group-hover:text-blue-400 transition-colors text-xl mt-1">
                   →
                 </span>
               </div>
@@ -79,7 +79,7 @@ export default function Portal() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
-          className="mt-20 text-xs text-white/20"
+          className="mt-20 text-xs text-slate-300"
         >
           Built by Limitless
         </motion.p>
