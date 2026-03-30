@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>认知模块 — Powerlaw</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --surface: #f9fafb;
+    --surface-2: #f3f4f6;
+    --border: #e5e7eb;
+    --border-light: #d1d5db;
+    --ink: #111827;
+    --ink-light: #4b5563;
+    --ink-muted: #9ca3af;
+    --accent-blue: #3b82f6;
+    --accent-green: #10b981;
+    --accent-amber: #f59e0b;
+    --accent-red: #ef4444;
+    --accent-purple: #8b5cf6;
+    --accent-cyan: #06b6d4;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    line-height: 1.8; color: var(--ink); background: var(--bg);
+  }
+
+  /* Navigation */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(255,255,255,0.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border); padding: 0 24px;
+  }
+  nav .nav-inner {
+    max-width: 1100px; margin: 0 auto; display: flex; align-items: center;
+    gap: 24px; height: 52px; overflow-x: auto;
+  }
+  nav .nav-brand { font-weight: 700; font-size: 14px; color: var(--ink); white-space: nowrap; text-decoration: none; }
+  nav a {
+    color: var(--ink-light); text-decoration: none; font-size: 13px; white-space: nowrap;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--ink); }
+
+  /* Main Content */
+  main { max-width: 1100px; margin: 0 auto; padding: 80px 24px 60px; }
+
+  /* Hero */
+  .hero { text-align: center; padding: 60px 0 40px; }
+  .hero h1 {
+    font-size: 2.5rem; font-weight: 800; letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    margin-top: 12px; font-size: 1.1rem; color: var(--ink-light); max-width: 600px; margin-left: auto; margin-right: auto;
+  }
+
+  /* Content Grid */
+  .content-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px; margin-top: 48px;
+  }
+  .content-card {
+    border: 1px solid var(--border); border-radius: 16px;
+    padding: 28px; background: var(--bg);
+    transition: all 0.25s ease;
+    position: relative; overflow: hidden;
+    text-decoration: none; color: inherit; display: block;
+  }
+  a.content-card:hover {
+    border-color: var(--accent-blue); box-shadow: 0 8px 30px rgba(59,130,246,0.08);
+    transform: translateY(-2px);
+  }
+  .content-card .card-emoji {
+    font-size: 2rem; margin-bottom: 12px; display: block;
+  }
+  .content-card h3 {
+    font-size: 1.1rem; font-weight: 700; color: var(--ink); margin-bottom: 6px;
+  }
+  .content-card p {
+    font-size: 0.9rem; color: var(--ink-light); line-height: 1.7;
+  }
+  .content-card .tag {
+    display: inline-block; margin-top: 14px; padding: 3px 10px;
+    border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+  }
+  .tag-coming { background: var(--surface-2); color: var(--ink-muted); }
+  .tag-live { background: #ecfdf5; color: #059669; }
+  .content-card .arrow {
+    position: absolute; top: 28px; right: 28px;
+    color: var(--ink-muted); font-size: 1.2rem; transition: color 0.2s;
+  }
+  a.content-card:hover .arrow { color: var(--accent-blue); }
+
+  /* Footer */
+  footer {
+    text-align: center; padding: 40px 0; margin-top: 60px;
+    border-top: 1px solid var(--border); color: var(--ink-muted); font-size: 0.85rem;
+  }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 1.8rem; }
+    .content-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="./index.html" class="nav-brand">&#9889; Powerlaw</a>
+    <a href="#content">内容列表</a>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <h1>&#129504; 认知模块</h1>
+    <p>产品认知与培训材料 — 帮助团队快速理解 AI 协作方式，建立正确的产品思维。</p>
+  </div>
+
+  <div id="content" class="content-grid">
+    <a href="./cognition-contract-agent.html" class="content-card">
+      <span class="card-emoji">&#128221;</span>
+      <span class="arrow">&rarr;</span>
+      <h3>合同起草智能体 — 客户培训手册</h3>
+      <p>MeFlow Agent 合同起草智能体的完整培训材料，涵盖三大起草场景、协作流程与最佳实践。</p>
+      <span class="tag tag-live">已发布</span>
+    </a>
+
+    <div class="content-card">
+      <span class="card-emoji">&#128269;</span>
+      <h3>审查智能体 — 使用指南</h3>
+      <p>合同审查智能体的操作手册，包含风险识别、条款比对与修改建议的全流程指导。</p>
+      <span class="tag tag-coming">即将上线</span>
+    </div>
+
+    <div class="content-card">
+      <span class="card-emoji">&#129302;</span>
+      <h3>多专家协作模式</h3>
+      <p>理解 MEAgent 多专家架构下的协作范式，掌握与多个 AI 专家并行工作的方法论。</p>
+      <span class="tag tag-coming">即将上线</span>
+    </div>
+
+    <div class="content-card">
+      <span class="card-emoji">&#128218;</span>
+      <h3>产品认知入门</h3>
+      <p>面向新成员的产品认知入门，快速了解 AI 法律科技产品的核心概念与设计理念。</p>
+      <span class="tag tag-coming">即将上线</span>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Built by Limitless &middot; Powerlaw
+</footer>
+
+</body>
+</html>

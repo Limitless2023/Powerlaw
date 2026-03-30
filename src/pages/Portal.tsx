@@ -23,6 +23,13 @@ const projects = [
     emoji: "🌊",
     tag: "Demo",
   },
+  {
+    title: "认知模块",
+    description: "产品认知与培训材料 — 帮助团队快速理解 AI 协作方式",
+    href: "cognition.html",
+    emoji: "🧠",
+    tag: "Cognition",
+  },
 ]
 
 export default function Portal() {

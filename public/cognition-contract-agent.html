@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>合同起草智能体 — 客户培训手册</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --surface: #f9fafb;
+    --surface-2: #f3f4f6;
+    --border: #e5e7eb;
+    --border-light: #d1d5db;
+    --ink: #111827;
+    --ink-light: #4b5563;
+    --ink-muted: #9ca3af;
+    --accent-blue: #3b82f6;
+    --accent-green: #10b981;
+    --accent-amber: #f59e0b;
+    --accent-red: #ef4444;
+    --accent-purple: #8b5cf6;
+    --accent-cyan: #06b6d4;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    line-height: 1.8; color: var(--ink); background: var(--bg);
+  }
+
+  /* Navigation */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(255,255,255,0.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border); padding: 0 24px;
+  }
+  nav .nav-inner {
+    max-width: 900px; margin: 0 auto; display: flex; align-items: center;
+    gap: 24px; height: 52px; overflow-x: auto;
+  }
+  nav .nav-brand { font-weight: 700; font-size: 14px; color: var(--ink); white-space: nowrap; text-decoration: none; }
+  nav a {
+    color: var(--ink-light); text-decoration: none; font-size: 13px; white-space: nowrap;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--ink); }
+  nav .nav-sep { color: var(--ink-muted); font-size: 12px; }
+
+  /* Main Content */
+  main { max-width: 900px; margin: 0 auto; padding: 80px 24px 60px; }
+
+  /* Hero */
+  .hero { text-align: center; padding: 48px 0 32px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+  .hero h1 {
+    font-size: 2.2rem; font-weight: 800; letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero .subtitle {
+    margin-top: 12px; font-size: 1.05rem; color: var(--ink-light);
+  }
+  .hero .meta {
+    margin-top: 16px; font-size: 0.85rem; color: var(--ink-muted);
+  }
+
+  /* Section headings */
+  h2 {
+    font-size: 1.6rem; font-weight: 800; color: var(--ink);
+    margin-top: 56px; margin-bottom: 20px; padding-bottom: 10px;
+    border-bottom: 2px solid var(--accent-blue);
+    letter-spacing: -0.01em;
+  }
+  h3 {
+    font-size: 1.15rem; font-weight: 700; color: var(--ink);
+    margin-top: 36px; margin-bottom: 12px;
+  }
+  h4 {
+    font-size: 1.02rem; font-weight: 700; color: var(--ink-light);
+    margin-top: 28px; margin-bottom: 10px;
+  }
+
+  /* Paragraphs */
+  p { margin-bottom: 14px; color: var(--ink-light); }
+  strong { color: var(--ink); }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; margin: 20px 0; }
+  table {
+    width: 100%; border-collapse: collapse; font-size: 0.9rem;
+  }
+  th {
+    background: var(--surface); color: var(--ink); font-weight: 700;
+    padding: 12px 16px; text-align: left; border-bottom: 2px solid var(--border);
+  }
+  td {
+    padding: 10px 16px; border-bottom: 1px solid var(--border); color: var(--ink-light);
+  }
+  tr:hover td { background: var(--surface); }
+
+  /* Callout boxes */
+  .callout {
+    border-radius: 12px; padding: 18px 20px; margin: 20px 0;
+    font-size: 0.92rem; line-height: 1.7;
+  }
+  .callout-info {
+    background: #eff6ff; border-left: 4px solid var(--accent-blue); color: #1e40af;
+  }
+  .callout-tip {
+    background: #ecfdf5; border-left: 4px solid var(--accent-green); color: #065f46;
+  }
+  .callout-warn {
+    background: #fffbeb; border-left: 4px solid var(--accent-amber); color: #92400e;
+  }
+  .callout-good {
+    background: #f0fdf4; border-left: 4px solid var(--accent-green); color: #166534;
+  }
+  .callout-bad {
+    background: #fef2f2; border-left: 4px solid var(--accent-red); color: #991b1b;
+  }
+  .callout strong { color: inherit; }
+  .callout-label { font-weight: 700; display: block; margin-bottom: 4px; }
+
+  /* Flow diagrams */
+  .flow {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+    margin: 20px 0; padding: 20px; background: var(--surface); border-radius: 12px;
+  }
+  .flow-step {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600;
+    white-space: nowrap;
+  }
+  .flow-step-blue { background: #dbeafe; color: #1d4ed8; }
+  .flow-step-green { background: #d1fae5; color: #065f46; }
+  .flow-step-purple { background: #ede9fe; color: #5b21b6; }
+  .flow-step-amber { background: #fef3c7; color: #92400e; }
+  .flow-arrow { color: var(--ink-muted); font-size: 1.1rem; flex-shrink: 0; }
+
+  /* Decision flow */
+  .decision-flow {
+    margin: 20px 0; padding: 24px; background: var(--surface); border-radius: 12px;
+  }
+  .decision-row {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;
+  }
+  .decision-row:last-child { margin-bottom: 0; }
+  .decision-box {
+    padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .decision-start { background: #dbeafe; color: #1d4ed8; }
+  .decision-q { background: #fef3c7; color: #92400e; border: 1px dashed var(--accent-amber); }
+  .decision-yes { color: var(--accent-green); font-size: 0.8rem; font-weight: 700; }
+  .decision-no { color: var(--accent-red); font-size: 0.8rem; font-weight: 700; }
+  .decision-result { background: #d1fae5; color: #065f46; padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; }
+  .decision-arrow { color: var(--ink-muted); font-size: 1rem; }
+
+  /* Ordered & unordered lists */
+  ul, ol { margin: 12px 0 14px 24px; color: var(--ink-light); }
+  li { margin-bottom: 6px; }
+  li strong { color: var(--ink); }
+
+  /* Inline code */
+  code {
+    background: var(--surface-2); padding: 2px 6px; border-radius: 4px;
+    font-size: 0.88em; color: var(--accent-purple);
+  }
+
+  /* Blockquote */
+  blockquote {
+    border-left: 3px solid var(--accent-purple); padding: 12px 20px;
+    background: #faf5ff; margin: 20px 0; border-radius: 0 8px 8px 0;
+    color: #6b21a8; font-size: 0.95rem;
+  }
+
+  /* Quick ref cards */
+  .ref-cards {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px; margin: 20px 0;
+  }
+  .ref-card {
+    border: 1px solid var(--border); border-radius: 12px; padding: 20px;
+    background: var(--bg);
+  }
+  .ref-card h4 { margin-top: 0; margin-bottom: 8px; color: var(--ink); font-size: 0.95rem; }
+  .ref-card p { font-size: 0.88rem; margin-bottom: 10px; }
+  .ref-card .example {
+    background: var(--surface); padding: 10px 14px; border-radius: 8px;
+    font-size: 0.85rem; color: var(--ink); line-height: 1.6;
+  }
+
+  /* Two-column comparison */
+  .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+  @media (max-width: 640px) { .comparison { grid-template-columns: 1fr; } }
+
+  /* Divider */
+  hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+  /* Footer */
+  footer {
+    text-align: center; padding: 40px 0; margin-top: 60px;
+    border-top: 1px solid var(--border); color: var(--ink-muted); font-size: 0.85rem;
+  }
+
+  /* TOC */
+  .toc {
+    background: var(--surface); border-radius: 12px; padding: 24px 28px; margin: 0 0 40px;
+  }
+  .toc h3 { margin-top: 0; font-size: 1rem; color: var(--ink); margin-bottom: 12px; }
+  .toc ol { margin: 0 0 0 20px; }
+  .toc li { margin-bottom: 4px; font-size: 0.9rem; }
+  .toc a { color: var(--accent-blue); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 1.6rem; }
+    h2 { font-size: 1.3rem; }
+    .flow { gap: 6px; padding: 14px; }
+    .flow-step { padding: 6px 12px; font-size: 0.78rem; }
+    .ref-cards { grid-template-columns: 1fr; }
+    .decision-row { gap: 6px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="./index.html" class="nav-brand">&#9889; Powerlaw</a>
+    <span class="nav-sep">/</span>
+    <a href="./cognition.html">认知模块</a>
+    <span class="nav-sep">/</span>
+    <a href="#">合同起草培训</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- Hero -->
+<div class="hero">
+  <h1>MeFlow Agent 合同起草智能体<br>客户培训手册</h1>
+  <p class="subtitle">理解 AI 协作思维，掌握三大起草场景，高效产出专业合同</p>
+  <p class="meta">版本 v1.0 &middot; 更新日期 2026-03-30</p>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <h3>目录</h3>
+  <ol>
+    <li><a href="#s1">认识起草智能体：你的 AI 协作伙伴</a></li>
+    <li><a href="#s2">三大起草场景概览</a></li>
+    <li><a href="#s3">场景一：从零起草</a></li>
+    <li><a href="#s4">场景二：智能模板推荐</a></li>
+    <li><a href="#s5">场景三：上传文件起草</a></li>
+    <li><a href="#s6">与 AI 高效协作的实用技巧</a></li>
+    <li><a href="#s7">快速参考卡片</a></li>
+  </ol>
+</div>
+
+<!-- Section 1 -->
+<h2 id="s1">一、认识起草智能体：你的 AI 协作伙伴</h2>
+
+<h3>1.1 它不是"自动生成器"，而是"智能协作伙伴"</h3>
+<p>很多用户第一次接触起草智能体时，会以为它像一个表单——填好参数，点击按钮，就能拿到完美合同。</p>
+<p><strong>实际上，起草智能体更像一位经验丰富但刚入职的法务助手：</strong></p>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>传统软件思维</th><th>AI 协作思维</th></tr></thead>
+  <tbody>
+    <tr><td>输入确定 &rarr; 输出确定</td><td>描述越清晰 &rarr; 输出越精准</td></tr>
+    <tr><td>结果不对 = 系统 Bug</td><td>结果不理想 = 可以引导调整</td></tr>
+    <tr><td>只能使用一次</td><td>可以多轮对话持续优化</td></tr>
+    <tr><td>功能固定，无法变通</td><td>理解上下文，灵活应对</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>1.2 与 AI 协作的三个核心原则</h3>
+<ol>
+  <li><strong>说清楚</strong>：提供充分的背景信息，AI 理解得越多，输出质量越高</li>
+  <li><strong>分步走</strong>：不要期望一步到位，通过确认大纲 &rarr; 生成内容 &rarr; 迭代修改的节奏来协作</li>
+  <li><strong>给反馈</strong>：对 AI 的输出给出具体反馈（"第三条违约责任部分需要加重对方的违约金比例"），而不是笼统地说"不对"</li>
+</ol>
+
+<hr>
+
+<!-- Section 2 -->
+<h2 id="s2">二、三大起草场景概览</h2>
+<p>MeFlow Agent 的起草智能体支持三种核心起草场景，系统会根据你的输入方式<strong>自动识别</strong>并进入对应模式：</p>
+
+<div class="decision-flow">
+  <div class="decision-row">
+    <span class="decision-box decision-start">用户发起起草请求</span>
+    <span class="decision-arrow">&rarr;</span>
+    <span class="decision-box decision-q">上传了合同文件？</span>
+  </div>
+  <div class="decision-row" style="padding-left: 32px;">
+    <span class="decision-yes">&#10003; 是</span>
+    <span class="decision-arrow">&rarr;</span>
+    <span class="decision-box decision-result">上传文件起草</span>
+  </div>
+  <div class="decision-row" style="padding-left: 32px;">
+    <span class="decision-no">&#10007; 否</span>
+    <span class="decision-arrow">&rarr;</span>
+    <span class="decision-box decision-q">提到"模板"关键词？</span>
+  </div>
+  <div class="decision-row" style="padding-left: 80px;">
+    <span class="decision-yes">&#10003; 是</span>
+    <span class="decision-arrow">&rarr;</span>
+    <span class="decision-box decision-result">智能模板推荐</span>
+  </div>
+  <div class="decision-row" style="padding-left: 80px;">
+    <span class="decision-no">&#10007; 否</span>
+    <span class="decision-arrow">&rarr;</span>
+    <span class="decision-box decision-result">从零起草（默认）</span>
+  </div>
+</div>
+
+<div class="callout callout-warn">
+  <span class="callout-label">&#9888;&#65039; 重要提示</span>
+  只有当你<strong>明确提到</strong>"模板"、"用模板"、"找模板"、"推荐模板"等关键词时，AI 才会进入模板推荐模式。否则默认进入从零起草。
+</div>
+
+<hr>
+
+<!-- Section 3 -->
+<h2 id="s3">三、场景一：从零起草</h2>
+
+<h3>3.1 适用场景</h3>
+<ul>
+  <li>没有现成模板或参考文件</li>
+  <li>需要根据具体业务需求定制合同</li>
+  <li>希望 AI 从需求理解开始，逐步协助完成合同起草</li>
+</ul>
+
+<h3>3.2 协作流程（7 个阶段）</h3>
+<div class="flow">
+  <span class="flow-step flow-step-blue">1. 理解需求</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step flow-step-blue">2. 收集参考</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step flow-step-purple">3. 结构确认</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step flow-step-blue">4. 内容生成</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step flow-step-green">5. 生成文件</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step flow-step-green">6. 保存归档</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step flow-step-amber">7. 按需调整</span>
+</div>
+
+<h3>3.3 各阶段详解与最佳实践</h3>
+
+<h4>阶段 1：需求沟通（最关键的一步）</h4>
+<p>AI 会：理解合同意图、追问缺失信息、评估复杂度、判断谈判地位</p>
+
+<div class="comparison">
+  <div class="callout callout-good">
+    <span class="callout-label">&#10004; 好的示范</span>
+    "帮我起草一份软件开发服务合同，我方是甲方（委托方）。项目是一个内部 ERP 系统的定制开发，预算 200 万，工期 6 个月，分 3 期交付验收。我们是采购方，议价能力较强。"
+  </div>
+  <div class="callout callout-bad">
+    <span class="callout-label">&#9888; 一般的示范</span>
+    "帮我写个合同" &mdash; AI 会追问很多问题才能开始
+  </div>
+</div>
+
+<p><strong>复杂度影响：</strong></p>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>复杂度</th><th>条款覆盖</th><th>起草策略</th></tr></thead>
+  <tbody>
+    <tr><td>简单</td><td>核心条款</td><td>快速生成</td></tr>
+    <tr><td>中等</td><td>核心 + 风险控制</td><td>分模块生成</td></tr>
+    <tr><td>复杂</td><td>全覆盖 + 专项条款</td><td>并行模块化生成</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h4>阶段 2：参考资料收集</h4>
+<p>AI 自动搜索历史合同、模板库、范本库、条款库，为起草提供参考依据。</p>
+
+<h4>阶段 3：大纲确认（重要检查点）</h4>
+<p>AI 给出合同结构大纲，等待你的确认。</p>
+<div class="callout callout-tip">
+  <span class="callout-label">&#128161; 提示</span>
+  在大纲阶段调整成本极低。务必仔细检查结构是否符合需求，此时修改远比生成全文后再改高效。
+</div>
+
+<h4>阶段 4：内容生成</h4>
+<p>根据确认的大纲生成合同全文，使用专业法律语言。</p>
+
+<h4>阶段 5：文件交付</h4>
+<p>转换为 Word 文档交付审阅。</p>
+
+<h4>阶段 6：系统保存与表单填写</h4>
+<p>创建合同记录、上传文件、协助填写表单。</p>
+
+<h4>阶段 7：迭代修改</h4>
+<p>接受修改请求，精准修改而非整篇重写。</p>
+
+<div class="comparison">
+  <div class="callout callout-good">
+    <span class="callout-label">&#10004; 好的反馈</span>
+    "第五条违约责任中，逾期付款的违约金比例从每日万分之三改为每日万分之五，并增加一条：连续逾期超过30天，我方有权解除合同。"
+  </div>
+  <div class="callout callout-bad">
+    <span class="callout-label">&#9888; 低效的反馈</span>
+    "违约部分不太好，改一下"
+  </div>
+</div>
+
+<hr>
+
+<!-- Section 4 -->
+<h2 id="s4">四、场景二：智能模板推荐</h2>
+
+<h3>4.1 适用场景</h3>
+<ul>
+  <li>公司已有标准合同模板</li>
+  <li>希望快速找到合适的模板</li>
+  <li>适合标准化程度高的合同</li>
+</ul>
+
+<h3>4.2 如何触发</h3>
+<p>需明确提到模板相关关键词：</p>
+<div class="comparison">
+  <div class="callout callout-good">
+    <span class="callout-label">&#10004; 触发模板模式</span>
+    "帮我找一个采购合同模板"
+  </div>
+  <div class="callout callout-bad">
+    <span class="callout-label">&#10007; 不会触发（进入从零起草）</span>
+    "帮我起草一份采购合同"
+  </div>
+</div>
+
+<h3>4.3 协作流程</h3>
+<div class="flow">
+  <span class="flow-step flow-step-blue">1. 明确意图</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step flow-step-purple">2. 匹配模板</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step flow-step-green">3. 关联模板</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step flow-step-amber">4. 填写信息</span>
+</div>
+
+<hr>
+
+<!-- Section 5 -->
+<h2 id="s5">五、场景三：上传文件起草</h2>
+
+<h3>5.1 适用场景</h3>
+<ul>
+  <li>已有现成合同文件</li>
+  <li>需要导入系统并录入信息</li>
+  <li>AI 不会修改上传的文件内容</li>
+</ul>
+
+<h3>5.2 协作流程</h3>
+<div class="flow">
+  <span class="flow-step flow-step-blue">1. 文件确认</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step flow-step-green">2. 上传关联</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step flow-step-purple">3. 是否填表</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step flow-step-amber">4. 提取填写</span>
+</div>
+
+<hr>
+
+<!-- Section 6 -->
+<h2 id="s6">六、与 AI 高效协作的实用技巧</h2>
+
+<h3>6.1 提高输出质量的沟通方式</h3>
+<ul>
+  <li><strong>明确立场</strong>：告知你方角色和谈判地位</li>
+  <li><strong>提供背景</strong>：说明业务场景和特殊要求</li>
+  <li><strong>指定参考</strong>：提供参考合同或条款</li>
+  <li><strong>具体反馈</strong>：针对具体条款给出修改意见</li>
+  <li><strong>说明优先级</strong>：表达哪些条款最重要</li>
+</ul>
+
+<h3>6.2 常见误区</h3>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>误区</th><th>正确认知</th></tr></thead>
+  <tbody>
+    <tr><td>"AI 应该一次就写对"</td><td>把第一次输出当起点，2-3 轮迭代是正常节奏</td></tr>
+    <tr><td>"说得越简单越好"</td><td>首次对话尽可能多提供信息</td></tr>
+    <tr><td>"输出不对就是系统 Bug"</td><td>先尝试更具体的反馈引导 AI 调整</td></tr>
+    <tr><td>"AI 替我做所有决定"</td><td>认真审阅每个确认环节，专业判断仍然是你的</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>6.3 什么情况下联系技术支持</h3>
+<div class="comparison">
+  <div>
+    <h4 style="margin-top: 0;">&#128680; 真正的技术问题</h4>
+    <ul>
+      <li>系统报错 / 页面崩溃</li>
+      <li>格式错乱</li>
+      <li>AI 无响应</li>
+      <li>功能缺失</li>
+      <li>数据保存失败</li>
+    </ul>
+  </div>
+  <div>
+    <h4 style="margin-top: 0;">&#128260; 先调整协作方式</h4>
+    <ul>
+      <li>条款不够专业</li>
+      <li>缺少某些条款</li>
+      <li>语气/立场不对</li>
+      <li>内容与预期不符</li>
+    </ul>
+  </div>
+</div>
+
+<hr>
+
+<!-- Section 7 -->
+<h2 id="s7">七、快速参考卡片</h2>
+<p>三种模式的快速启动模板：</p>
+
+<div class="ref-cards">
+  <div class="ref-card">
+    <h4>&#128196; 从零起草</h4>
+    <p>适合定制化需求，AI 从理解意图开始全程协作。</p>
+    <div class="example">
+      <strong>快速启动：</strong><br>
+      "帮我起草一份 [合同类型]，我方是 [甲方/乙方]。[简述业务背景]，预算 [金额]，工期 [时长]。"
+    </div>
+  </div>
+  <div class="ref-card">
+    <h4>&#128209; 模板起草</h4>
+    <p>适合标准化合同，快速匹配已有模板。</p>
+    <div class="example">
+      <strong>快速启动：</strong><br>
+      "帮我找一个 [合同类型] 的<strong>模板</strong>，用于 [业务场景]。"
+    </div>
+  </div>
+  <div class="ref-card">
+    <h4>&#128228; 上传文件起草</h4>
+    <p>适合已有文件的系统录入。</p>
+    <div class="example">
+      <strong>快速启动：</strong><br>
+      直接上传合同文件，AI 会自动识别并引导后续流程。
+    </div>
+  </div>
+</div>
+
+<blockquote>
+  <strong>记住：起草智能体是你的 AI 协作伙伴。你的专业判断 + AI 的效率辅助 = 高质量合同的最佳路径。</strong>
+</blockquote>
+
+</main>
+
+<footer>
+  Built by Limitless &middot; Powerlaw
+</footer>
+
+</body>
+</html>
