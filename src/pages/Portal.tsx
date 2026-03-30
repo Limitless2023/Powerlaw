@@ -72,7 +72,7 @@ const bottomSection: ProductSection = {
   description: "多专家智能体平台 — 架构设计与核心能力",
   items: [
     {
-      title: "MEAgent Architecture",
+      title: "MeAgent Architecture",
       description: "多专家智能体架构设计与思考",
       href: "meagent-architecture.html",
       icon: icons.architecture,
