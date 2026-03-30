@@ -16,6 +16,13 @@ const projects = [
     emoji: "📄",
     tag: "Product",
   },
+  {
+    title: "MeFlow Agent 演示",
+    description: "MeFlow Agent 多场景能力演示 — 对话、编排、检索与流程自动化",
+    href: "meflow-agent.html",
+    emoji: "🌊",
+    tag: "Demo",
+  },
 ]
 
 export default function Portal() {
