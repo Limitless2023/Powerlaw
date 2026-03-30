@@ -18,7 +18,6 @@
     --accent-green: #10b981;
     --accent-amber: #f59e0b;
     --accent-red: #ef4444;
-    --accent-purple: #8b5cf6;
     --accent-cyan: #06b6d4;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -68,7 +67,7 @@
   h2 {
     font-size: 1.6rem; font-weight: 800; color: var(--ink);
     margin-top: 56px; margin-bottom: 20px; padding-bottom: 10px;
-    border-bottom: 2px solid var(--accent-blue);
+    border-bottom: 1px solid var(--border);
     letter-spacing: -0.01em;
   }
   h3 {
@@ -87,39 +86,25 @@
   /* Tables */
   .table-wrap { overflow-x: auto; margin: 20px 0; }
   table {
-    width: 100%; border-collapse: collapse; font-size: 0.9rem;
+    width: 100%; border-collapse: collapse; font-size: 13px;
   }
-  th {
-    background: var(--surface); color: var(--ink); font-weight: 700;
-    padding: 12px 16px; text-align: left; border-bottom: 2px solid var(--border);
-  }
-  td {
-    padding: 10px 16px; border-bottom: 1px solid var(--border); color: var(--ink-light);
-  }
-  tr:hover td { background: var(--surface); }
+  th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
+  th { background: var(--surface-2); font-weight: 600; color: var(--ink); }
+  td { color: var(--ink-light); }
 
-  /* Callout boxes — unified muted palette */
+  /* Callout boxes */
   .callout {
-    border-radius: 10px; padding: 18px 20px; margin: 20px 0;
-    font-size: 0.92rem; line-height: 1.7;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 18px 20px; margin: 16px 0; font-size: 13px; line-height: 1.7;
+    border-left: 3px solid var(--accent-blue);
   }
-  .callout-info {
-    background: var(--surface); border-left: 3px solid var(--border-light); color: var(--ink-light);
-  }
-  .callout-tip {
-    background: var(--surface); border-left: 3px solid var(--accent-blue); color: var(--ink-light);
-  }
-  .callout-warn {
-    background: #fefce8; border-left: 3px solid #ca8a04; color: #713f12;
-  }
-  .callout-good {
-    background: var(--surface); border-left: 3px solid #22c55e; color: var(--ink-light);
-  }
-  .callout-bad {
-    background: var(--surface); border-left: 3px solid var(--border-light); color: var(--ink-muted);
-  }
+  .callout-tip { border-left-color: var(--accent-blue); }
+  .callout-warn { border-left-color: var(--accent-amber); }
+  .callout-good { border-left-color: var(--accent-green); }
+  .callout-bad { border-left-color: var(--border-light); }
+  .callout, .callout p { color: var(--ink-light); }
   .callout strong { color: var(--ink); }
-  .callout-label { font-weight: 700; display: block; margin-bottom: 4px; color: var(--ink); }
+  .callout-label { font-weight: 600; display: block; margin-bottom: 4px; font-size: 14px; color: var(--ink); }
 
   /* Mermaid diagrams */
   .mermaid {
@@ -135,14 +120,14 @@
   /* Inline code */
   code {
     background: var(--surface-2); padding: 2px 6px; border-radius: 4px;
-    font-size: 0.88em; color: var(--accent-purple);
+    font-size: 0.88em; color: #d97706; font-family: "SF Mono", Consolas, monospace;
   }
 
   /* Blockquote */
   blockquote {
-    border-left: 3px solid var(--accent-purple); padding: 12px 20px;
-    background: #faf5ff; margin: 20px 0; border-radius: 0 8px 8px 0;
-    color: #6b21a8; font-size: 0.95rem;
+    border-left: 3px solid var(--accent-blue); padding: 12px 20px;
+    background: rgba(59,130,246,0.04); margin: 20px 0; border-radius: 0 6px 6px 0;
+    color: var(--ink-light); font-size: 0.95rem;
   }
 
   /* Quick ref cards */
