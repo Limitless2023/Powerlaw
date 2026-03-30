@@ -39,27 +39,7 @@ interface ProductSection {
   items: ProjectItem[]
 }
 
-const sections: ProductSection[] = [
-  {
-    name: "MeAgent",
-    description: "多专家智能体平台 — 架构设计与核心能力",
-    items: [
-      {
-        title: "MEAgent Architecture",
-        description: "多专家智能体架构设计与思考",
-        href: "meagent-architecture.html",
-        icon: icons.architecture,
-        tag: "Architecture",
-      },
-      {
-        title: "PowerDoc",
-        description: "超大型合同的智能解构与审查 — 面向长文档的结构化索引引擎",
-        href: "powerdoc.html",
-        icon: icons.doc,
-        tag: "Product",
-      },
-    ],
-  },
+const topSections: ProductSection[] = [
   {
     name: "MeCheck 3.0",
     description: "智能审查引擎 — 即将上线",
@@ -87,6 +67,27 @@ const sections: ProductSection[] = [
   },
 ]
 
+const bottomSection: ProductSection = {
+  name: "MeAgent",
+  description: "多专家智能体平台 — 架构设计与核心能力",
+  items: [
+    {
+      title: "MEAgent Architecture",
+      description: "多专家智能体架构设计与思考",
+      href: "meagent-architecture.html",
+      icon: icons.architecture,
+      tag: "Architecture",
+    },
+    {
+      title: "PowerDoc",
+      description: "超大型合同的智能解构与审查 — 面向长文档的结构化索引引擎",
+      href: "powerdoc.html",
+      icon: icons.doc,
+      tag: "Product",
+    },
+  ],
+}
+
 export default function Portal() {
   return (
     <>
@@ -107,68 +108,101 @@ export default function Portal() {
           </p>
         </motion.div>
 
-        {/* Sections */}
-        <div className="w-full max-w-2xl space-y-12">
-          {sections.map((section, si) => (
+        {/* Top Row: MeCheck + MeFlow */}
+        <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
+          {topSections.map((section, si) => (
             <motion.div
               key={section.name}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 + si * 0.15 }}
+              className="flex flex-col"
             >
-              {/* Section Header */}
               <div className="mb-4">
-                <h2 className="text-lg font-bold text-slate-800 tracking-tight">
+                <h2 className="text-base font-bold text-slate-800 tracking-tight">
                   {section.name}
                 </h2>
-                <p className="text-sm text-slate-400 mt-0.5">
+                <p className="text-xs text-slate-400 mt-0.5">
                   {section.description}
                 </p>
               </div>
 
-              {/* Section Items */}
               {section.items.length > 0 ? (
-                <div className="grid gap-3">
+                <div className="grid gap-2.5 flex-1">
                   {section.items.map((item) => (
                     <motion.a
                       key={item.href}
                       href={item.href}
-                      whileHover={{ scale: 1.01 }}
-                      whileTap={{ scale: 0.99 }}
-                      className="group block rounded-xl border border-slate-200 bg-white/80 backdrop-blur-xl px-5 py-4 shadow-sm transition-all hover:border-blue-300 hover:shadow-md"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="group block rounded-xl border border-slate-200 bg-white/80 backdrop-blur-xl px-4 py-3.5 shadow-sm transition-all hover:border-blue-300 hover:shadow-md"
                     >
-                      <div className="flex items-center gap-3">
-                        <span className="text-slate-400 group-hover:text-slate-600 transition-colors shrink-0">
+                      <div className="flex items-start gap-2.5">
+                        <span className="text-slate-400 group-hover:text-slate-600 transition-colors shrink-0 mt-0.5">
                           {item.icon}
                         </span>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <h3 className="text-[15px] font-semibold text-slate-800 group-hover:text-blue-600 transition-colors">
-                              {item.title}
-                            </h3>
-                            <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-500">
-                              {item.tag}
-                            </span>
-                          </div>
-                          <p className="mt-0.5 text-[13px] text-slate-500 leading-relaxed truncate">
+                          <h3 className="text-[14px] font-semibold text-slate-800 group-hover:text-blue-600 transition-colors leading-tight">
+                            {item.title}
+                          </h3>
+                          <p className="mt-1 text-[12px] text-slate-500 leading-relaxed">
                             {item.description}
                           </p>
                         </div>
-                        <span className="text-slate-300 group-hover:text-blue-400 transition-colors text-lg shrink-0">
-                          →
-                        </span>
                       </div>
                     </motion.a>
                   ))}
                 </div>
               ) : (
-                <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 px-5 py-6 text-center">
+                <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 px-4 py-8 text-center flex-1 flex items-center justify-center">
                   <p className="text-sm text-slate-400">即将上线</p>
                 </div>
               )}
             </motion.div>
           ))}
         </div>
+
+        {/* Bottom Row: MeAgent */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="w-full max-w-4xl mt-8"
+        >
+          <div className="mb-4">
+            <h2 className="text-base font-bold text-slate-800 tracking-tight">
+              {bottomSection.name}
+            </h2>
+            <p className="text-xs text-slate-400 mt-0.5">
+              {bottomSection.description}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+            {bottomSection.items.map((item) => (
+              <motion.a
+                key={item.href}
+                href={item.href}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="group block rounded-xl border border-slate-200 bg-white/80 backdrop-blur-xl px-4 py-3.5 shadow-sm transition-all hover:border-blue-300 hover:shadow-md"
+              >
+                <div className="flex items-start gap-2.5">
+                  <span className="text-slate-400 group-hover:text-slate-600 transition-colors shrink-0 mt-0.5">
+                    {item.icon}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-[14px] font-semibold text-slate-800 group-hover:text-blue-600 transition-colors leading-tight">
+                      {item.title}
+                    </h3>
+                    <p className="mt-1 text-[12px] text-slate-500 leading-relaxed">
+                      {item.description}
+                    </p>
+                  </div>
+                </div>
+              </motion.a>
+            ))}
+          </div>
+        </motion.div>
 
         {/* Footer */}
         <motion.p
