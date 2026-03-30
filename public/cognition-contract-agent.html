@@ -98,63 +98,34 @@
   }
   tr:hover td { background: var(--surface); }
 
-  /* Callout boxes */
+  /* Callout boxes — unified muted palette */
   .callout {
-    border-radius: 12px; padding: 18px 20px; margin: 20px 0;
+    border-radius: 10px; padding: 18px 20px; margin: 20px 0;
     font-size: 0.92rem; line-height: 1.7;
   }
   .callout-info {
-    background: #eff6ff; border-left: 4px solid var(--accent-blue); color: #1e40af;
+    background: var(--surface); border-left: 3px solid var(--border-light); color: var(--ink-light);
   }
   .callout-tip {
-    background: #ecfdf5; border-left: 4px solid var(--accent-green); color: #065f46;
+    background: var(--surface); border-left: 3px solid var(--accent-blue); color: var(--ink-light);
   }
   .callout-warn {
-    background: #fffbeb; border-left: 4px solid var(--accent-amber); color: #92400e;
+    background: #fefce8; border-left: 3px solid #ca8a04; color: #713f12;
   }
   .callout-good {
-    background: #f0fdf4; border-left: 4px solid var(--accent-green); color: #166534;
+    background: var(--surface); border-left: 3px solid #22c55e; color: var(--ink-light);
   }
   .callout-bad {
-    background: #fef2f2; border-left: 4px solid var(--accent-red); color: #991b1b;
+    background: var(--surface); border-left: 3px solid var(--border-light); color: var(--ink-muted);
   }
-  .callout strong { color: inherit; }
-  .callout-label { font-weight: 700; display: block; margin-bottom: 4px; }
+  .callout strong { color: var(--ink); }
+  .callout-label { font-weight: 700; display: block; margin-bottom: 4px; color: var(--ink); }
 
-  /* Flow diagrams */
-  .flow {
-    display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
-    margin: 20px 0; padding: 20px; background: var(--surface); border-radius: 12px;
+  /* Mermaid diagrams */
+  .mermaid {
+    margin: 24px 0; text-align: center;
   }
-  .flow-step {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600;
-    white-space: nowrap;
-  }
-  .flow-step-blue { background: #dbeafe; color: #1d4ed8; }
-  .flow-step-green { background: #d1fae5; color: #065f46; }
-  .flow-step-purple { background: #ede9fe; color: #5b21b6; }
-  .flow-step-amber { background: #fef3c7; color: #92400e; }
-  .flow-arrow { color: var(--ink-muted); font-size: 1.1rem; flex-shrink: 0; }
-
-  /* Decision flow */
-  .decision-flow {
-    margin: 20px 0; padding: 24px; background: var(--surface); border-radius: 12px;
-  }
-  .decision-row {
-    display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;
-  }
-  .decision-row:last-child { margin-bottom: 0; }
-  .decision-box {
-    padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600;
-    display: inline-flex; align-items: center; gap: 4px;
-  }
-  .decision-start { background: #dbeafe; color: #1d4ed8; }
-  .decision-q { background: #fef3c7; color: #92400e; border: 1px dashed var(--accent-amber); }
-  .decision-yes { color: var(--accent-green); font-size: 0.8rem; font-weight: 700; }
-  .decision-no { color: var(--accent-red); font-size: 0.8rem; font-weight: 700; }
-  .decision-result { background: #d1fae5; color: #065f46; padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; }
-  .decision-arrow { color: var(--ink-muted); font-size: 1rem; }
+  .mermaid svg { max-width: 100%; height: auto; }
 
   /* Ordered & unordered lists */
   ul, ol { margin: 12px 0 14px 24px; color: var(--ink-light); }
@@ -216,10 +187,7 @@
   @media (max-width: 640px) {
     .hero h1 { font-size: 1.6rem; }
     h2 { font-size: 1.3rem; }
-    .flow { gap: 6px; padding: 14px; }
-    .flow-step { padding: 6px 12px; font-size: 0.78rem; }
     .ref-cards { grid-template-columns: 1fr; }
-    .decision-row { gap: 6px; }
   }
 </style>
 </head>
@@ -290,32 +258,13 @@
 <h2 id="s2">二、三大起草场景概览</h2>
 <p>MeFlow Agent 的起草智能体支持三种核心起草场景，系统会根据你的输入方式<strong>自动识别</strong>并进入对应模式：</p>
 
-<div class="decision-flow">
-  <div class="decision-row">
-    <span class="decision-box decision-start">用户发起起草请求</span>
-    <span class="decision-arrow">&rarr;</span>
-    <span class="decision-box decision-q">上传了合同文件？</span>
-  </div>
-  <div class="decision-row" style="padding-left: 32px;">
-    <span class="decision-yes">&#10003; 是</span>
-    <span class="decision-arrow">&rarr;</span>
-    <span class="decision-box decision-result">上传文件起草</span>
-  </div>
-  <div class="decision-row" style="padding-left: 32px;">
-    <span class="decision-no">&#10007; 否</span>
-    <span class="decision-arrow">&rarr;</span>
-    <span class="decision-box decision-q">提到"模板"关键词？</span>
-  </div>
-  <div class="decision-row" style="padding-left: 80px;">
-    <span class="decision-yes">&#10003; 是</span>
-    <span class="decision-arrow">&rarr;</span>
-    <span class="decision-box decision-result">智能模板推荐</span>
-  </div>
-  <div class="decision-row" style="padding-left: 80px;">
-    <span class="decision-no">&#10007; 否</span>
-    <span class="decision-arrow">&rarr;</span>
-    <span class="decision-box decision-result">从零起草（默认）</span>
-  </div>
+<div class="mermaid">
+graph TD
+    A["用户发起起草请求"] --> B{"上传了合同文件？"}
+    B -- "是" --> C["上传文件起草"]
+    B -- "否" --> D{"提到'模板'关键词？"}
+    D -- "是" --> E["智能模板推荐"]
+    D -- "否" --> F["从零起草（默认）"]
 </div>
 
 <div class="callout callout-warn">
@@ -336,20 +285,11 @@
 </ul>
 
 <h3>3.2 协作流程（7 个阶段）</h3>
-<div class="flow">
-  <span class="flow-step flow-step-blue">1. 理解需求</span>
-  <span class="flow-arrow">&rarr;</span>
-  <span class="flow-step flow-step-blue">2. 收集参考</span>
-  <span class="flow-arrow">&rarr;</span>
-  <span class="flow-step flow-step-purple">3. 结构确认</span>
-  <span class="flow-arrow">&rarr;</span>
-  <span class="flow-step flow-step-blue">4. 内容生成</span>
-  <span class="flow-arrow">&rarr;</span>
-  <span class="flow-step flow-step-green">5. 生成文件</span>
-  <span class="flow-arrow">&rarr;</span>
-  <span class="flow-step flow-step-green">6. 保存归档</span>
-  <span class="flow-arrow">&rarr;</span>
-  <span class="flow-step flow-step-amber">7. 按需调整</span>
+<div class="mermaid">
+graph LR
+    A["1. 理解需求"] --> B["2. 收集参考"] --> C["3. 结构确认"] --> D["4. 内容生成"]
+    D --> E["5. 生成文件"] --> F["6. 保存归档"] --> G["7. 按需调整"]
+    G -.->|"迭代"| D
 </div>
 
 <h3>3.3 各阶段详解与最佳实践</h3>
@@ -439,14 +379,9 @@
 </div>
 
 <h3>4.3 协作流程</h3>
-<div class="flow">
-  <span class="flow-step flow-step-blue">1. 明确意图</span>
-  <span class="flow-arrow">&rarr;</span>
-  <span class="flow-step flow-step-purple">2. 匹配模板</span>
-  <span class="flow-arrow">&rarr;</span>
-  <span class="flow-step flow-step-green">3. 关联模板</span>
-  <span class="flow-arrow">&rarr;</span>
-  <span class="flow-step flow-step-amber">4. 填写信息</span>
+<div class="mermaid">
+graph LR
+    A["1. 明确意图"] --> B["2. 匹配模板"] --> C["3. 关联模板"] --> D["4. 填写信息"]
 </div>
 
 <hr>
@@ -462,14 +397,9 @@
 </ul>
 
 <h3>5.2 协作流程</h3>
-<div class="flow">
-  <span class="flow-step flow-step-blue">1. 文件确认</span>
-  <span class="flow-arrow">&rarr;</span>
-  <span class="flow-step flow-step-green">2. 上传关联</span>
-  <span class="flow-arrow">&rarr;</span>
-  <span class="flow-step flow-step-purple">3. 是否填表</span>
-  <span class="flow-arrow">&rarr;</span>
-  <span class="flow-step flow-step-amber">4. 提取填写</span>
+<div class="mermaid">
+graph LR
+    A["1. 文件确认"] --> B["2. 上传关联"] --> C["3. 是否填表"] --> D["4. 提取填写"]
 </div>
 
 <hr>
@@ -565,5 +495,30 @@
   Built by Limitless &middot; Powerlaw
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      primaryColor: '#f1f5f9',
+      primaryTextColor: '#1e293b',
+      primaryBorderColor: '#cbd5e1',
+      lineColor: '#94a3b8',
+      secondaryColor: '#f8fafc',
+      tertiaryColor: '#f8fafc',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif',
+      fontSize: '14px',
+      nodeTextColor: '#1e293b',
+    },
+    flowchart: {
+      curve: 'monotoneX',
+      padding: 16,
+      nodeSpacing: 40,
+      rankSpacing: 50,
+      useMaxWidth: true,
+    }
+  });
+</script>
 </body>
 </html>
