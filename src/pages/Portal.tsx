@@ -44,7 +44,7 @@ export default function Portal() {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-blue-800 to-blue-600 bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-gradient-to-r from-[#00C2B1] to-blue-500 bg-clip-text text-transparent">
             Powerlaw
           </h1>
           <p className="mt-4 text-lg text-slate-400 max-w-md mx-auto">
