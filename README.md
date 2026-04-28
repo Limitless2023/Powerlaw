@@ -1,73 +1,72 @@
-# React + TypeScript + Vite
+# Powerlaw
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Powerlaw 是一个面向售前、方案演示和对外交流的内容门户。当前站点托管在 GitHub Pages，用一个 React/Vite 入口页组织产品板块，再用静态 HTML 页面承载具体演示、培训材料和架构说明。
 
-Currently, two official plugins are available:
+站点地址：
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<https://limitless2023.github.io/Powerlaw/>
 
-## React Compiler
+## 内容结构
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+首页入口由 `src/pages/Portal.tsx` 维护，当前按产品线组织：
 
-## Expanding the ESLint configuration
+- `MeCheck 3.0`：智能审查引擎，当前为占位板块
+- `MeFlow 3.0`：智能工作流引擎
+  - `public/meflow-agent.html`
+  - `public/cognition.html`
+- `MeAgent`：多专家智能体平台
+  - `public/meagent-architecture.html`
+  - `public/powerdoc.html`
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+其他内容页：
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- `public/cognition-contract-agent.html`：合同起草智能体客户培训材料
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+新增内容页时，优先参考 [docs/CONTENT.md](docs/CONTENT.md)。
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 技术栈
+
+- React 19
+- TypeScript
+- Vite 7
+- Tailwind CSS 4
+- Framer Motion
+- GitHub Pages 自动部署
+
+## 本地开发
+
+```bash
+pnpm install
+pnpm dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+构建检查：
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+pnpm build
 ```
+
+Lint：
+
+```bash
+pnpm lint
+```
+
+## 部署
+
+仓库使用 GitHub Actions 部署到 GitHub Pages。推送到 `main` 分支后会自动执行：
+
+1. `pnpm install --frozen-lockfile`
+2. `pnpm build`
+3. 上传 `dist/` 到 GitHub Pages
+
+Vite 的 `base` 已配置为 `/Powerlaw/`，静态页面中应使用相对路径引用站内资源，避免部署到子路径后链接失效。
+
+## 内容维护原则
+
+- 首页 `Portal.tsx` 只维护产品线入口和卡片，不承载长文档内容。
+- 长内容优先放在 `public/*.html`，并从 Portal 或上级索引页链接进入。
+- 新静态页优先从 `public/_template.html` 复制，复用 `public/_shared.css`。
+- `public/powerdoc.html` 当前是独立风格页面，暂不强行迁移。
+- 如果一个产品线开始积累多篇内容，先建立索引页，再从索引页链接到具体内容页。
+
