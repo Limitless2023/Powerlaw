@@ -166,10 +166,10 @@
     <p>面向 MeFlow 3.0 的模型选型、数据安全评估与多模型接入策略。</p>
     <div class="meta">MeFlow 3.0 / AI Models / Last updated: 2026-04-28</div>
     <div class="model-strip">
-      <span class="model-pill">Kimi K2.6</span>
+      <span class="model-pill">Kimi K2.5 / K2.6</span>
       <span class="model-pill">GLM-4.7 / GLM-5</span>
       <span class="model-pill">Qwen3.6 / Qwen-Max</span>
-      <span class="model-pill">DeepSeek V4</span>
+      <span class="model-pill">DeepSeek V3.2 / V4</span>
       <span class="model-pill">MiniMax M2.5</span>
     </div>
   </section>
@@ -180,7 +180,8 @@
       <h3>优先推荐：国产开源与开放权重模型</h3>
       <p>当前阶段优先接入国产开放生态模型，兼顾合同场景能力、成本、可控性和企业合规要求。</p>
       <ul>
-        <li>优先评估 Kimi K2.6、Qwen3.6、DeepSeek V4 等新一代模型。</li>
+        <li>Kimi K2.5、DeepSeek V3.2 可作为稳定可用型号继续保留。</li>
+        <li>同步评估 Kimi K2.6、Qwen3.6、DeepSeek V4 等新一代模型。</li>
         <li>综合能力接近国际一线模型，性价比和本地服务响应更有优势。</li>
         <li>开源模型可保留企业自部署路径，为高安全场景预留选择。</li>
       </ul>
@@ -191,16 +192,16 @@
 
     <div class="candidate-grid">
       <div class="candidate-card">
-        <h4>Kimi K2.6</h4>
-        <p>月之暗面新一代开源模型，重点验证长周期 Agent、代码生成、工具调用和复杂合同工作流稳定性。</p>
+        <h4>Kimi K2.5 / K2.6</h4>
+        <p>K2.5 作为稳定可用型号保留，K2.6 作为新一代候选，重点验证长周期 Agent、代码生成和复杂合同工作流稳定性。</p>
       </div>
       <div class="candidate-card">
         <h4>Qwen3.6</h4>
         <p>通义千问开放权重系列，优先关注百炼 API、OpenAI/Anthropic 兼容、自部署和企业云生态。</p>
       </div>
       <div class="candidate-card">
-        <h4>DeepSeek V4</h4>
-        <p>DeepSeek V4 Preview 已开放 API 与权重，适合纳入高性价比推理、代码和 Agent 任务评测池。</p>
+        <h4>DeepSeek V3.2 / V4</h4>
+        <p>V3.2 继续作为稳定可用型号保留，V4 Preview 纳入高性价比推理、代码和 Agent 任务评测池。</p>
       </div>
     </div>
   </section>
@@ -221,26 +222,26 @@
         </tr>
         <tr>
           <td><strong>当前重点型号</strong></td>
-          <td>Kimi K2.6<br><span class="note-text">长周期 Agent / Coding</span></td>
+          <td>Kimi K2.5 / K2.6<br><span class="note-text">稳定型号 + 新一代候选</span></td>
           <td>GLM-4.7 / GLM-5<br><span class="note-text">企业服务与私有化路径</span></td>
           <td>Qwen3.6 / Qwen-Max<br><span class="note-text">百炼 API 与开放权重双路径</span></td>
-          <td>DeepSeek V4-Pro / V4-Flash<br><span class="note-text">1M 上下文与高性价比推理</span></td>
+          <td>DeepSeek V3.2 / V4-Pro / V4-Flash<br><span class="note-text">稳定型号 + 高性价比推理候选</span></td>
           <td>MiniMax M2.5<br><span class="note-text">长上下文与低成本接入</span></td>
         </tr>
         <tr>
           <td><strong>开源</strong></td>
-          <td><span class="check">✓</span> K2.6 开源</td>
+          <td><span class="check">✓</span> K2.5 / K2.6 开源</td>
           <td><span class="check">✓</span> 开源</td>
           <td><span class="check">✓</span> Qwen3.6 开放权重<br><span class="warn">!</span> Qwen-Max 闭源</td>
-          <td><span class="check">✓</span> V4 Preview 开源</td>
+          <td><span class="check">✓</span> V3.2 / V4 Preview 开源</td>
           <td><span class="check">✓</span> 开源</td>
         </tr>
         <tr>
           <td><strong>SOTA 参数量</strong></td>
-          <td>K2.6<br><span class="note-text">以官方模型卡为准</span></td>
+          <td>K2.5 / K2.6<br><span class="note-text">以官方模型卡为准</span></td>
           <td>MoE 355B<br><span class="note-text">32B 激活（4.7）</span></td>
           <td>Qwen3.6-35B-A3B<br><span class="note-text">开放权重系列</span></td>
-          <td>V4-Pro 1.6T / 49B 激活<br><span class="note-text">V4-Flash 284B / 13B 激活</span></td>
+          <td>V3.2 / V4-Pro / V4-Flash<br><span class="note-text">新旧型号并行评估</span></td>
           <td>MoE 230B<br><span class="note-text">10B 激活 · 1M</span></td>
         </tr>
         <tr>
