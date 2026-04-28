@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MeFlow3.0 开放平台 — Powerlaw</title>
+<link rel="stylesheet" href="./_shared.css">
+<style>
+.account-strip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-light);
+  font-size: 13px;
+  padding: 8px 14px;
+}
+
+.account-strip code {
+  color: var(--ink);
+}
+
+.platform-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.platform-card {
+  min-height: 220px;
+}
+
+.platform-card .card-emoji {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--accent-blue);
+  font-size: 20px;
+}
+
+.platform-card .card-link {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 18px;
+  color: var(--accent-blue);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+@media (max-width: 900px) {
+  .platform-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .account-strip {
+    align-items: flex-start;
+    border-radius: 14px;
+    flex-direction: column;
+  }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="./index.html" class="nav-brand">&#9889; Powerlaw</a>
+    <a href="#overview">概览</a>
+    <a href="#columns">栏目</a>
+    <a href="#next">扩展</a>
+  </div>
+</nav>
+
+<main>
+  <section id="overview" class="hero">
+    <h1>MeFlow3.0 开放平台</h1>
+    <p>面向开发者、交付团队和集成伙伴的文档入口，集中访问架构、部署与系统集成材料。</p>
+    <div class="meta">MeFlow 3.0 / Open Platform / Last updated: 2026-04-28</div>
+    <div class="account-strip">
+      <span>公共账号</span>
+      <code>opendoc</code>
+      <span>密码</span>
+      <code>mlzn@123</code>
+    </div>
+  </section>
+
+  <section id="columns">
+    <h2>栏目</h2>
+    <p>当前先维护三个高频入口。后续如果新增 API 指南、SDK、最佳实践或案例库，可以继续在这里扩展。</p>
+
+    <div class="platform-grid">
+      <a class="card platform-card" href="https://openv3.meflow.com.cn/docs/architecture/overview" target="_blank" rel="noreferrer">
+        <span class="card-emoji">&#8962;</span>
+        <h3>技术架构</h3>
+        <p>了解 MeFlow3.0 的整体架构、核心模块、能力边界和系统设计思路。</p>
+        <span class="tag tag-live">Architecture</span>
+        <span class="card-link">打开文档 &rarr;</span>
+      </a>
+
+      <a class="card platform-card" href="https://openv3.meflow.com.cn/docs/architecture/deployment" target="_blank" rel="noreferrer">
+        <span class="card-emoji">&#9881;</span>
+        <h3>运维部署</h3>
+        <p>查看部署方式、环境准备、运行配置与上线维护相关说明。</p>
+        <span class="tag tag-live">Deployment</span>
+        <span class="card-link">打开文档 &rarr;</span>
+      </a>
+
+      <a class="card platform-card" href="https://openv3.meflow.com.cn/docs/integhub/" target="_blank" rel="noreferrer">
+        <span class="card-emoji">&#8644;</span>
+        <h3>系统集成</h3>
+        <p>进入集成中心，查看业务系统接入、能力调用与平台互联相关材料。</p>
+        <span class="tag tag-live">Integration</span>
+        <span class="card-link">打开文档 &rarr;</span>
+      </a>
+    </div>
+  </section>
+
+  <section id="next">
+    <h2>后续扩展</h2>
+    <div class="callout">
+      这个页面作为开放平台的目录层维护。新增栏目时，只需要补一张卡片并在 Portal 保持单一入口即可。
+    </div>
+    <ul>
+      <li>可以继续增加 API 文档、SDK 接入、权限配置、常见问题等栏目。</li>
+      <li>如果某个栏目内容变多，可以再拆成独立索引页。</li>
+      <li>外部文档入口统一新标签页打开，避免用户离开 Powerlaw 后找不到返回路径。</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  Built by Limitless &middot; Powerlaw
+</footer>
+
+</body>
+</html>

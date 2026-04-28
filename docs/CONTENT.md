@@ -106,6 +106,9 @@ meagent-evaluation.html
 
 - MeFlow 3.0 / MeFlow Agent 演示：`public/meflow-agent.html`
 - MeFlow 3.0 / 认知模块：`public/cognition.html`
-- MeFlow 3.0 / MeFlow3.0 集成平台：`https://openv3.meflow.com.cn/docs/intro`
+- MeFlow 3.0 / 开放平台：`public/meflow-open-platform.html`
+  - 技术架构：`https://openv3.meflow.com.cn/docs/architecture/overview`
+  - 运维部署：`https://openv3.meflow.com.cn/docs/architecture/deployment`
+  - 系统集成：`https://openv3.meflow.com.cn/docs/integhub/`
 - MeAgent / MeAgent Architecture：`public/meagent-architecture.html`
 - MeAgent / PowerDoc：`public/powerdoc.html`
