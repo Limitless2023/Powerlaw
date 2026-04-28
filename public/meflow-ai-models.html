@@ -42,6 +42,32 @@
   margin-top: 0;
 }
 
+.candidate-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.candidate-card {
+  border: 1px solid #dbeafe;
+  border-radius: 14px;
+  background: #f8fbff;
+  padding: 18px;
+}
+
+.candidate-card h4 {
+  margin: 0 0 8px;
+  color: #0f172a;
+  font-size: 15px;
+}
+
+.candidate-card p {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 13px;
+}
+
 .compare-wrap {
   overflow-x: auto;
   border: 1px solid var(--border);
@@ -119,6 +145,7 @@
 
 @media (max-width: 900px) {
   .model-layout,
+  .candidate-grid,
   .route-grid {
     grid-template-columns: 1fr;
   }
@@ -147,11 +174,10 @@
     <p>面向 MeFlow 3.0 的模型选型、数据安全评估与多模型接入策略。</p>
     <div class="meta">MeFlow 3.0 / AI Models / Last updated: 2026-04-28</div>
     <div class="model-strip">
-      <span class="model-pill">Kimi K2.5</span>
+      <span class="model-pill">Kimi K2.6</span>
       <span class="model-pill">GLM-4.7 / GLM-5</span>
-      <span class="model-pill">Qwen-Max</span>
-      <span class="model-pill">Qwen3.5</span>
-      <span class="model-pill">DeepSeek V3.2</span>
+      <span class="model-pill">Qwen3.6 / Qwen-Max</span>
+      <span class="model-pill">DeepSeek V4</span>
       <span class="model-pill">MiniMax M2.5</span>
     </div>
   </section>
@@ -160,10 +186,10 @@
     <h2>推荐模型</h2>
     <div class="model-layout">
       <div class="priority-card">
-        <h3>优先推荐：国产开源大模型</h3>
-        <p>当前阶段优先接入国产开源模型，兼顾合同场景能力、成本、可控性和企业合规要求。</p>
+        <h3>优先推荐：国产开源与开放权重模型</h3>
+        <p>当前阶段优先接入国产开放生态模型，兼顾合同场景能力、成本、可控性和企业合规要求。</p>
         <ul>
-          <li>各厂商均承诺不使用企业数据训练模型，适合企业场景先行接入。</li>
+          <li>优先评估 Kimi K2.6、Qwen3.6、DeepSeek V4 等新一代模型。</li>
           <li>综合能力接近国际一线模型，性价比和本地服务响应更有优势。</li>
           <li>开源模型可保留企业自部署路径，为高安全场景预留选择。</li>
         </ul>
@@ -175,6 +201,21 @@
         <div class="callout">
           结论：MeFlow 3.0 不应锁定单一模型，而应通过模型网关抽象模型能力，让不同模型在同一套业务流程中可替换、可评估、可降级。
         </div>
+      </div>
+    </div>
+
+    <div class="candidate-grid">
+      <div class="candidate-card">
+        <h4>Kimi K2.6</h4>
+        <p>月之暗面新一代开源模型，重点验证长周期 Agent、代码生成、工具调用和复杂合同工作流稳定性。</p>
+      </div>
+      <div class="candidate-card">
+        <h4>Qwen3.6</h4>
+        <p>通义千问开放权重系列，优先关注百炼 API、OpenAI/Anthropic 兼容、自部署和企业云生态。</p>
+      </div>
+      <div class="candidate-card">
+        <h4>DeepSeek V4</h4>
+        <p>DeepSeek V4 Preview 已开放 API 与权重，适合纳入高性价比推理、代码和 Agent 任务评测池。</p>
       </div>
     </div>
   </section>
@@ -194,19 +235,27 @@
           <th>MiniMax</th>
         </tr>
         <tr>
+          <td><strong>当前重点型号</strong></td>
+          <td>Kimi K2.6<br><span class="note-text">长周期 Agent / Coding</span></td>
+          <td>GLM-4.7 / GLM-5<br><span class="note-text">企业服务与私有化路径</span></td>
+          <td>Qwen3.6 / Qwen-Max<br><span class="note-text">百炼 API 与开放权重双路径</span></td>
+          <td>DeepSeek V4-Pro / V4-Flash<br><span class="note-text">1M 上下文与高性价比推理</span></td>
+          <td>MiniMax M2.5<br><span class="note-text">长上下文与低成本接入</span></td>
+        </tr>
+        <tr>
           <td><strong>开源</strong></td>
+          <td><span class="check">✓</span> K2.6 开源</td>
           <td><span class="check">✓</span> 开源</td>
-          <td><span class="check">✓</span> 开源</td>
-          <td><span class="check">✓</span> Qwen3.5 开源<br><span class="warn">!</span> Qwen-Max 闭源</td>
-          <td><span class="check">✓</span> 开源</td>
+          <td><span class="check">✓</span> Qwen3.6 开放权重<br><span class="warn">!</span> Qwen-Max 闭源</td>
+          <td><span class="check">✓</span> V4 Preview 开源</td>
           <td><span class="check">✓</span> 开源</td>
         </tr>
         <tr>
           <td><strong>SOTA 参数量</strong></td>
-          <td>MoE 1T<br><span class="note-text">32B 激活 · 256K</span></td>
+          <td>K2.6<br><span class="note-text">以官方模型卡为准</span></td>
           <td>MoE 355B<br><span class="note-text">32B 激活（4.7）</span></td>
-          <td>MoE 397B<br><span class="note-text">17B 激活（Qwen3.5）</span></td>
-          <td>MoE 685B<br><span class="note-text">37B 激活（V3.2）</span></td>
+          <td>Qwen3.6-35B-A3B<br><span class="note-text">开放权重系列</span></td>
+          <td>V4-Pro 1.6T / 49B 激活<br><span class="note-text">V4-Flash 284B / 13B 激活</span></td>
           <td>MoE 230B<br><span class="note-text">10B 激活 · 1M</span></td>
         </tr>
         <tr>
@@ -222,7 +271,7 @@
           <td><span class="check">✓</span> 企业版协议明确</td>
           <td><span class="check">✓</span> 协议明确<br><span class="note-text">未获授权不使用</span></td>
           <td><span class="check">✓</span> 协议明确<br><span class="note-text">未经授权不训练</span></td>
-          <td><span class="check">✓</span> 可关闭<br><span class="note-text">设置中关闭数据优化</span></td>
+          <td><span class="warn">!</span> 需企业协议确认<br><span class="note-text">技术发布不等同于留存承诺</span></td>
           <td><span class="warn">!</span> 待确认<br><span class="note-text">API 无状态不存储</span></td>
         </tr>
         <tr>
@@ -251,10 +300,10 @@
         </tr>
         <tr>
           <td><strong>企业自部署</strong></td>
-          <td><span class="check">✓</span> 开源可自部署<br><span class="note-text">MoE 1T，门槛高</span></td>
+          <td><span class="check">✓</span> 开源可自部署<br><span class="note-text">新版本资源需求需评估</span></td>
           <td><span class="check">✓</span> 开源可自部署<br><span class="note-text">MoE 355B，门槛高</span></td>
-          <td><span class="check">✓</span> 阿里云部署<br><span class="note-text">含 Kimi/GLM 等主流模型</span></td>
-          <td><span class="check">✓</span> 开源可自部署<br><span class="note-text">MoE 685B，门槛高</span></td>
+          <td><span class="check">✓</span> 阿里云部署 / 自部署<br><span class="note-text">Qwen3.6 支持多框架推理</span></td>
+          <td><span class="check">✓</span> 开源可自部署<br><span class="note-text">V4-Pro / V4-Flash 门槛不同</span></td>
           <td><span class="check">✓</span> 开源可自部署<br><span class="note-text">MoE 230B</span></td>
         </tr>
       </table>
@@ -290,7 +339,17 @@
         <span>2025.12 DeepSeek V3.2 / GLM-4.7</span>
         <span>2026.01 Kimi K2.5</span>
         <span>2026.02 GLM-5 / Qwen-Max / MiniMax M2.5</span>
+        <span>2026.04 Kimi K2.6 / Qwen3.6 / DeepSeek V4</span>
       </div>
+    </div>
+
+    <div class="callout callout-warn">
+      <strong>调研口径：</strong>模型能力信息来自 Kimi、Qwen 和 DeepSeek 官方公开资料；企业数据留存、训练边界、ZDR 与私有化交付仍需逐项签署正式协议。
+      <p>
+        <a href="https://www.kimi.com/blog/kimi-k2-6" target="_blank" rel="noopener">Kimi K2.6</a>
+        · <a href="https://github.com/QwenLM/Qwen3.6" target="_blank" rel="noopener">Qwen3.6</a>
+        · <a href="https://api-docs.deepseek.com/news/news260424" target="_blank" rel="noopener">DeepSeek V4</a>
+      </p>
     </div>
   </section>
 </main>
