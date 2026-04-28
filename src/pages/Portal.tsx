@@ -23,6 +23,11 @@ const icons = {
       <rect x="3" y="4" width="7" height="6" rx="1.5" /><rect x="14" y="4" width="7" height="6" rx="1.5" /><rect x="8.5" y="15" width="7" height="6" rx="1.5" /><path d="M10 7h4" /><path d="M6.5 10v2.5a2.5 2.5 0 0 0 2.5 2.5" /><path d="M17.5 10v2.5A2.5 2.5 0 0 1 15 15" />
     </svg>
   ),
+  model: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3a4 4 0 0 0-4 4v1H7a4 4 0 0 0 0 8h1v1a4 4 0 0 0 8 0v-1h1a4 4 0 0 0 0-8h-1V7a4 4 0 0 0-4-4Z" /><path d="M8 8h8" /><path d="M8 16h8" /><path d="M12 3v18" />
+    </svg>
+  ),
   book: (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /><line x1="8" y1="7" x2="16" y2="7" /><line x1="8" y1="11" x2="13" y2="11" />
@@ -75,6 +80,13 @@ const topSections: ProductSection[] = [
         href: "meflow-open-platform.html",
         icon: icons.integration,
         tag: "Open Platform",
+      },
+      {
+        title: "Agent 大模型接入",
+        description: "模型选型、厂商安全对比与多模型适配架构",
+        href: "meflow-ai-models.html",
+        icon: icons.model,
+        tag: "Models",
       },
     ],
   },
