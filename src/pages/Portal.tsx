@@ -18,6 +18,11 @@ const icons = {
       <circle cx="12" cy="5" r="3" /><line x1="12" y1="8" x2="12" y2="12" /><path d="M6 15h12" /><line x1="6" y1="15" x2="6" y2="19" /><line x1="12" y1="12" x2="12" y2="19" /><line x1="18" y1="15" x2="18" y2="19" />
     </svg>
   ),
+  integration: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="4" width="7" height="6" rx="1.5" /><rect x="14" y="4" width="7" height="6" rx="1.5" /><rect x="8.5" y="15" width="7" height="6" rx="1.5" /><path d="M10 7h4" /><path d="M6.5 10v2.5a2.5 2.5 0 0 0 2.5 2.5" /><path d="M17.5 10v2.5A2.5 2.5 0 0 1 15 15" />
+    </svg>
+  ),
   book: (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /><line x1="8" y1="7" x2="16" y2="7" /><line x1="8" y1="11" x2="13" y2="11" />
@@ -31,6 +36,7 @@ interface ProjectItem {
   href: string
   icon: ReactNode
   tag: string
+  external?: boolean
 }
 
 interface ProductSection {
@@ -62,6 +68,14 @@ const topSections: ProductSection[] = [
         href: "cognition.html",
         icon: icons.book,
         tag: "Cognition",
+      },
+      {
+        title: "MeFlow3.0 集成平台",
+        description: "开放平台文档入口 — 公共账号 opendoc / mlzn@123",
+        href: "https://openv3.meflow.com.cn/docs/intro",
+        icon: icons.integration,
+        tag: "Open Platform",
+        external: true,
       },
     ],
   },
@@ -133,6 +147,8 @@ export default function Portal() {
                     <motion.a
                       key={item.href}
                       href={item.href}
+                      target={item.external ? "_blank" : undefined}
+                      rel={item.external ? "noreferrer" : undefined}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       className="group block rounded-xl border border-slate-200 bg-white/80 backdrop-blur-xl px-4 py-3.5 shadow-sm transition-all hover:border-blue-300 hover:shadow-md"
@@ -182,6 +198,8 @@ export default function Portal() {
               <motion.a
                 key={item.href}
                 href={item.href}
+                target={item.external ? "_blank" : undefined}
+                rel={item.external ? "noreferrer" : undefined}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="group block rounded-xl border border-slate-200 bg-white/80 backdrop-blur-xl px-4 py-3.5 shadow-sm transition-all hover:border-blue-300 hover:shadow-md"

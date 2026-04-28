@@ -21,6 +21,8 @@
 3. 替换页面标题、导航、hero、正文和 footer
 4. 在 `Portal.tsx` 或对应索引页中补入口卡片
 
+如果新增的是外部系统入口，可以直接在 `Portal.tsx` 的内容项里填写完整 URL，并设置 `external: true`，这样会在新标签页打开。
+
 ### 新增一组同类内容
 
 如果一个产品线下会有多篇内容，不建议把所有入口都堆到 Portal。建议建立一个索引页，例如：
@@ -100,3 +102,10 @@ meagent-evaluation.html
 - 不重构 `Portal.tsx` 的整体结构
 - 不统一改造 `public/powerdoc.html`，它当前作为独立风格页面保留
 
+## 当前入口索引
+
+- MeFlow 3.0 / MeFlow Agent 演示：`public/meflow-agent.html`
+- MeFlow 3.0 / 认知模块：`public/cognition.html`
+- MeFlow 3.0 / MeFlow3.0 集成平台：`https://openv3.meflow.com.cn/docs/intro`
+- MeAgent / MeAgent Architecture：`public/meagent-architecture.html`
+- MeAgent / PowerDoc：`public/powerdoc.html`
