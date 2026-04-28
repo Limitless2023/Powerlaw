@@ -24,13 +24,6 @@
   padding: 7px 14px;
 }
 
-.model-layout {
-  display: grid;
-  grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.7fr);
-  gap: 24px;
-  align-items: start;
-}
-
 .priority-card {
   border: 1px solid #b0e4ea;
   border-radius: 16px;
@@ -144,7 +137,6 @@
 }
 
 @media (max-width: 900px) {
-  .model-layout,
   .candidate-grid,
   .route-grid {
     grid-template-columns: 1fr;
@@ -184,23 +176,16 @@
 
   <section id="models">
     <h2>推荐模型</h2>
-    <div class="model-layout">
-      <div class="priority-card">
-        <h3>优先推荐：国产开源与开放权重模型</h3>
-        <p>当前阶段优先接入国产开放生态模型，兼顾合同场景能力、成本、可控性和企业合规要求。</p>
-        <ul>
-          <li>优先评估 Kimi K2.6、Qwen3.6、DeepSeek V4 等新一代模型。</li>
-          <li>综合能力接近国际一线模型，性价比和本地服务响应更有优势。</li>
-          <li>开源模型可保留企业自部署路径，为高安全场景预留选择。</li>
-        </ul>
-      </div>
-
-      <div class="card">
-        <h3>国际模型作为能力对标</h3>
-        <p>Claude Opus 4.6、GPT-5.2、Gemini 3.0 Pro 仍可作为能力上限参考，但实际生产接入需要额外评估网络出海、数据跨境与合规成本。</p>
-        <div class="callout">
-          结论：MeFlow 3.0 不应锁定单一模型，而应通过模型网关抽象模型能力，让不同模型在同一套业务流程中可替换、可评估、可降级。
-        </div>
+    <div class="priority-card">
+      <h3>优先推荐：国产开源与开放权重模型</h3>
+      <p>当前阶段优先接入国产开放生态模型，兼顾合同场景能力、成本、可控性和企业合规要求。</p>
+      <ul>
+        <li>优先评估 Kimi K2.6、Qwen3.6、DeepSeek V4 等新一代模型。</li>
+        <li>综合能力接近国际一线模型，性价比和本地服务响应更有优势。</li>
+        <li>开源模型可保留企业自部署路径，为高安全场景预留选择。</li>
+      </ul>
+      <div class="callout">
+        结论：MeFlow 3.0 不应锁定单一模型，而应通过模型网关抽象模型能力，让不同模型在同一套业务流程中可替换、可评估、可降级。
       </div>
     </div>
 
