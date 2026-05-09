@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>对外 FAQ — Powerlaw</title>
+<meta name="description" content="Powerlaw 客户视角的常见问题：产品、数据安全、集成部署、大模型、商业合作与效率价值。">
+<link rel="stylesheet" href="../_shared.css">
+<style>
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 24px 0 8px;
+  }
+
+  .filter-bar button {
+    appearance: none;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg);
+    color: var(--ink-light);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+
+  .filter-bar button:hover {
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+  }
+
+  .filter-bar button.active {
+    border-color: var(--accent-blue);
+    background: var(--accent-blue);
+    color: #ffffff;
+  }
+
+  .faq-section {
+    margin-top: 36px;
+  }
+
+  .faq-section h2 {
+    margin-top: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+    font-size: 1.18rem;
+    color: var(--ink);
+  }
+
+  .faq-section .section-desc {
+    margin-top: 4px;
+    color: var(--ink-muted);
+    font-size: 0.92rem;
+  }
+
+  .faq-list {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  details.faq-item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  details.faq-item[open] {
+    border-color: var(--accent-blue);
+    box-shadow: 0 4px 18px rgba(59, 130, 246, 0.06);
+  }
+
+  details.faq-item summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 16px 20px;
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+
+  details.faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  details.faq-item summary::after {
+    content: "＋";
+    color: var(--ink-muted);
+    font-size: 1.1rem;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+
+  details.faq-item[open] summary::after {
+    content: "−";
+    color: var(--accent-blue);
+  }
+
+  details.faq-item .answer {
+    padding: 0 20px 18px;
+    color: var(--ink-light);
+    font-size: 0.94rem;
+    line-height: 1.78;
+  }
+
+  details.faq-item .meta {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--ink-muted);
+  }
+
+  details.faq-item .meta span {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 2px 8px;
+    background: var(--surface);
+  }
+
+  .empty-state {
+    margin: 40px 0;
+    padding: 40px;
+    text-align: center;
+    color: var(--ink-muted);
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+  }
+
+  .toc {
+    margin: 32px 0;
+    padding: 18px 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+  }
+
+  .toc strong {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--ink);
+    font-size: 0.92rem;
+  }
+
+  .toc ul {
+    margin: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .toc a {
+    color: var(--accent-blue);
+    text-decoration: none;
+    font-size: 13px;
+  }
+
+  .toc a:hover {
+    text-decoration: underline;
+  }
+
+  .feedback-note {
+    margin-top: 56px;
+    padding: 20px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    color: var(--ink-light);
+    font-size: 13px;
+  }
+
+  .feedback-note strong {
+    color: var(--ink);
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-brand">⚡ Powerlaw</a>
+    <a href="#filter">常见问题</a>
+    <a href="#cat-product">产品</a>
+    <a href="#cat-security">安全</a>
+    <a href="#cat-integration">集成</a>
+    <a href="#cat-model">大模型</a>
+    <a href="#cat-commerce">商业</a>
+    <a href="#cat-roi">价值</a>
+  </div>
+</nav>
+
+<main>
+  <section class="hero">
+    <h1>对外 FAQ</h1>
+    <p class="subtitle">客户视角的常见问题，覆盖产品、数据安全、集成部署、大模型、商业合作与效率价值。每一条都可以单独转发给客户参考。</p>
+    <div class="meta">Powerlaw / Public FAQ / Last updated: 2026-05-09</div>
+  </section>
+
+  <section id="filter">
+    <div class="toc">
+      <strong>按主题快速定位</strong>
+      <ul id="toc-list"></ul>
+    </div>
+    <div class="filter-bar" id="filter-bar"></div>
+    <p style="font-size: 13px; color: var(--ink-muted); margin-top: 8px;">
+      内容默认面向客户公开。若发现条目过时或表述不准确，请联系内容维护者。
+    </p>
+  </section>
+
+  <div id="faq-root"></div>
+
+  <div class="feedback-note">
+    <strong>没有找到你要的答案？</strong>
+    具体场景或定制需求，请联系售前团队对接；安全、合规、SLA 等敏感条款以正式商务合同为准。这份 FAQ 会持续更新，欢迎在使用过程中反馈缺失的高频问题。
+  </div>
+</main>
+
+<footer>
+  Built by Limitless &middot; Powerlaw
+</footer>
+
+<script>
+(async function() {
+  const root = document.getElementById('faq-root');
+  const filterBar = document.getElementById('filter-bar');
+  const tocList = document.getElementById('toc-list');
+
+  let data;
+  try {
+    const res = await fetch('./data.json');
+    if (!res.ok) throw new Error('data.json fetch failed: ' + res.status);
+    data = await res.json();
+  } catch (err) {
+    root.innerHTML = '<div class="empty-state">FAQ 数据加载失败（' + err.message + '），请稍后重试或联系内容维护者。</div>';
+    return;
+  }
+
+  const categories = data.categories || [];
+  const items = (data.items || []).filter((i) => i.visibility === 'public');
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[c]);
+  }
+
+  function renderCategory(cat) {
+    const catItems = items.filter((i) => i.tags && i.tags.includes(cat.id));
+    if (catItems.length === 0) return '';
+    return [
+      '<section class="faq-section" id="cat-' + cat.id + '">',
+      '<h2>' + escapeHtml(cat.title) + '<span style="color: var(--ink-muted); font-weight: 500; font-size: 0.85rem; margin-left: 8px;">（' + catItems.length + '）</span></h2>',
+      cat.description ? '<p class="section-desc">' + escapeHtml(cat.description) + '</p>' : '',
+      '<div class="faq-list">',
+      catItems.map((item) => [
+        '<details class="faq-item" id="' + escapeHtml(item.id) + '">',
+        '<summary>' + escapeHtml(item.question) + '</summary>',
+        '<div class="answer">',
+        '<p>' + escapeHtml(item.answer) + '</p>',
+        '<div class="meta">',
+        item.audience ? item.audience.map((a) => '<span>' + escapeHtml(a) + '</span>').join('') : '',
+        item.product && item.product !== '通用' ? '<span>' + escapeHtml(item.product) + '</span>' : '',
+        item.stage && item.stage.length ? '<span>' + escapeHtml(item.stage.join(' · ')) + '</span>' : '',
+        '</div>',
+        '</div>',
+        '</details>',
+      ].join('')).join(''),
+      '</div>',
+      '</section>',
+    ].join('');
+  }
+
+  function render(activeCategory) {
+    if (activeCategory === 'all') {
+      root.innerHTML = categories.map(renderCategory).join('');
+    } else {
+      const cat = categories.find((c) => c.id === activeCategory);
+      root.innerHTML = cat ? renderCategory(cat) : '<div class="empty-state">未找到该主题。</div>';
+    }
+  }
+
+  // Build TOC
+  tocList.innerHTML = categories.map((c) => {
+    const count = items.filter((i) => i.tags && i.tags.includes(c.id)).length;
+    return '<li><a href="#cat-' + c.id + '">' + escapeHtml(c.title) + '<span style="color: var(--ink-muted); margin-left: 4px;">(' + count + ')</span></a></li>';
+  }).join('');
+
+  // Build filter bar
+  const buttons = [{ id: 'all', title: '全部' }].concat(categories);
+  filterBar.innerHTML = buttons.map((b) =>
+    '<button data-cat="' + b.id + '"' + (b.id === 'all' ? ' class="active"' : '') + '>' + escapeHtml(b.title) + '</button>'
+  ).join('');
+
+  filterBar.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-cat]');
+    if (!btn) return;
+    filterBar.querySelectorAll('button').forEach((b) => b.classList.remove('active'));
+    btn.classList.add('active');
+    render(btn.dataset.cat);
+    if (btn.dataset.cat === 'all') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  render('all');
+
+  // Auto-open if hash present
+  if (window.location.hash) {
+    const target = document.getElementById(window.location.hash.slice(1));
+    if (target && target.tagName === 'DETAILS') {
+      target.open = true;
+      target.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    }
+  }
+})();
+</script>
+
+</body>
+</html>
