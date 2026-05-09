@@ -1,16 +1,17 @@
 # 内容维护说明
 
-这份文档用于后续持续添加 Powerlaw 内容，目标是让新增页面有固定入口、固定样式和固定检查流程。
+这份文档用于后续持续添加 Powerlaw 内容，目标是让新增页面有固定入口、固定样式、固定元数据和固定检查流程。
 
 ## 什么时候改哪里
 
-### 新增一个产品线
+### 新增一个产品线或内容入口
 
-修改 `src/pages/Portal.tsx`：
+优先修改 `src/data/content.ts`：
 
-- 在 `topSections` 或 `bottomSection` 中新增产品线
-- 给产品线补充 `name`、`description` 和 `items`
-- 如果还没有内容，可以先保持 `items: []`，首页会显示“即将上线”
+- 产品级入口放入 `productSummaries`
+- 具体资料入口放入 `contentItems`
+- 如果还没有页面，可以先不填 `href`，首页会显示“待补”
+- 不建议直接在 `Portal.tsx` 硬编码内容卡片
 
 ### 给现有产品线新增一篇内容
 
@@ -19,9 +20,9 @@
 1. 复制 `public/_template.html`
 2. 重命名为语义化文件名，例如 `public/mecheck-review-agent.html`
 3. 替换页面标题、导航、hero、正文和 footer
-4. 在 `Portal.tsx` 或对应索引页中补入口卡片
+4. 在 `src/data/content.ts` 的 `contentItems` 中补入口卡片
 
-如果新增的是外部系统入口，可以直接在 `Portal.tsx` 的内容项里填写完整 URL，并设置 `external: true`，这样会在新标签页打开。
+如果新增的是外部系统入口，可以在 `contentItems.href` 中填写完整 URL；如果内容带敏感信息，不要放入公开仓库。
 
 ### 新增一组同类内容
 
@@ -87,10 +88,40 @@ meagent-evaluation.html
 
 避免中文文件名、空格和过长文件名。
 
+## Content registry
+
+首页使用 `src/data/content.ts` 作为统一资料清单。每条内容都应补齐：
+
+```ts
+{
+  id: "stable-id",
+  title: "客户可读标题",
+  description: "一句话说明客户为什么要看",
+  href: "example.html",
+  audience: ["业务负责人", "法务"],
+  materialType: "产品概览",
+  product: "MeFlow",
+  stage: ["初步了解", "方案评估"],
+  visibility: "public",
+  tags: ["demo", "workflow"],
+  owner: "Powerlaw",
+  lastUpdated: "2026-05-09",
+}
+```
+
+字段约定：
+
+- `audience`：内容面向谁看，优先从客户角色出发。
+- `materialType`：内容属于产品概览、场景方案、演示、架构、安全、集成、FAQ、案例或使用指南。
+- `product`：归属 MeFlow、MeAgent、MeCheck、PowerDoc 或通用。
+- `stage`：客户所处阶段，包括初步了解、方案评估、技术评审、POC、采购决策。
+- `visibility`：公开站点默认 `public`；`gated` 和 `internal` 仅作为后续权限控制预留，不要把敏感正文提交到公开仓库。
+- `tags`：用于搜索、过滤和专题聚合，保持小写短横线。
+
 ## 新增内容前检查清单
 
 - 页面是否能通过相对路径打开
-- 是否从 Portal 或索引页有入口
+- 是否从 `src/data/content.ts` 或索引页有入口
 - 标题是否清楚表达内容用途
 - footer 是否保持 `Built by Limitless · Powerlaw`
 - 移动端是否可读
@@ -99,13 +130,14 @@ meagent-evaluation.html
 ## 当前不做的事
 
 - 不把现有静态 HTML 强行迁移到 MDX / VitePress
-- 不重构 `Portal.tsx` 的整体结构
+- 不把内部 Battle Card、报价、SLA、敏感客户信息放进公开站点
 - 不统一改造 `public/powerdoc.html`，它当前作为独立风格页面保留
 
 ## 当前入口索引
 
 - MeFlow 3.0 / MeFlow Agent 演示：`public/meflow-agent.html`
 - MeFlow 3.0 / 认知模块：`public/cognition.html`
+- MeFlow 3.0 / 合同起草智能体培训：`public/cognition-contract-agent.html`
 - MeFlow 3.0 / Agent 大模型接入：`public/meflow-ai-models.html`
 - MeFlow 3.0 / 开放平台：`public/meflow-open-platform.html`
   - 技术架构：`https://openv3.meflow.com.cn/docs/architecture/overview`

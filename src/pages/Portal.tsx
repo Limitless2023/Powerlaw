@@ -1,247 +1,250 @@
 import { motion } from "framer-motion"
 import GradientBg from "@/components/GradientBg"
 import type { ReactNode } from "react"
+import {
+  getItemsForGroup,
+  materialGroups,
+  productSummaries,
+  type ContentItem,
+  type ProductSummary,
+} from "@/data/content"
 
-const icons = {
-  architecture: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" /><line x1="10" y1="6.5" x2="14" y2="6.5" /><line x1="6.5" y1="10" x2="6.5" y2="14" /><line x1="17.5" y1="10" x2="17.5" y2="14" />
-    </svg>
-  ),
-  doc: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /><polyline points="10 9 9 9 8 9" />
-    </svg>
-  ),
-  flow: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="5" r="3" /><line x1="12" y1="8" x2="12" y2="12" /><path d="M6 15h12" /><line x1="6" y1="15" x2="6" y2="19" /><line x1="12" y1="12" x2="12" y2="19" /><line x1="18" y1="15" x2="18" y2="19" />
-    </svg>
-  ),
-  integration: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="4" width="7" height="6" rx="1.5" /><rect x="14" y="4" width="7" height="6" rx="1.5" /><rect x="8.5" y="15" width="7" height="6" rx="1.5" /><path d="M10 7h4" /><path d="M6.5 10v2.5a2.5 2.5 0 0 0 2.5 2.5" /><path d="M17.5 10v2.5A2.5 2.5 0 0 1 15 15" />
-    </svg>
-  ),
-  model: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 3a4 4 0 0 0-4 4v1H7a4 4 0 0 0 0 8h1v1a4 4 0 0 0 8 0v-1h1a4 4 0 0 0 0-8h-1V7a4 4 0 0 0-4-4Z" /><path d="M8 8h8" /><path d="M8 16h8" /><path d="M12 3v18" />
-    </svg>
-  ),
-  book: (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /><line x1="8" y1="7" x2="16" y2="7" /><line x1="8" y1="11" x2="13" y2="11" />
-    </svg>
-  ),
+const groupAccent: Record<string, string> = {
+  product: "border-cyan-200 text-cyan-700 bg-cyan-50",
+  scenario: "border-amber-200 text-amber-700 bg-amber-50",
+  technology: "border-blue-200 text-blue-700 bg-blue-50",
+  resource: "border-emerald-200 text-emerald-700 bg-emerald-50",
 }
 
-interface ProjectItem {
-  title: string
-  description: string
-  href: string
-  icon: ReactNode
-  tag: string
-  external?: boolean
+function CardLink({
+  href,
+  children,
+  className = "",
+}: {
+  href?: string
+  children: ReactNode
+  className?: string
+}) {
+  if (!href) {
+    return (
+      <div
+        className={`rounded-lg border border-dashed border-slate-200 bg-slate-50/80 ${className}`}
+      >
+        {children}
+      </div>
+    )
+  }
+
+  return (
+    <motion.a
+      href={href}
+      whileHover={{ y: -2 }}
+      whileTap={{ scale: 0.99 }}
+      className={`group block rounded-lg border border-slate-200 bg-white/90 shadow-sm transition-all hover:border-blue-300 hover:shadow-md ${className}`}
+    >
+      {children}
+    </motion.a>
+  )
 }
 
-interface ProductSection {
-  name: string
-  description: string
-  items: ProjectItem[]
+function ProductCard({ product }: { product: ProductSummary }) {
+  return (
+    <CardLink href={product.href} className="p-5">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+            {product.position}
+          </p>
+          <h3 className="mt-2 text-lg font-bold text-slate-900">
+            {product.title}
+          </h3>
+        </div>
+        <span
+          className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${
+            product.status === "available"
+              ? "bg-emerald-50 text-emerald-700"
+              : "bg-slate-100 text-slate-500"
+          }`}
+        >
+          {product.status === "available" ? "已有资料" : "规划中"}
+        </span>
+      </div>
+      <p className="mt-4 text-sm leading-6 text-slate-600">
+        {product.description}
+      </p>
+    </CardLink>
+  )
 }
 
-const topSections: ProductSection[] = [
-  {
-    name: "MeCheck 3.0",
-    description: "智能审查引擎 — 即将上线",
-    items: [],
-  },
-  {
-    name: "MeFlow 3.0",
-    description: "智能工作流引擎 — Agent 驱动的端到端自动化",
-    items: [
-      {
-        title: "MeFlow Agent 演示",
-        description: "MeFlow Agent 多场景能力演示 — 对话、编排、检索与流程自动化",
-        href: "meflow-agent.html",
-        icon: icons.flow,
-        tag: "Demo",
-      },
-      {
-        title: "认知模块",
-        description: "产品认知与培训材料 — 帮助团队快速理解 AI 协作方式",
-        href: "cognition.html",
-        icon: icons.book,
-        tag: "Cognition",
-      },
-      {
-        title: "开放平台",
-        description: "MeFlow3.0 开放平台入口 — 技术架构、运维部署与系统集成",
-        href: "meflow-open-platform.html",
-        icon: icons.integration,
-        tag: "Open Platform",
-      },
-      {
-        title: "Agent 大模型接入",
-        description: "模型选型、厂商安全对比与多模型适配架构",
-        href: "meflow-ai-models.html",
-        icon: icons.model,
-        tag: "Models",
-      },
-    ],
-  },
-]
-
-const bottomSection: ProductSection = {
-  name: "MeAgent",
-  description: "多专家智能体平台 — 架构设计与核心能力",
-  items: [
-    {
-      title: "MeAgent Architecture",
-      description: "多专家智能体架构设计与思考",
-      href: "meagent-architecture.html",
-      icon: icons.architecture,
-      tag: "Architecture",
-    },
-    {
-      title: "PowerDoc",
-      description: "超大型合同的智能解构与审查 — 面向长文档的结构化索引引擎",
-      href: "powerdoc.html",
-      icon: icons.doc,
-      tag: "Product",
-    },
-  ],
+function ContentCard({ item }: { item: ContentItem }) {
+  return (
+    <CardLink href={item.href} className="p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h4 className="text-sm font-semibold leading-5 text-slate-900">
+            {item.title}
+          </h4>
+          <p className="mt-2 text-xs leading-5 text-slate-500">
+            {item.description}
+          </p>
+        </div>
+        {!item.href && (
+          <span className="shrink-0 rounded-full bg-slate-100 px-2 py-1 text-[11px] font-medium text-slate-500">
+            待补
+          </span>
+        )}
+      </div>
+      <div className="mt-4 flex flex-wrap gap-1.5">
+        <span className="rounded-full bg-slate-100 px-2 py-1 text-[11px] font-medium text-slate-600">
+          {item.product}
+        </span>
+        <span className="rounded-full bg-slate-100 px-2 py-1 text-[11px] font-medium text-slate-600">
+          {item.materialType}
+        </span>
+        {item.audience.slice(0, 2).map((audience) => (
+          <span
+            key={audience}
+            className="rounded-full bg-slate-100 px-2 py-1 text-[11px] font-medium text-slate-600"
+          >
+            {audience}
+          </span>
+        ))}
+      </div>
+    </CardLink>
+  )
 }
 
 export default function Portal() {
   return (
     <>
       <GradientBg />
-      <main className="relative z-10 min-h-screen flex flex-col items-center px-6 py-20">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16 mt-12"
-        >
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight bg-gradient-to-r from-[#00C2B1] to-blue-500 bg-clip-text text-transparent">
-            Powerlaw
-          </h1>
-          <p className="mt-4 text-lg text-slate-400 max-w-md mx-auto">
-            Ideas, Projects & Experiments
-          </p>
-        </motion.div>
+      <main className="relative z-10 min-h-screen px-5 py-12 md:px-8 md:py-16">
+        <div className="mx-auto max-w-6xl">
+          <motion.header
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="grid gap-8 border-b border-slate-200 pb-10 md:grid-cols-[1.15fr_0.85fr] md:items-end"
+          >
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-cyan-700">
+                Powerlaw
+              </p>
+              <h1 className="mt-4 max-w-3xl text-4xl font-extrabold tracking-tight text-slate-950 md:text-6xl">
+                AI 产品资料中心
+              </h1>
+              <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600 md:text-lg">
+                面向客户、伙伴和售前转发场景的公开资料库。用一套客户可读的材料说明产品能力、业务场景、技术架构与后续评估路径。
+              </p>
+            </div>
+            <div className="rounded-lg border border-slate-200 bg-white/80 p-5 shadow-sm backdrop-blur">
+              <p className="text-sm font-semibold text-slate-900">
+                定位原则
+              </p>
+              <p className="mt-3 text-sm leading-6 text-slate-600">
+                对外可分享为主，售前现场讲解可直接打开；内部 Battle Card、报价、SLA 和敏感客户信息另放私有工作库。
+              </p>
+            </div>
+          </motion.header>
 
-        {/* Top Row: MeCheck + MeFlow */}
-        <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
-          {topSections.map((section, si) => (
-            <motion.div
-              key={section.name}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 + si * 0.15 }}
-              className="flex flex-col"
-            >
-              <div className="mb-4">
-                <h2 className="text-base font-bold text-slate-800 tracking-tight">
-                  {section.name}
+          <motion.section
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="py-10"
+          >
+            <div className="mb-5 flex flex-col justify-between gap-2 md:flex-row md:items-end">
+              <div>
+                <h2 className="text-xl font-bold text-slate-950">
+                  产品能力地图
                 </h2>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  {section.description}
+                <p className="mt-2 text-sm text-slate-500">
+                  先让客户在 30 秒内理解每个模块负责什么。
                 </p>
               </div>
+              <p className="text-xs text-slate-400">
+                所有条目后续由 content registry 统一维护
+              </p>
+            </div>
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              {productSummaries.map((product) => (
+                <ProductCard key={product.product} product={product} />
+              ))}
+            </div>
+          </motion.section>
 
-              {section.items.length > 0 ? (
-                <div className="grid gap-2.5 flex-1">
-                  {section.items.map((item) => (
-                    <motion.a
-                      key={item.href}
-                      href={item.href}
-                      target={item.external ? "_blank" : undefined}
-                      rel={item.external ? "noreferrer" : undefined}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="group block rounded-xl border border-slate-200 bg-white/80 backdrop-blur-xl px-4 py-3.5 shadow-sm transition-all hover:border-blue-300 hover:shadow-md"
-                    >
-                      <div className="flex items-start gap-2.5">
-                        <span className="text-slate-400 group-hover:text-slate-600 transition-colors shrink-0 mt-0.5">
-                          {item.icon}
-                        </span>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-[14px] font-semibold text-slate-800 group-hover:text-blue-600 transition-colors leading-tight">
-                            {item.title}
-                          </h3>
-                          <p className="mt-1 text-[12px] text-slate-500 leading-relaxed">
-                            {item.description}
-                          </p>
-                        </div>
-                      </div>
-                    </motion.a>
-                  ))}
-                </div>
-              ) : (
-                <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 px-4 py-8 text-center flex-1 flex items-center justify-center">
-                  <p className="text-sm text-slate-400">即将上线</p>
-                </div>
-              )}
-            </motion.div>
-          ))}
-        </div>
+          <section className="grid gap-4 pb-10 md:grid-cols-2">
+            {materialGroups.map((group, index) => {
+              const items = getItemsForGroup(group)
 
-        {/* Bottom Row: MeAgent */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="w-full max-w-4xl mt-8"
-        >
-          <div className="mb-4">
-            <h2 className="text-base font-bold text-slate-800 tracking-tight">
-              {bottomSection.name}
-            </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
-              {bottomSection.description}
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-            {bottomSection.items.map((item) => (
-              <motion.a
-                key={item.href}
-                href={item.href}
-                target={item.external ? "_blank" : undefined}
-                rel={item.external ? "noreferrer" : undefined}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="group block rounded-xl border border-slate-200 bg-white/80 backdrop-blur-xl px-4 py-3.5 shadow-sm transition-all hover:border-blue-300 hover:shadow-md"
-              >
-                <div className="flex items-start gap-2.5">
-                  <span className="text-slate-400 group-hover:text-slate-600 transition-colors shrink-0 mt-0.5">
-                    {item.icon}
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-[14px] font-semibold text-slate-800 group-hover:text-blue-600 transition-colors leading-tight">
-                      {item.title}
-                    </h3>
-                    <p className="mt-1 text-[12px] text-slate-500 leading-relaxed">
-                      {item.description}
-                    </p>
+              return (
+                <motion.div
+                  key={group.id}
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.15 + index * 0.08 }}
+                  className="rounded-lg border border-slate-200 bg-white/70 p-5 shadow-sm backdrop-blur"
+                >
+                  <div className="mb-4 flex items-start justify-between gap-4">
+                    <div>
+                      <span
+                        className={`inline-flex rounded-full border px-2.5 py-1 text-[11px] font-semibold ${groupAccent[group.id]}`}
+                      >
+                        {group.title}
+                      </span>
+                      <p className="mt-3 text-sm leading-6 text-slate-600">
+                        {group.description}
+                      </p>
+                    </div>
+                    <span className="text-xs font-medium text-slate-400">
+                      {items.length} 项
+                    </span>
                   </div>
-                </div>
-              </motion.a>
-            ))}
-          </div>
-        </motion.div>
+                  <div className="grid gap-2.5">
+                    {items.map((item) => (
+                      <ContentCard key={item.id} item={item} />
+                    ))}
+                  </div>
+                </motion.div>
+              )
+            })}
+          </section>
 
-        {/* Footer */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="mt-20 text-xs text-slate-300"
-        >
-          Built by Limitless
-        </motion.p>
+          <motion.section
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.55 }}
+            className="grid gap-4 border-t border-slate-200 py-10 md:grid-cols-[0.8fr_1.2fr]"
+          >
+            <div>
+              <h2 className="text-xl font-bold text-slate-950">
+                下一批应补内容
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-slate-500">
+                B 方案下，Powerlaw 不做内部作战手册，而是沉淀客户能读、售前能发的材料。
+              </p>
+            </div>
+            <div className="grid gap-2.5 sm:grid-cols-2">
+              {[
+                "对外 FAQ：产品、安全、集成、模型、商业、ROI",
+                "行业方案：法务、合同管理、投标、知识库、流程自动化",
+                "MeCheck 3.0：产品概览、典型审查链路、Demo 素材",
+                "数据安全与部署：私有化、权限、数据边界、模型接入",
+              ].map((item) => (
+                <div
+                  key={item}
+                  className="rounded-lg border border-slate-200 bg-white/80 p-4 text-sm leading-6 text-slate-700"
+                >
+                  {item}
+                </div>
+              ))}
+            </div>
+          </motion.section>
+
+          <footer className="pb-4 text-center text-xs text-slate-400">
+            Built by Limitless · Powerlaw
+          </footer>
+        </div>
       </main>
     </>
   )
